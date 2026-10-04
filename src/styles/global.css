@@ -58,28 +58,28 @@
   /* Lumina Glass Surfaces */
   .glass {
     background: rgba(8, 10, 12, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 
   .glass-soft {
     background: rgba(10, 12, 14, 0.62);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
 
   .glass-pill {
     background: rgba(10, 12, 14, 0.70);
-    border-color: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
 
   .glass-pill-active {
     background: rgba(194, 255, 6, 0.08);
-    border-color: #C2FF06;
+    border: 1px solid #C2FF06;
     box-shadow: 0 0 12px rgba(194, 255, 6, 0.30), inset 0 0 16px rgba(194, 255, 6, 0.04);
   }
 
@@ -94,18 +94,18 @@
   .hero-overlay {
     background: linear-gradient(
       90deg,
-      rgba(3, 4, 5, 0.95) 0%,
-      rgba(3, 4, 5, 0.85) 30%,
-      rgba(3, 4, 5, 0.40) 65%,
-      rgba(3, 4, 5, 0.20) 100%
+      rgba(3, 4, 5, 0.96) 0%,
+      rgba(3, 4, 5, 0.88) 32%,
+      rgba(3, 4, 5, 0.35) 65%,
+      transparent 100%
     );
   }
 
   .hero-bottom-fade {
     background: linear-gradient(
       to bottom,
-      transparent 40%,
-      rgba(3, 4, 5, 0.75) 75%,
+      transparent 50%,
+      rgba(3, 4, 5, 0.75) 80%,
       #030405 100%
     );
   }
@@ -113,24 +113,24 @@
   .wallpaper-overlay {
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.92) 0%,
-      rgba(0, 0, 0, 0.58) 30%,
-      transparent 65%
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.60) 32%,
+      transparent 70%
     );
   }
 
   .wallpaper-card {
     overflow: hidden;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
     background: #080A0C;
     transition: transform 350ms cubic-bezier(.22, 1, .36, 1), border-color 250ms ease, box-shadow 250ms ease;
   }
 
   .wallpaper-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(194, 255, 6, 0.42);
-    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55), 0 0 22px rgba(194, 255, 6, 0.10);
+    border-color: rgba(194, 255, 6, 0.35);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55), 0 0 22px rgba(194, 255, 6, 0.08);
   }
 
   .wallpaper-card img {
