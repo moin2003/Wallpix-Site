@@ -1,8 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import GalleryFilterToolbar from '../components/GalleryFilterToolbar.astro';
-import GalleryGrid from '../components/GalleryGrid.astro';
+import Hero from '../components/Hero.astro';
+import CategoryStrip from '../components/CategoryStrip.astro';
+import WallpaperGrid from '../components/WallpaperGrid.astro';
+import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
+import AdSenseSlot from '../components/AdSenseSlot.astro';
 import Footer from '../components/Footer.astro';
 import { wallpapers } from '../data/wallpapers';
 
@@ -11,7 +14,7 @@ const schema = {
   '@type': 'WebSite',
   name: 'Lumina 4K - Ultra HD Wallpapers & Discovery Engine',
   url: 'https://lumina-wallpapers.com',
-  description: 'Explore ultra high definition 4K UHD wallpapers in 16:9 widescreen format. Free instant download with zero compression.',
+  description: 'Download free ultra HD 4K, 2K and AMOLED wallpapers for desktop and mobile with instant live canvas cropper.',
   potentialAction: {
     '@type': 'SearchAction',
     target: 'https://lumina-wallpapers.com/?search={search_term_string}',
@@ -21,19 +24,34 @@ const schema = {
 ---
 
 <Layout
-  title="Lumina 4K - 4K Ultra HD Wallpapers Discovery Engine"
-  description="Discover 50,000+ breathtaking 4K UHD wallpapers in 16:9 desktop format. Filter by anime, cyberpunk, nature, cars, space, and minimal aesthetics."
+  title="Lumina 4K - Ultra HD Wallpapers For Every Screen"
+  description="Discover a world of breathtaking 4K wallpapers. From minimal elegance to epic digital worlds — all free, always."
   schema={schema}
 >
-  <!-- 58px Floating Glass Capsule Header -->
-  <Header currentCategory="wallpapers" />
+  <!-- Floating Glass Capsule Header -->
+  <Header currentCategory="home" />
+  
+  <main class="min-h-screen">
+    <!-- Cinematic Hero Section -->
+    <Hero />
 
-  <main class="min-h-screen bg-[#010305]">
-    <!-- 39px Category Filter Toolbar (All Active, Anime, Nature, Cyberpunk...) -->
-    <GalleryFilterToolbar activeCategory="all" />
+    <!-- Category Pill Strip Carousel -->
+    <CategoryStrip activeSlug="all" />
 
-    <!-- 4-Column 16:9 Discovery Gallery Grid with Integrated LG UltraGear Ad -->
-    <GalleryGrid wallpapers={wallpapers} />
+    <!-- Trending 4K Wallpapers Grid (6 Columns) -->
+    <WallpaperGrid
+      wallpapers={wallpapers}
+      title="Trending Wallpapers"
+      subtitle="Handpicked ultra HD wallpapers, updated daily."
+    />
+
+    <!-- Luxury Color Explorer Module -->
+    <ColorPaletteFilter />
+
+    <!-- High-RPM Compliant Ad Placement -->
+    <div class="max-w-lumina mx-auto px-4 sm:px-6 lg:px-8 my-4">
+      <AdSenseSlot format="leaderboard" slotId="home-leaderboard-slot" />
+    </div>
   </main>
 
   <Footer />

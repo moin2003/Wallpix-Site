@@ -3,11 +3,14 @@ interface Props {
   currentCategory?: string;
 }
 
-const { currentCategory = 'all' } = Astro.props;
+const { currentCategory = 'home' } = Astro.props;
+
+const isHome = currentCategory === 'home' || currentCategory === 'all';
+const isWallpapers = currentCategory === 'wallpapers' || currentCategory === 'gallery';
 
 const navLinks = [
-  { name: 'Home', href: '/', active: true },
-  { name: 'Wallpapers', href: '/category/all', active: false },
+  { name: 'Home', href: '/', active: isHome },
+  { name: 'Wallpapers', href: '/wallpapers', active: isWallpapers },
   { name: 'Categories', href: '/#categories', active: false },
   { name: 'Collections', href: '/#color-explorer', active: false },
   { name: 'Community', href: '/tool/cropper', active: false },
@@ -36,7 +39,7 @@ const navLinks = [
           <a
             href={link.href}
             class={`relative text-[13px] font-medium transition-colors py-1 ${
-              link.active ? 'text-white' : 'text-[#B8BCC2] hover:text-white'
+              link.active ? 'text-white font-semibold' : 'text-[#B8BCC2] hover:text-white'
             }`}
           >
             {link.name}

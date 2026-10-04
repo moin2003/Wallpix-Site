@@ -4,29 +4,30 @@
 
 @layer base {
   :root {
+    --lumina-black: #010304;
     --lumina-bg: #010305;
     --lumina-bg-soft: #020407;
     --lumina-bg-elevated: #070A0E;
-
-    --glass-1: rgba(9, 12, 16, 0.78);
-    --glass-2: rgba(14, 18, 23, 0.84);
-    --glass-3: rgba(20, 24, 30, 0.90);
-    --glass-hover: rgba(30, 35, 42, 0.92);
+    --lumina-surface: #090C0F;
+    --lumina-surface-2: #0D1115;
+    --lumina-surface-3: #12171B;
 
     --lime: #C2F600;
     --lime-bright: #C8FF00;
+    --lime-soft: #B7F000;
     --lime-dark: #A8D900;
 
     --magenta: #FF1493;
     --pink: #FF3DAD;
-    --purple: #9D4EDD;
-    --cyan: #22D3EE;
+    --purple: #8A2BE2;
+    --cyan: #00E5FF;
     --blue: #3B82F6;
 
-    --border-subtle: rgba(255, 255, 255, 0.10);
-    --border-default: rgba(255, 255, 255, 0.16);
-    --border-visible: rgba(255, 255, 255, 0.22);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-default: rgba(255, 255, 255, 0.14);
+    --border-medium: rgba(255, 255, 255, 0.20);
     --border-strong: rgba(255, 255, 255, 0.30);
+    --border-lime: rgba(194, 246, 0, 0.80);
 
     --text-primary: #F8FAFC;
     --text-secondary: #D7DCE2;
@@ -57,7 +58,9 @@
 }
 
 @layer utilities {
-  /* Lumina Glass Surfaces */
+  /* ========================================================
+     HOMEPAGE & GLOBAL GLASS SURFACES (preview_final_lumina.png)
+     ======================================================== */
   .lumina-glass {
     background: rgba(7, 10, 13, 0.82);
     border: 1px solid rgba(255, 255, 255, 0.14);
@@ -79,7 +82,73 @@
     -webkit-backdrop-filter: blur(14px);
   }
 
-  /* Lumina Filter Pills */
+  .glass-pill {
+    background: rgba(10, 13, 16, 0.70);
+    border-color: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .glass-pill-active {
+    background: rgba(194, 246, 0, 0.08);
+    border-color: #C2F600;
+    box-shadow: 0 0 14px rgba(194, 246, 0, 0.35);
+  }
+
+  .wallpaper-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #080A0D;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    transition: transform 300ms cubic-bezier(.22, 1, .36, 1), border-color 250ms ease, box-shadow 250ms ease;
+  }
+
+  .wallpaper-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(194, 246, 0, 0.40);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(194, 246, 0, 0.10);
+  }
+
+  .wallpaper-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.90) 0%,
+      rgba(0, 0, 0, 0.65) 25%,
+      rgba(0, 0, 0, 0.10) 60%,
+      transparent 100%
+    );
+  }
+
+  .lumina-gradient-text {
+    background: linear-gradient(90deg, #C2F600 0%, #F6D72D 42%, #F91ACF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(1, 3, 5, 0.95) 0%,
+      rgba(1, 3, 5, 0.85) 35%,
+      rgba(1, 3, 5, 0.40) 65%,
+      rgba(1, 3, 5, 0.20) 100%
+    );
+  }
+
+  .hero-bottom-fade {
+    background: linear-gradient(
+      to bottom,
+      transparent 40%,
+      rgba(1, 3, 5, 0.75) 75%,
+      #010305 100%
+    );
+  }
+
+  /* ========================================================
+     GALLERY DISCOVERY ENGINE (preview_gallery_final.png)
+     ======================================================== */
   .lumina-filter {
     height: 39px;
     display: inline-flex;
@@ -109,7 +178,6 @@
     box-shadow: 0 0 8px rgba(194, 246, 0, 0.40), 0 0 20px rgba(194, 246, 0, 0.12);
   }
 
-  /* 16:9 Wallpaper Card */
   .lumina-card {
     position: relative;
     overflow: hidden;
@@ -150,7 +218,6 @@
     pointer-events: none;
   }
 
-  /* Badges */
   .lumina-4k {
     display: inline-flex;
     align-items: center;
@@ -181,7 +248,6 @@
     backdrop-filter: blur(8px);
   }
 
-  /* Translucent Glass Download Button */
   .lumina-download {
     height: 37px;
     display: inline-flex;
@@ -206,7 +272,6 @@
     box-shadow: 0 0 12px rgba(194, 246, 0, 0.16);
   }
 
-  /* Ad Card */
   .lumina-ad {
     position: relative;
     overflow: hidden;
@@ -217,7 +282,6 @@
     box-shadow: 0 0 12px rgba(194, 246, 0, 0.08), inset 0 0 20px rgba(194, 246, 0, 0.025);
   }
 
-  /* Solid Lime CTA */
   .lumina-cta {
     display: inline-flex;
     align-items: center;
@@ -239,31 +303,118 @@
     box-shadow: 0 0 14px rgba(194, 246, 0, 0.40);
   }
 
-  .lumina-gradient-text {
-    background: linear-gradient(90deg, #C2F600 0%, #F6D72D 42%, #F91ACF 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+  /* ========================================================
+     DETAIL PAGE WORKSPACE (preview_detail_v3.png)
+     ======================================================== */
+  .lumina-detail-hero {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2.4 / 1;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.52);
   }
 
-  .hero-overlay {
-    background: linear-gradient(
-      90deg,
-      rgba(1, 3, 5, 0.95) 0%,
-      rgba(1, 3, 5, 0.85) 35%,
-      rgba(1, 3, 5, 0.40) 65%,
-      rgba(1, 3, 5, 0.20) 100%
-    );
+  .lumina-4k-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding-inline: 14px;
+    border-radius: 9999px;
+    background: rgba(3, 6, 8, 0.78);
+    border: 1px solid #C2F600;
+    color: #C2F600;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(194, 246, 0, 0.35);
+    backdrop-filter: blur(10px);
   }
 
-  .hero-bottom-fade {
-    background: linear-gradient(
-      to bottom,
-      transparent 40%,
-      rgba(1, 3, 5, 0.75) 75%,
-      #010305 100%
-    );
+  .lumina-simulation {
+    border-radius: 20px;
+    background: rgba(9, 13, 16, 0.76);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.38);
+  }
+
+  .lumina-device-tab {
+    height: 34px;
+    padding-inline: 16px;
+    border-radius: 9999px;
+    background: rgba(18, 23, 29, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #A1A7AE;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 200ms ease;
+  }
+
+  .lumina-device-tab:hover {
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .lumina-device-tab.active {
+    background: rgba(194, 246, 0, 0.05);
+    border-color: #C2F600;
+    color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(194, 246, 0, 0.25);
+  }
+
+  .lumina-download-primary {
+    height: 58px;
+    border-radius: 18px;
+    background: #C2F600;
+    color: #050700;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 0 16px rgba(194, 246, 0, 0.40);
+    transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease;
+  }
+
+  .lumina-download-primary:hover {
+    background: #C8FF00;
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(194, 246, 0, 0.55);
+  }
+
+  .lumina-secondary-button {
+    height: 54px;
+    border-radius: 18px;
+    background: rgba(14, 18, 22, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+
+  .lumina-secondary-button:hover {
+    background: rgba(24, 30, 37, 0.95);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+  }
+
+  .lumina-tag {
+    height: 30px;
+    padding-inline: 12px;
+    border-radius: 9999px;
+    background: rgba(15, 20, 26, 0.80);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #CBD0D6;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .lumina-ad-magenta {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(16, 12, 18, 0.92), rgba(6, 4, 8, 0.96));
+    border: 1px solid rgba(255, 20, 147, 0.42);
+    box-shadow: 0 0 16px rgba(255, 20, 147, 0.12), inset 0 0 24px rgba(255, 20, 147, 0.03);
   }
 
   .no-scrollbar::-webkit-scrollbar {
