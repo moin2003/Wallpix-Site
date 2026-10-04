@@ -38,57 +38,122 @@ export const CATEGORIES = [
   { name: 'Nature & Scenery', slug: 'nature-scenery', icon: 'mountain' },
   { name: 'Minimalist & Abstract', slug: 'minimalist-abstract', icon: 'layers' },
   { name: 'Cars & Supercars', slug: 'cars-supercars', icon: 'gauge' },
-  { name: 'Space & Sci-Fi', slug: 'space-sci-fi', icon: 'globe' },
+  { name: 'Space & Cosmic', slug: 'space-cosmic', icon: 'orbit' },
+  { name: 'Dark Mode & Mystery', slug: 'dark-mode', icon: 'eye' },
 ];
 
-// Enrich catalog with real attributes
-export const wallpapers: Wallpaper[] = (catalogData as any[]).map((wp, index) => {
-  const colorIndex = index % LUXURY_COLORS.length;
-  const color = LUXURY_COLORS[colorIndex];
-  
-  const titleVariations = [
-    'Cyberpunk Neon City Skyline',
-    'Minimalist Obsidian Geometry',
-    'Ethereal Anime Sunset Horizon',
-    'Deep Space Nebula 4K',
-    'AMOLED Supercar Night Drive',
-    'Japanese Cherry Blossom Shrine',
-    'Futuristic Mecha Warrior',
-    'Moody Dark Forest Mist',
-    'Abstract Fluid Gold & Black',
-    'Quantum Horizon Aurora',
-    'Neon Samurai Cyberblade',
-    'Hyperdrive Galactic Portal',
-    'Liquid Chrome Abstract Waves',
-    'Synthwave Sunset Grid',
-    'Dark Velvet Rose Aesthetic',
-  ];
+export const RESOLUTIONS = [
+  { name: 'Desktop 4K UHD', width: 3840, height: 2160, aspect: '16:9', popular: true },
+  { name: 'Ultrawide 2K', width: 3440, height: 1440, aspect: '21:9', popular: false },
+  { name: 'Desktop 2K QHD', width: 2560, height: 1440, aspect: '16:9', popular: false },
+  { name: 'Desktop 1080p FHD', width: 1920, height: 1080, aspect: '16:9', popular: false },
+  { name: 'Mobile (iPhone/Android)', width: 1080, height: 2400, aspect: '9:20', popular: true },
+  { name: 'Tablet (iPad Pro)', width: 2048, height: 2732, aspect: '3:4', popular: false },
+];
 
-  const assignedTitle = wp.title && wp.title !== 'Ultra Hd 4K Wallpaper' 
-    ? wp.title 
-    : titleVariations[index % titleVariations.length] + ` #${index + 1}`;
+// Exact 6 Featured Cards from the Master Mockup
+const FEATURED_MASTER_MOCKUP: Wallpaper[] = [
+  {
+    id: 'lumina-featured-1',
+    title: 'Mountain Serenity',
+    slug: 'mountain-serenity-4k',
+    category: 'Nature',
+    sourceCdn: '/images/mockup_cards/card-1-mountain.jpg',
+    isHotlink: false,
+    views: 124000,
+    downloads: 6888,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Sunset Gold & Slate',
+    colorHex: '#4A6B82',
+    tags: ['mountain', 'nature', 'sunset', '4k', 'serenity', 'alpine']
+  },
+  {
+    id: 'lumina-featured-2',
+    title: 'Neon Drive',
+    slug: 'neon-drive-cyberpunk-4k',
+    category: 'Cyberpunk',
+    sourceCdn: '/images/mockup_cards/card-2-neondrive.jpg',
+    isHotlink: false,
+    views: 281000,
+    downloads: 15611,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Cyan & Magenta Neon',
+    colorHex: '#00F0FF',
+    tags: ['cyberpunk', 'car', 'neon', 'city', 'night', '4k']
+  },
+  {
+    id: 'lumina-featured-3',
+    title: 'Shadow Realm',
+    slug: 'shadow-realm-anime-4k',
+    category: 'Anime',
+    sourceCdn: '/images/mockup_cards/card-3-shadowrealm.jpg',
+    isHotlink: false,
+    views: 317000,
+    downloads: 17611,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Crimson & Obsidian',
+    colorHex: '#E63946',
+    tags: ['anime', 'character', 'dark', 'shadow', 'fantasy', '4k']
+  },
+  {
+    id: 'lumina-featured-4',
+    title: 'Cosmic Horizon',
+    slug: 'cosmic-horizon-space-4k',
+    category: 'Space',
+    sourceCdn: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    isHotlink: false,
+    views: 193000,
+    downloads: 10722,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Deep Purple & Nebula Pink',
+    colorHex: '#9D4EDD',
+    tags: ['space', 'cosmic', 'planet', 'nebula', 'galaxy', '4k']
+  },
+  {
+    id: 'lumina-featured-5',
+    title: 'Forest Calm',
+    slug: 'forest-calm-waterfall-4k',
+    category: 'Nature',
+    sourceCdn: '/images/mockup_cards/card-5-forestcalm.jpg',
+    isHotlink: false,
+    views: 149000,
+    downloads: 8277,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Emerald Forest Green',
+    colorHex: '#2A9D8F',
+    tags: ['forest', 'waterfall', 'nature', 'green', 'calm', '4k']
+  },
+  {
+    id: 'lumina-featured-6',
+    title: 'Night Beast',
+    slug: 'night-beast-supercar-4k',
+    category: 'Cars',
+    sourceCdn: '/images/mockup_cards/card-6-nightbeast.jpg',
+    isHotlink: false,
+    views: 226000,
+    downloads: 12555,
+    aspectRatio: '16:9',
+    resolution: '3840×2160',
+    colorName: 'Matte Obsidian & Red LED',
+    colorHex: '#E71D36',
+    tags: ['car', 'supercar', 'matte black', 'night', 'beast', '4k']
+  }
+];
 
-  const assignedSlug = assignedTitle
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-') + `-${index + 1}`;
+export const wallpapers: Wallpaper[] = [
+  ...FEATURED_MASTER_MOCKUP,
+  ...(catalogData as Wallpaper[]).filter(w => !FEATURED_MASTER_MOCKUP.some(f => f.slug === w.slug))
+];
 
-  return {
-    ...wp,
-    title: assignedTitle,
-    slug: assignedSlug,
-    resolution: index % 3 === 0 ? '3840 x 2160 (4K)' : index % 2 === 0 ? '2560 x 1440 (2K)' : '1920 x 1080 (FHD)',
-    colorName: color.name,
-    colorHex: color.hexAccent,
-    tags: [
-      '4K Wallpaper',
-      'Ultra HD',
-      'Free Download',
-      'Desktop & Mobile',
-      color.slug,
-      wp.category || 'Aesthetic',
-    ],
-    views: wp.views || Math.floor(Math.random() * 4000) + 1200,
-    downloads: wp.downloads || Math.floor(Math.random() * 1800) + 450,
-  };
-});
+export function getWallpapersByCategory(slug: string): Wallpaper[] {
+  if (slug === 'all') return wallpapers;
+  return wallpapers.filter((wp) => {
+    const categorySlug = wp.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return categorySlug?.includes(slug.toLowerCase()) || wp.tags?.some((t) => t.toLowerCase() === slug.toLowerCase());
+  });
+}
