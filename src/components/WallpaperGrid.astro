@@ -1,6 +1,7 @@
 ---
 import type { Wallpaper } from '../data/wallpapers';
 import WallpaperCard from './WallpaperCard.astro';
+import AdCard from './AdCard.astro';
 
 interface Props {
   wallpapers: Wallpaper[];
@@ -15,7 +16,7 @@ const {
 } = Astro.props;
 ---
 
-<section id="trending-gallery" class="w-full max-w-[1720px] mx-auto px-6 sm:px-10 lg:px-12 pt-10 lg:pt-14 pb-12">
+<section id="trending-gallery" class="w-full px-4 sm:px-8 lg:px-12 pt-10 lg:pt-14 pb-12">
   
   <!-- Section Header -->
   <div class="flex items-end justify-between mb-5">
@@ -41,10 +42,17 @@ const {
     </a>
   </div>
 
-  <!-- 6-Column Responsive Grid -->
-  <div id="wallpapers-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+  <!-- Full-Width 6-Column Responsive Grid -->
+  <div id="wallpapers-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5">
     {wallpapers.map((wp, index) => (
-      <WallpaperCard wallpaper={wp} priority={index < 6} />
+      <>
+        <WallpaperCard wallpaper={wp} priority={index < 6} />
+        {index === 5 && (
+          <div class="wallpaper-card col-span-1">
+            <AdCard />
+          </div>
+        )}
+      </>
     ))}
   </div>
 
