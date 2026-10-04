@@ -52,7 +52,7 @@ export default {
         pill: '9999px',
       },
       maxWidth: {
-        lumina: '1560px',
+        lumina: '100%',
       },
       backdropBlur: {
         glass: '20px',
@@ -77,10 +77,10 @@ export default {
       },
       fontSize: {
         hero: [
-          'clamp(42px, 4.8vw, 76px)',
+          'clamp(48px, 5.2vw, 82px)',
           {
-            lineHeight: '0.94',
-            letterSpacing: '-0.05em',
+            lineHeight: '0.92',
+            letterSpacing: '-0.055em',
             fontWeight: '800',
           },
         ],

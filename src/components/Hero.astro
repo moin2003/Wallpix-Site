@@ -1,53 +1,50 @@
 ---
 ---
 
-<section class="relative w-full overflow-hidden max-w-lumina mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-  <div class="relative w-full rounded-[24px] overflow-hidden min-h-[480px] lg:min-h-[520px] flex items-center bg-[#030405] border border-white/[0.08] shadow-2xl">
+<section class="relative w-full overflow-hidden px-4 sm:px-6 lg:px-10 pt-4 pb-2">
+  <div class="relative w-full rounded-[24px] overflow-hidden min-h-[480px] lg:min-h-[520px] flex items-center bg-[#030405] border border-white/[0.12] shadow-2xl">
     
-    <!-- Cinematic High-Resolution Cosmic Wallpaper Background (Earth Orbit City Lights) -->
+    <!-- Master Cosmic Astronaut Wallpaper Background -->
     <img
-      src="/images/hero-cosmic.jpg"
-      alt="Lumina 4K Cosmic Orbit Master Hero"
-      class="absolute inset-0 w-full h-full object-cover object-right md:object-center select-none pointer-events-none"
+      src="/images/hero-astronaut-master.jpg"
+      alt="Lumina 4K Cosmic Astronaut Master Hero"
+      class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
     />
 
-    <!-- Ambient Cosmic Glow on right -->
-    <div class="absolute -right-20 -top-20 w-[500px] h-[500px] bg-gradient-to-br from-[#F91ACF]/20 via-[#FF3FAE]/15 to-transparent rounded-full blur-[120px] pointer-events-none"></div>
-
-    <!-- Layer 1: Left Dark Gradient Overlay for typography contrast -->
+    <!-- Layer 1: Left Dark Gradient Overlay for razor-sharp typography contrast -->
     <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
 
     <!-- Layer 2: Bottom Fade to seamless #030405 -->
     <div class="absolute inset-0 hero-bottom-fade pointer-events-none"></div>
 
-    <!-- Hero Foreground Content Container -->
+    <!-- Hero Content Container -->
     <div class="relative z-10 w-full px-6 sm:px-10 lg:px-14 py-10 flex flex-col justify-between min-h-[480px] lg:min-h-[520px]">
       
       <!-- Top / Center: Headline & Subtitle -->
-      <div class="max-w-2xl space-y-4 pt-2">
+      <div class="max-w-xl space-y-3 pt-2">
         <!-- Eyebrow -->
-        <p class="text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase text-[#A2A7AF]">
+        <p class="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#92979E]">
           ULTRA HD WALLPAPERS FOR EVERY SCREEN
         </p>
 
-        <!-- Giant Typography -->
-        <h1 class="text-4xl sm:text-5xl lg:text-[70px] font-display font-black tracking-tight leading-[0.93] text-white">
+        <!-- Huge Headline -->
+        <h1 class="text-hero font-extrabold tracking-[-0.055em] leading-[0.92] text-white">
           Unleash Pure <br />
           <span class="lumina-gradient-text">Visual Power</span> <br />
           On Your Screen
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-[#C0C4C9] text-sm sm:text-[15px] leading-relaxed max-w-lg font-normal pt-1">
+        <p class="text-[#C0C4C9] text-sm sm:text-base leading-relaxed max-w-[500px] font-normal pt-1">
           Discover a world of breathtaking 4K wallpapers. From minimal elegance to epic digital worlds — all free, always.
         </p>
       </div>
 
-      <!-- Bottom Bar: Stats Glass Panel & Circular Explore Button -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6">
+      <!-- Bottom Area: Stats Glass Panel on Left & Circular Explore Button on Right -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
         
         <!-- Stats Glass Panel -->
-        <div class="glass-soft rounded-[20px] p-2.5 sm:p-3 max-w-xl flex items-center justify-between gap-2 sm:gap-6 shadow-glass border border-white/10">
+        <div class="glass-soft rounded-[20px] p-2.5 sm:p-3 max-w-[580px] flex items-center justify-between gap-2 sm:gap-6 border border-white/22 shadow-glass">
           
           <!-- Stat 1: 50,000+ Wallpapers -->
           <div class="flex items-center gap-3 px-2 sm:px-3">
@@ -57,7 +54,7 @@
               </svg>
             </div>
             <div>
-              <div class="font-display font-black text-sm sm:text-base text-white leading-tight">50,000+</div>
+              <div class="font-bold text-sm sm:text-base text-white leading-tight">50,000+</div>
               <div class="text-[10px] sm:text-[11px] text-[#92979E] font-medium">Wallpapers</div>
             </div>
           </div>
@@ -72,7 +69,7 @@
               </svg>
             </div>
             <div>
-              <div class="font-display font-black text-sm sm:text-base text-white leading-tight">100%</div>
+              <div class="font-bold text-sm sm:text-base text-white leading-tight">100%</div>
               <div class="text-[10px] sm:text-[11px] text-[#92979E] font-medium">Free Forever</div>
             </div>
           </div>
@@ -87,19 +84,19 @@
               </svg>
             </div>
             <div>
-              <div class="font-display font-black text-sm sm:text-base text-white leading-tight">4K UHD</div>
+              <div class="font-bold text-sm sm:text-base text-white leading-tight">4K UHD</div>
               <div class="text-[10px] sm:text-[11px] text-[#92979E] font-medium">Ultra Quality</div>
             </div>
           </div>
 
         </div>
 
-        <!-- Explore Stunning Worlds Button -->
+        <!-- Explore Button: 56x56px Circular Play Button with Glow -->
         <a
           href="#trending-gallery"
-          class="hidden sm:flex items-center gap-3.5 group cursor-pointer"
+          class="hidden sm:flex items-center gap-3.5 group cursor-pointer mb-2 mr-2"
         >
-          <div class="w-12 h-12 rounded-full glass border border-lumina-lime/70 flex items-center justify-center shadow-play-glow group-hover:scale-105 transition-transform duration-300">
+          <div class="w-14 h-14 rounded-full bg-[rgba(5,7,8,0.55)] border border-[rgba(194,255,6,0.80)] flex items-center justify-center shadow-play-glow group-hover:scale-105 transition-transform duration-300">
             <svg class="w-5 h-5 text-lumina-lime translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
