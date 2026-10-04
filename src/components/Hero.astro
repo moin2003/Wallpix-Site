@@ -1,31 +1,33 @@
 ---
 ---
 
-<section class="relative w-full overflow-hidden px-4 sm:px-6 lg:px-10 pt-4 pb-2">
-  <div class="relative w-full rounded-[24px] overflow-hidden min-h-[480px] lg:min-h-[520px] flex items-center bg-[#030405] shadow-2xl">
+<section class="relative w-full overflow-hidden pt-28 lg:pt-32 pb-8 min-h-[580px] lg:min-h-[640px] flex items-center bg-[#030405]">
+  
+  <!-- Full-bleed Master Cosmic Astronaut Wallpaper Background -->
+  <img
+    src="/images/hero-astronaut-master.jpg"
+    alt="Lumina 4K Cosmic Astronaut Master Hero"
+    class="absolute inset-0 w-full h-full object-cover object-[80%_20%] select-none pointer-events-none"
+  />
+
+  <!-- Layer 1: Soft Left Dark Gradient Overlay for typography contrast -->
+  <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
+
+  <!-- Layer 2: Seamless Bottom Fade to #030405 -->
+  <div class="absolute inset-0 hero-bottom-fade pointer-events-none"></div>
+
+  <!-- Layer 3: Top Ambient Vignette behind Header -->
+  <div class="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#030405]/80 via-[#030405]/30 to-transparent pointer-events-none"></div>
+
+  <!-- Hero Content Container (Full Width with Fluid Padding) -->
+  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-10 flex flex-col justify-between min-h-[460px] lg:min-h-[500px]">
     
-    <!-- Master Cosmic Astronaut Wallpaper Background (Shifted to the right) -->
-    <img
-      src="/images/hero-astronaut-master.jpg"
-      alt="Lumina 4K Cosmic Astronaut Master Hero"
-      class="absolute inset-0 w-full h-full object-cover object-[88%_center] select-none pointer-events-none"
-    />
-
-    <!-- Layer 1: Left Dark Gradient Overlay for razor-sharp typography contrast -->
-    <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
-
-    <!-- Layer 2: Bottom Fade to seamless #030405 -->
-    <div class="absolute inset-0 hero-bottom-fade pointer-events-none"></div>
-
-    <!-- Hero Content Container -->
-    <div class="relative z-10 w-full px-6 sm:px-10 lg:px-14 py-10 flex flex-col justify-between min-h-[480px] lg:min-h-[520px]">
-      
-      <!-- Top / Center: Headline & Subtitle -->
-      <div class="max-w-xl space-y-3 pt-2">
-        <!-- Eyebrow -->
-        <p class="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#92979E]">
-          ULTRA HD WALLPAPERS FOR EVERY SCREEN
-        </p>
+    <!-- Top / Center: Headline & Subtitle -->
+    <div class="max-w-xl space-y-3 pt-2">
+      <!-- Eyebrow -->
+      <p class="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#A0A5AD]">
+        ULTRA HD WALLPAPERS FOR EVERY SCREEN
+      </p>
 
         <!-- Huge Headline -->
         <h1 class="text-hero font-extrabold tracking-[-0.055em] leading-[0.92] text-white">
