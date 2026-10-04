@@ -1,0 +1,116 @@
+---
+interface Props {
+  imageUrl: string;
+  title: string;
+}
+
+const { imageUrl, title } = Astro.props;
+---
+
+<div class="device-mockup-wrapper w-full bg-obsidian-850/60 rounded-2xl border border-white/5 p-4 sm:p-6 backdrop-blur-md">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <span class="text-neon-lime text-base">🖥️</span>
+      <h3 class="text-sm sm:text-base font-bold text-white">Live Screen Simulation</h3>
+    </div>
+    
+    <!-- Device Toggle Buttons -->
+    <div class="flex items-center gap-1.5 bg-obsidian-950 p-1 rounded-xl border border-white/10 text-xs">
+      <button
+        id="btn-preview-desktop"
+        class="px-3 py-1.5 rounded-lg bg-neon-lime text-obsidian-950 font-bold transition-all"
+      >
+        💻 Desktop
+      </button>
+      <button
+        id="btn-preview-mobile"
+        class="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all"
+      >
+        📱 iPhone
+      </button>
+    </div>
+  </div>
+
+  <!-- Simulation Container -->
+  <div class="relative w-full flex items-center justify-center min-h-[360px] sm:min-h-[440px] bg-obsidian-950 rounded-xl overflow-hidden p-4 border border-white/5">
+    
+    <!-- 💻 Desktop MacBook Mockup View -->
+    <div id="mockup-desktop" class="w-full max-w-2xl transition-all duration-300">
+      <div class="bg-[#1e1e24] rounded-t-2xl p-2.5 pb-2 border-t border-x border-white/10 shadow-2xl">
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
+        </div>
+        <!-- Screen Content -->
+        <div class="relative aspect-[16/10] rounded-lg overflow-hidden bg-black border border-black/50 shadow-inner">
+          <img
+            src={imageUrl}
+            alt={`${title} on desktop screen`}
+            referrerpolicy="no-referrer"
+            class="w-full h-full object-cover"
+          />
+          <!-- Desktop Mock UI Elements -->
+          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-2">
+            <span class="w-4 h-4 rounded bg-blue-500/80"></span>
+            <span class="w-4 h-4 rounded bg-purple-500/80"></span>
+            <span class="w-4 h-4 rounded bg-emerald-500/80"></span>
+            <span class="w-4 h-4 rounded bg-amber-500/80"></span>
+          </div>
+        </div>
+      </div>
+      <!-- MacBook Bottom Base -->
+      <div class="h-3 bg-[#2a2a32] rounded-b-xl border-b border-x border-white/10 flex items-center justify-center">
+        <div class="w-16 h-1 bg-[#1a1a20] rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- 📱 Mobile iPhone Mockup View -->
+    <div id="mockup-mobile" class="hidden w-64 transition-all duration-300">
+      <div class="relative rounded-[40px] p-3 bg-[#1c1d24] border-4 border-[#333644] shadow-2xl">
+        <!-- Dynamic Island Notch -->
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 w-20 h-4.5 bg-black rounded-full z-30 flex items-center justify-end pr-2">
+          <span class="w-2 h-2 rounded-full bg-blue-500/40"></span>
+        </div>
+        <!-- Mobile Screen Content -->
+        <div class="relative aspect-[9/19.5] rounded-[30px] overflow-hidden bg-black shadow-inner">
+          <img
+            src={imageUrl}
+            alt={`${title} on mobile screen`}
+            referrerpolicy="no-referrer"
+            class="w-full h-full object-cover"
+          />
+          <!-- Lock Screen Mock Time -->
+          <div class="absolute top-12 left-0 right-0 text-center text-white drop-shadow-md">
+            <span class="text-xs font-medium tracking-wide">Monday, October 4</span>
+            <h4 class="text-4xl font-extrabold tracking-tight font-display">09:41</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const btnDesktop = document.getElementById('btn-preview-desktop');
+  const btnMobile = document.getElementById('btn-preview-mobile');
+  const mockupDesktop = document.getElementById('mockup-desktop');
+  const mockupMobile = document.getElementById('mockup-mobile');
+
+  if (btnDesktop && btnMobile && mockupDesktop && mockupMobile) {
+    btnDesktop.addEventListener('click', () => {
+      mockupDesktop.classList.remove('hidden');
+      mockupMobile.classList.add('hidden');
+      btnDesktop.className = 'px-3 py-1.5 rounded-lg bg-neon-lime text-obsidian-950 font-bold transition-all';
+      btnMobile.className = 'px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all';
+    });
+
+    btnMobile.addEventListener('click', () => {
+      mockupMobile.classList.remove('hidden');
+      mockupDesktop.classList.add('hidden');
+      btnMobile.className = 'px-3 py-1.5 rounded-lg bg-neon-lime text-obsidian-950 font-bold transition-all';
+      btnDesktop.className = 'px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition-all';
+    });
+  }
+</script>

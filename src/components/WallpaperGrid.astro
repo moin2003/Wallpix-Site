@@ -1,0 +1,114 @@
+---
+import type { Wallpaper } from '../data/wallpapers';
+import WallpaperCard from './WallpaperCard.astro';
+
+interface Props {
+  wallpapers: Wallpaper[];
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  wallpapers,
+  title = 'Trending Wallpapers',
+  subtitle = 'Handpicked ultra HD wallpapers, updated daily.',
+} = Astro.props;
+---
+
+<section id="trending-gallery" class="max-w-lumina mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  
+  <!-- Section Header -->
+  <div class="flex items-end justify-between mb-4">
+    <div class="space-y-0.5">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🔥</span>
+        <h2 class="text-lg sm:text-xl font-display font-bold text-white tracking-tight">
+          {title}
+        </h2>
+      </div>
+      <p class="text-xs sm:text-[13px] text-[#858A91]">
+        {subtitle}
+      </p>
+    </div>
+
+    <!-- View All Link -->
+    <a
+      href="/category/all"
+      class="text-xs sm:text-[13px] font-medium text-gray-400 hover:text-white flex items-center gap-1 transition"
+    >
+      <span>View All</span>
+      <span class="text-lumina-lime font-bold">→</span>
+    </a>
+  </div>
+
+  <!-- 6-Column Responsive Grid -->
+  <div id="wallpapers-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+    {wallpapers.map((wp, index) => (
+      <WallpaperCard wallpaper={wp} priority={index < 6} />
+    ))}
+  </div>
+
+  <!-- No Results State -->
+  <div id="no-results-state" class="hidden text-center py-16 space-y-3">
+    <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center mx-auto text-xl text-gray-400">
+      🔍
+    </div>
+    <h3 class="text-base font-bold text-white">No wallpapers found</h3>
+    <p class="text-xs text-[#858A91] max-w-sm mx-auto">
+      Try searching for "Cyberpunk", "Anime", "AMOLED", "Nature", or reset your search.
+    </p>
+    <button
+      id="reset-search-btn"
+      class="px-4 py-2 rounded-xl bg-lumina-lime text-[#050605] font-bold text-xs hover:bg-lumina-lime-bright transition shadow-lime"
+    >
+      Reset Search
+    </button>
+  </div>
+</section>
+
+<script>
+  const searchInput = document.getElementById('global-search-input') as HTMLInputElement;
+  const gridContainer = document.getElementById('wallpapers-grid-container');
+  const noResultsState = document.getElementById('no-results-state');
+  const resetBtn = document.getElementById('reset-search-btn');
+
+  function filterCards(query: string) {
+    const q = query.trim().toLowerCase();
+    const cards = document.querySelectorAll('.wallpaper-card');
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const title = card.getAttribute('data-title') || '';
+      const category = card.getAttribute('data-category') || '';
+      const tags = card.getAttribute('data-tags') || '';
+
+      const matches = !q || title.includes(q) || category.includes(q) || tags.includes(q);
+
+      if (matches) {
+        (card as HTMLElement).style.display = 'flex';
+        visibleCount++;
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+
+    if (visibleCount === 0 && noResultsState && gridContainer) {
+      gridContainer.classList.add('hidden');
+      noResultsState.classList.remove('hidden');
+    } else if (noResultsState && gridContainer) {
+      gridContainer.classList.remove('hidden');
+      noResultsState.classList.add('hidden');
+    }
+  }
+
+  searchInput?.addEventListener('input', (e) => {
+    filterCards((e.target as HTMLInputElement).value);
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      filterCards('');
+    }
+  });
+</script>

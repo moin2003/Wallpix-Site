@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Hero from '../../components/Hero.astro';
+import ColorPaletteFilter from '../../components/ColorPaletteFilter.astro';
+import WallpaperGrid from '../../components/WallpaperGrid.astro';
+import Footer from '../../components/Footer.astro';
+import { CATEGORIES, wallpapers, type Wallpaper } from '../../data/wallpapers';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((cat) => ({
+    params: { category: cat.slug },
+    props: { categoryInfo: cat },
+  }));
+}
+
+interface Props {
+  categoryInfo: { name: string; slug: string; icon: string };
+}
+
+const { categoryInfo } = Astro.props;
+
+// Filter wallpapers for this category
+const filteredWallpapers = categoryInfo.slug === 'all'
+  ? wallpapers
+  : wallpapers.filter((w) => {
+      const match = (w.category || '').toLowerCase();
+      const slugMatch = categoryInfo.slug.replace(/-/g, ' ');
+      return match.includes(slugMatch) || (w.tags || []).some(t => t.toLowerCase().includes(categoryInfo.slug));
+    });
+
+const displayWallpapers = filteredWallpapers.length > 0 ? filteredWallpapers : wallpapers.slice(0, 16);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${categoryInfo.name} 4K Wallpapers`,
+  description: `Download best ${categoryInfo.name} 4K Ultra HD wallpapers. Free high-resolution backgrounds.`,
+  url: `https://lumina-wallpapers.com/category/${categoryInfo.slug}`,
+};
+---
+
+<Layout
+  title={`${categoryInfo.name} 4K Wallpapers`}
+  description={`Download free high-definition ${categoryInfo.name} wallpapers in 4K UHD, 1080p, and AMOLED formats for PC, iPhone, and Android.`}
+  schema={schema}
+>
+  <Header currentCategory={categoryInfo.slug} />
+
+  <main>
+    <Hero activeCategory={categoryInfo.slug} totalWallpapers={displayWallpapers.length} />
+    <ColorPaletteFilter />
+    <WallpaperGrid wallpapers={displayWallpapers} title={`${categoryInfo.name} Collection`} />
+  </main>
+
+  <Footer />
+</Layout>

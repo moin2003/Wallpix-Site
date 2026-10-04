@@ -1,0 +1,10 @@
+# Production-ready SEO robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /search?*
+
+# Sitemap location (Update with your actual domain)
+Sitemap: https://example.com/sitemap.xml

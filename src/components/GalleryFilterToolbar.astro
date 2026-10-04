@@ -1,0 +1,124 @@
+---
+interface Props {
+  activeCategory?: string;
+}
+
+const { activeCategory = 'all' } = Astro.props;
+
+const categories = [
+  { id: 'all', name: 'All', icon: null, active: true },
+  { id: 'anime', name: 'Anime', icon: '🦊' },
+  { id: 'nature', name: 'Nature', icon: '🌿' },
+  { id: 'cyberpunk', name: 'Cyberpunk', icon: '⚡' },
+  { id: 'abstract', name: 'Abstract', icon: '💎' },
+  { id: 'space', name: 'Space', icon: '🪐' },
+  { id: 'minimalist', name: 'Minimalist', icon: '☯' },
+  { id: 'cars', name: 'Cars', icon: '🏎' },
+  { id: 'dark', name: 'Dark', icon: '🌙' },
+  { id: 'fantasy', name: 'Fantasy', icon: '✨' },
+  { id: 'city', name: 'City', icon: '🏙' },
+  { id: 'animals', name: 'Animals', icon: '🐾' },
+];
+---
+
+<div class="w-full max-w-lumina mx-auto px-4 sm:px-6 lg:px-[38px] pt-4 pb-2">
+  <div class="flex items-center justify-between gap-3">
+    
+    <!-- Left: Scrollable Category Pills -->
+    <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-1 flex-grow">
+      {categories.map((cat) => {
+        const isSelected = activeCategory === cat.id;
+        return (
+          <button
+            data-category-filter={cat.id}
+            class={`lumina-filter cursor-pointer ${
+              isSelected ? 'lumina-filter-active font-semibold text-white' : ''
+            }`}
+          >
+            {cat.icon && <span class="text-sm leading-none">{cat.icon}</span>}
+            <span>{cat.name}</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Right: Compact Sort Pill -->
+    <div class="relative shrink-0">
+      <button
+        id="sort-dropdown-btn"
+        class="h-[39px] px-3.5 rounded-full bg-[rgba(12,16,20,0.90)] border border-white/16 hover:border-white/28 text-[#D7DCE2] hover:text-white text-xs font-medium flex items-center gap-1.5 transition"
+      >
+        <span>Sort: <strong class="text-white font-semibold" id="current-sort-label">Popular</strong></span>
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div
+        id="sort-dropdown-menu"
+        class="hidden absolute right-0 mt-1.5 w-40 rounded-xl lumina-glass p-1.5 shadow-2xl z-40 border border-white/16 space-y-0.5 text-xs"
+      >
+        <button data-sort="popular" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-white font-medium flex items-center justify-between">
+          <span>🔥 Popular</span>
+          <span class="text-lumina-lime text-xs">✓</span>
+        </button>
+        <button data-sort="recent" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-gray-300 font-medium">
+          <span>⚡ Newest</span>
+        </button>
+        <button data-sort="downloads" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-gray-300 font-medium">
+          <span>📥 Downloads</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Sort Dropdown toggle
+  const sortBtn = document.getElementById('sort-dropdown-btn');
+  const sortMenu = document.getElementById('sort-dropdown-menu');
+  const sortLabel = document.getElementById('current-sort-label');
+
+  sortBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sortMenu?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    sortMenu?.classList.add('hidden');
+  });
+
+  const sortOptions = sortMenu?.querySelectorAll('button');
+  sortOptions?.forEach((opt) => {
+    opt.addEventListener('click', () => {
+      const val = opt.getAttribute('data-sort');
+      if (sortLabel) {
+        sortLabel.textContent = val === 'recent' ? 'Newest' : val === 'downloads' ? 'Downloads' : 'Popular';
+      }
+      sortMenu?.classList.add('hidden');
+    });
+  });
+
+  // Client category filtering
+  const filterPills = document.querySelectorAll('[data-category-filter]');
+  filterPills.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterPills.forEach((b) => b.classList.remove('lumina-filter-active', 'font-semibold', 'text-white'));
+      btn.classList.add('lumina-filter-active', 'font-semibold', 'text-white');
+
+      const cat = btn.getAttribute('data-category-filter') || 'all';
+      const cards = document.querySelectorAll('.lumina-gallery-card-item');
+
+      cards.forEach((c) => {
+        const itemCat = (c.getAttribute('data-category') || '').toLowerCase();
+        if (cat === 'all' || itemCat.includes(cat)) {
+          (c as HTMLElement).style.display = 'block';
+        } else {
+          (c as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

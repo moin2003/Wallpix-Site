@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  schema?: any;
+}
+
+const {
+  title,
+  description = 'Download ultra high-definition 4K, 2K and AMOLED wallpapers for PC, Mac, iPhone, and Android. Free, fast and customizable with instant live canvas cropper.',
+  image = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80',
+  type = 'website',
+  schema,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://lumina-wallpapers.com');
+---
+
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Critical for hotlinked CDN images bypass -->
+    <meta name="referrer" content="no-referrer" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    
+    <!-- Primary Meta -->
+    <title>{title} | Lumina 4K Wallpapers</title>
+    <meta name="title" content={`${title} | Lumina 4K Wallpapers`} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#08090C" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | Lumina 4K Wallpapers`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={`${title} | Lumina 4K Wallpapers`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={image} />
+
+    <!-- Google Fonts Preload -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- JSON-LD Structured Data -->
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
+  </head>
+  <body class="bg-obsidian-950 text-ice font-sans min-h-screen flex flex-col selection:bg-neon-lime selection:text-obsidian-950">
+    <!-- Ambient Background Glows -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-neon-lime/5 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-1/3 right-1/4 w-[30rem] h-[30rem] bg-neon-pink/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+
+    <slot />
+
+    <!-- Global Toast / Modal Portal -->
+    <div id="modal-portal"></div>
+  </body>
+</html>

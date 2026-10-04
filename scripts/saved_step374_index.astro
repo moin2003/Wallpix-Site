@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import CategoryStrip from '../components/CategoryStrip.astro';
+import WallpaperGrid from '../components/WallpaperGrid.astro';
+import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
+import AdSenseSlot from '../components/AdSenseSlot.astro';
+import Footer from '../components/Footer.astro';
+import { wallpapers } from '../data/wallpapers';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Lumina 4K Wallpapers',
+  url: 'https://lumina-wallpapers.com',
+  description: 'Download free ultra HD 4K, 2K and AMOLED wallpapers for desktop and mobile with instant live canvas cropper.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://lumina-wallpapers.com/?search={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+
+<Layout
+  title="Lumina 4K - Ultra HD Wallpapers For Every Screen"
+  description="Discover a world of breathtaking 4K wallpapers. From minimal elegance to epic digital worlds — all free, always."
+  schema={schema}
+>
+  <!-- Floating Glass Capsule Header -->
+  <Header currentCategory="all" />
+  
+  <main class="min-h-screen">
+    <!-- Cinematic Hero Section -->
+    <Hero />
+
+    <!-- Category Pill Strip Carousel -->
+    <CategoryStrip activeSlug="all" />
+
+    <!-- Trending 4K Wallpapers Grid (6 Columns) -->
+    <WallpaperGrid
+      wallpapers={wallpapers}
+      title="Trending Wallpapers"
+      subtitle="Handpicked ultra HD wallpapers, updated daily."
+    />
+
+    <!-- Luxury Color Explorer Module -->
+    <ColorPaletteFilter />
+
+    <!-- High-RPM Compliant Ad Placement -->
+    <div class="max-w-lumina mx-auto px-4 sm:px-6 lg:px-8 my-4">
+      <AdSenseSlot format="leaderboard" slotId="home-leaderboard-slot" />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

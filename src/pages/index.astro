@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import GalleryFilterToolbar from '../components/GalleryFilterToolbar.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Footer from '../components/Footer.astro';
+import { wallpapers } from '../data/wallpapers';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Lumina 4K - Ultra HD Wallpapers & Discovery Engine',
+  url: 'https://lumina-wallpapers.com',
+  description: 'Explore ultra high definition 4K UHD wallpapers in 16:9 widescreen format. Free instant download with zero compression.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://lumina-wallpapers.com/?search={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+
+<Layout
+  title="Lumina 4K - 4K Ultra HD Wallpapers Discovery Engine"
+  description="Discover 50,000+ breathtaking 4K UHD wallpapers in 16:9 desktop format. Filter by anime, cyberpunk, nature, cars, space, and minimal aesthetics."
+  schema={schema}
+>
+  <!-- 58px Floating Glass Capsule Header -->
+  <Header currentCategory="wallpapers" />
+
+  <main class="min-h-screen bg-[#010305]">
+    <!-- 39px Category Filter Toolbar (All Active, Anime, Nature, Cyberpunk...) -->
+    <GalleryFilterToolbar activeCategory="all" />
+
+    <!-- 4-Column 16:9 Discovery Gallery Grid with Integrated LG UltraGear Ad -->
+    <GalleryGrid wallpapers={wallpapers} />
+  </main>
+
+  <Footer />
+</Layout>

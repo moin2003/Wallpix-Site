@@ -1,0 +1,100 @@
+---
+import type { Wallpaper } from '../data/wallpapers';
+
+interface Props {
+  wallpaper: Wallpaper;
+  priority?: boolean;
+}
+
+const { wallpaper, priority = false } = Astro.props;
+
+// Realistic view count
+const viewsCount = ((wallpaper.views || 1200) / 10).toFixed(1) + 'K';
+
+// Generate 3 harmonious color swatches for each card
+const swatchColors = [
+  wallpaper.colorHex || '#FF1493',
+  '#22D3EE',
+  '#C2F600',
+];
+---
+
+<div
+  class="lumina-card lumina-gallery-card-item group cursor-pointer"
+  data-title={wallpaper.title.toLowerCase()}
+  data-category={wallpaper.category?.toLowerCase() || ''}
+  data-tags={(wallpaper.tags || []).join(' ').toLowerCase()}
+>
+  <!-- Main 16:9 Wallpaper Image -->
+  <img
+    src={wallpaper.sourceCdn}
+    alt={wallpaper.title}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    referrerpolicy="no-referrer"
+    class="lumina-card-image"
+    onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80'"
+  />
+
+  <!-- Top Badges Overlay -->
+  <div class="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+    <!-- Top Left: 4K UHD Badge -->
+    <span class="lumina-4k">
+      4K UHD
+    </span>
+
+    <!-- Top Right: 16:9 Badge -->
+    <span class="lumina-ratio">
+      16:9
+    </span>
+  </div>
+
+  <!-- Strong Bottom Cinematic Gradient Overlay -->
+  <div class="lumina-card-overlay"></div>
+
+  <!-- Bottom Card Content Area -->
+  <div class="absolute bottom-0 inset-x-0 p-3 sm:p-3.5 z-20 space-y-2 pointer-events-none">
+    
+    <!-- Wallpaper Title -->
+    <h3 class="text-[13px] sm:text-sm font-semibold text-white truncate leading-tight group-hover:text-lumina-lime transition-colors">
+      {wallpaper.title}
+    </h3>
+
+    <!-- Bottom Action Row: Swatches | Views | Download CTA -->
+    <div class="flex items-center justify-between gap-2 pt-0.5 pointer-events-auto">
+      
+      <!-- 3 Color Swatch Dots -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        {swatchColors.map((color) => (
+          <span
+            class="w-3 h-3 rounded-full border border-white/60 shadow-sm transition-transform hover:scale-125"
+            style={`background-color: ${color};`}
+          ></span>
+        ))}
+      </div>
+
+      <!-- Center: View Count with SVG Eye -->
+      <div class="flex items-center gap-1 text-[11px] font-medium text-[#E3E6E9] shrink-0">
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <span>{viewsCount}</span>
+      </div>
+
+      <!-- Right: Translucent Glass Download Button -->
+      <a
+        href={`/wallpapers/${wallpaper.slug}`}
+        class="lumina-download shrink-0 cursor-pointer"
+        title={`Download ${wallpaper.title}`}
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span class="text-[11px] sm:text-xs">Download 4K</span>
+      </a>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,299 @@
+[
+  {
+    "site": "WallpapersMax",
+    "url": "https://wallpapersmax.com/",
+    "image_cdns": [
+      "challenges.cloudflare.com"
+    ],
+    "api_endpoints": [
+      "https://wallpapersmax.com/cdn-cgi/challenge-platform/h/b/fo/4225537975:1791101107:DcdYTCddf7p7k-u1Wq3HjxnyXO2cb9SmJlx3BC"
+    ],
+    "ad_networks": [],
+    "sample_wallpapers": [],
+    "ad_inspection": {
+      "has_adsbygoogle": false,
+      "has_ad_containers": false,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "WallpaperCat",
+    "url": "https://wallpapercat.com/desktop",
+    "image_cdns": [
+      "wallpapercat.com"
+    ],
+    "api_endpoints": [
+      "https://wallpapercat.com/get_country",
+      "https://wallpapercat.com/api/sb/panel/desktop?v=2026091701",
+      "https://wallpapercat.com/api/hdr/popular?v=2026092902"
+    ],
+    "ad_networks": [],
+    "sample_wallpapers": [
+      {
+        "src": "https://wallpapercat.com/w/featured-for-top/xmini-sq/6/7/b/6189.jpg",
+        "title": ""
+      },
+      {
+        "src": "https://wallpapercat.com/w/featured-for-top/xmini-sq/8/7/4/27677.jpg",
+        "title": ""
+      },
+      {
+        "src": "https://wallpapercat.com/w/featured-for-top/xmini-sq/1/3/f/443.jpg",
+        "title": ""
+      },
+      {
+        "src": "https://wallpapercat.com/w/featured-for-top/xmini-sq/1/e/4/27688.jpg",
+        "title": ""
+      },
+      {
+        "src": "https://wallpapercat.com/w/featured-for-top/xmini-sq/d/a/b/4769.jpg",
+        "title": ""
+      }
+    ],
+    "ad_inspection": {
+      "has_adsbygoogle": true,
+      "has_ad_containers": true,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "Xtrafondos",
+    "url": "https://www.xtrafondos.com/en/",
+    "image_cdns": [
+      "jp-u.openx.net",
+      "www.xtrafondos.com",
+      "us-u.openx.net",
+      "cr-p3.ladsp.com",
+      "match.adsrvr.org",
+      "t.adx.opera.com",
+      "up.clickiocdn.com"
+    ],
+    "api_endpoints": [
+      "https://hb-api.omnitagjs.com/hb-api/prebid/v1?RefererUrl=https%3A%2F%2Fwww.xtrafondos.com%2Fen%2F&PageUrl=https%3A%2F%2F",
+      "https://id5-sync.com/api/config/prebid",
+      "https://securepubads.g.doubleclick.net/gampad/ads?pvsid=1116152367098077&correlator=4379045141955143&eid=122880809%2C122",
+      "https://analytics.google.com/g/collect?v=2&tid=G-68QZTW4J0M&gtm=45je69u2v873132454za200zd873132454xf1&_p=1791105043156&_",
+      "https://b1h.outbrain.com/api/bidder/prebid/bid/",
+      "https://id5-sync.com/api/esp/increment?counter=no-config",
+      "https://fastlane.rubiconproject.com/a/api/prebid-exchange.json?as=19944-491458&m=banner&s=1",
+      "https://mweb-hb.presage.io/api/header-bidding-request"
+    ],
+    "ad_networks": [
+      "https://gum.criteo.com/sid/json",
+      "https://cm.g.doubleclick.net/partnerpixels",
+      "https://securepubads.g.doubleclick.net/pagead/ppub_config",
+      "https://grid-bidder.criteo.com/openrtb_2_5/pbjs/auction/request",
+      "https://static.criteo.net/js/ld/publishertag.ids.js",
+      "https://7c7877408aa1cf13a053aad197d30916.safeframe.googlesyndication.com/safefra",
+      "https://cm.g.doubleclick.net/pixel",
+      "https://securepubads.g.doubleclick.net/pagead/managed/dict/m202610010101/gpt",
+      "https://gum.criteo.com/syncframe",
+      "https://stats.g.doubleclick.net/g/collect",
+      "https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202609300101/pubad",
+      "https://securepubads.g.doubleclick.net/gampad/ads",
+      "https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+    ],
+    "sample_wallpapers": [
+      {
+        "src": "https://www.xtrafondos.com/thumbs/vertical/webp/1_6899.webp",
+        "title": "Anime Wallpaper ID:6899"
+      },
+      {
+        "src": "https://www.xtrafondos.com/thumbs/webp/1_11701.webp",
+        "title": "Anime Wallpaper ID:11701"
+      },
+      {
+        "src": "https://www.xtrafondos.com/thumbs/webp/1_14243.webp",
+        "title": "Anime Wallpaper ID:14243"
+      },
+      {
+        "src": "https://www.xtrafondos.com/thumbs/vertical/webp/1_7564.webp",
+        "title": "Marvel Wallpaper ID:7564"
+      },
+      {
+        "src": "https://www.xtrafondos.com/thumbs/webp/1_12150.webp",
+        "title": "Marvel Wallpaper ID:12150"
+      }
+    ],
+    "ad_inspection": {
+      "has_adsbygoogle": false,
+      "has_ad_containers": true,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "Wallspic",
+    "url": "https://wallspic.com/",
+    "image_cdns": [
+      "wallspic.com",
+      "img2.wallspic.com",
+      "img1.wallspic.com",
+      "img3.wallspic.com"
+    ],
+    "api_endpoints": [
+      "https://ep1.adtrafficquality.google/getconfig/sodar?sv=200&tid=gda&tv=r20261001&st=env&sjk=3177128559283790",
+      "https://analytics.google.com/g/collect?v=2&tid=G-HD8064MDNY&gtm=45je69u2v877644583za200zd877644583xf1&_p=1791105047866&_"
+    ],
+    "ad_networks": [
+      "https://pagead2.googlesyndication.com/pagead/sodar",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/abg_lite_fy2021.",
+      "https://stats.g.doubleclick.net/g/collect",
+      "https://pagead2.googlesyndication.com/pagead/ping",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/elements/html/fu",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/elements/html/in",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202610010101/sh",
+      "https://bid.g.doubleclick.net/dbm/vast",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/rx_om",
+      "https://tpc.googlesyndication.com/sodar/HdsydzJK.js",
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+      "https://googleads.g.doubleclick.net/pagead/html/r20261001/r20190131/zrt_lookup_f",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/client/qs_click_",
+      "https://pagead2.googlesyndication.com/pagead/js/google_top_exp.js",
+      "https://pagead2.googlesyndication.com/bg/5zy86NbR8f54HHV5BxfElrR01oDK3KtpXmGPzuA",
+      "https://googleads.g.doubleclick.net/pagead/ads",
+      "https://tpc.googlesyndication.com/sodar/H0ZEmIz7.html",
+      "https://pagead2.googlesyndication.com/pagead/gen_204",
+      "https://googleads.g.doubleclick.net/pagead/interaction/",
+      "https://pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202610010101/re"
+    ],
+    "sample_wallpapers": [
+      {
+        "src": "https://img1.wallspic.com/previews/2/9/7/1/8/181792/181792-grove-ryan_rev-succeeding-sbe_elow-grove_collaborative-500x.jpg",
+        "title": "Image grove, ryan rev, succeeding, sbe elow, grove collaborative"
+      },
+      {
+        "src": "https://img1.wallspic.com/previews/7/0/8/1/8/181807/181807-astronomical_object-outer_space-universe-astronomy-planet-500x.jpg",
+        "title": "Image astronomical object, outer space, universe, astronomy, planet"
+      },
+      {
+        "src": "https://img3.wallspic.com/previews/1/6/7/1/8/181761/181761-summit-mountain-mountain_range-future-exciting-500x.jpg",
+        "title": "Image summit, mountain, mountain range, future, exciting"
+      },
+      {
+        "src": "https://img1.wallspic.com/previews/7/2/8/1/8/181827/181827-christmas_tree-christmas_ornament-christmas-tree-artificial_christmas_tree-500x.jpg",
+        "title": "Image christmas tree, christmas ornament, christmas, tree, artificial christmas tree"
+      },
+      {
+        "src": "https://img3.wallspic.com/previews/9/8/7/1/8/181789/181789-fractal_art-art-digital_art-fractal-abstract_art-500x.jpg",
+        "title": "Image fractal art, art, digital art, fractal, abstract art"
+      }
+    ],
+    "ad_inspection": {
+      "has_adsbygoogle": true,
+      "has_ad_containers": true,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "MotionBGS",
+    "url": "https://motionbgs.com/mobile/",
+    "image_cdns": [
+      "www.gstatic.com",
+      "motionbgs.com"
+    ],
+    "api_endpoints": [
+      "https://ep1.adtrafficquality.google/getconfig/sodar?sv=200&tid=gda&tv=r20261001&st=env&sjk=4928577761870257",
+      "https://www.google-analytics.com/g/collect?v=2&tid=G-DZ24K52SP1&gtm=45je69u2v9103518883za200zd9103518883xf1&_p=179110505"
+    ],
+    "ad_networks": [
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/elements/html/fu",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/elements/html/in",
+      "https://pagead2.googlesyndication.com/pagead/gen_204",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202610010101/sh",
+      "https://pagead2.googlesyndication.com/pagead/sodar",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/client/load_prel",
+      "https://pagead2.googlesyndication.com/pagead/js/rum.js",
+      "https://pagead2.googlesyndication.com/bg/5zy86NbR8f54HHV5BxfElrR01oDK3KtpXmGPzuA",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/abg_lite_fy2021.",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202610010101/re",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/client/qs_click_",
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+      "https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_w",
+      "https://googleads.g.doubleclick.net/pagead/ads",
+      "https://pagead2.googlesyndication.com/pagead/ping",
+      "https://tpc.googlesyndication.com/pagead/js/r20261001/r20110914/client/window_fo",
+      "https://googleads.g.doubleclick.net/pagead/html/r20261001/r20190131/zrt_lookup_f"
+    ],
+    "sample_wallpapers": [
+      {
+        "src": "https://motionbgs.com/i/c/235x418/media/10217/arcane-sanctuary.720x1280.jpg",
+        "title": "arcane sanctuary live wallpaper"
+      },
+      {
+        "src": "https://motionbgs.com/i/c/235x418/media/8925/girl-behind-curtains.720x1280.jpg",
+        "title": "girl behind curtains live wallpaper"
+      },
+      {
+        "src": "https://motionbgs.com/i/c/235x418/media/10215/brynhildr-fate-grand-order.720x1280.jpg",
+        "title": "brynhildr - fate grand order live wallpaper"
+      },
+      {
+        "src": "https://motionbgs.com/i/c/235x418/media/9692/shadow-king-sung-jin-woo.720x1280.jpg",
+        "title": "shadow king – sung jin-woo live wallpaper"
+      },
+      {
+        "src": "https://motionbgs.com/i/c/235x418/media/10214/cozy-autumn-nap.720x1280.jpg",
+        "title": "cozy autumn nap live wallpaper"
+      }
+    ],
+    "ad_inspection": {
+      "has_adsbygoogle": true,
+      "has_ad_containers": true,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "WallpaperCave",
+    "url": "https://wallpapercave.com/",
+    "image_cdns": [
+      "wallpapercave.com"
+    ],
+    "api_endpoints": [
+      "https://c.statcounter.com/t.php?sc_project=10192452&u1=EE26F0D1D174412080A7196480FAA4D4&java=1&security=37828eec&sc_snum"
+    ],
+    "ad_networks": [],
+    "sample_wallpapers": [
+      {
+        "src": "https://wallpapercave.com/img/menu-mobile.png",
+        "title": "Mobile menu icon"
+      },
+      {
+        "src": "https://wallpapercave.com/img/facebookcom2.png",
+        "title": "Facebook logo"
+      },
+      {
+        "src": "https://wallpapercave.com/img/instagramcom.png",
+        "title": "Instagram logo"
+      },
+      {
+        "src": "https://wallpapercave.com/img/xcom.png",
+        "title": "X logo"
+      },
+      {
+        "src": "https://wallpapercave.com/fwp-255/wp16569656.webp",
+        "title": "otter desktop wallpaper"
+      }
+    ],
+    "ad_inspection": {
+      "has_adsbygoogle": false,
+      "has_ad_containers": false,
+      "has_related_search": false
+    }
+  },
+  {
+    "site": "WallpaperFlare",
+    "url": "https://www.wallpaperflare.com/",
+    "image_cdns": [
+      "www.wallpaperflare.com"
+    ],
+    "api_endpoints": [],
+    "ad_networks": [],
+    "sample_wallpapers": [],
+    "ad_inspection": {
+      "has_adsbygoogle": false,
+      "has_ad_containers": false,
+      "has_related_search": false
+    }
+  }
+]
