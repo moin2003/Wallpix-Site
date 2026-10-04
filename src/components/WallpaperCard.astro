@@ -13,7 +13,7 @@ const likesCount = ((wallpaper.downloads || 450) * 1.8 / 100).toFixed(1) + 'K';
 ---
 
 <div
-  class="group relative aspect-square w-full wallpaper-card cursor-pointer flex flex-col justify-between"
+  class="group relative aspect-[16/10] w-full wallpaper-card cursor-pointer flex flex-col justify-between"
   data-title={wallpaper.title.toLowerCase()}
   data-category={wallpaper.category?.toLowerCase() || ''}
   data-tags={(wallpaper.tags || []).join(' ').toLowerCase()}

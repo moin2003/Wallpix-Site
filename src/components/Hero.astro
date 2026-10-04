@@ -20,11 +20,11 @@ import CategoryStrip from './CategoryStrip.astro';
   <!-- Layer 3: Top Ambient Vignette behind Header -->
   <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#030405]/80 via-[#030405]/20 to-transparent pointer-events-none"></div>
 
-  <!-- Hero Main Content Container (Full Width Edge-to-Edge with fluid padding) -->
-  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 flex-grow flex flex-col justify-between pt-2">
+  <!-- Hero Main Content Container (Balanced Wide Container with refined insets) -->
+  <div class="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-10 lg:px-12 flex-grow flex flex-col justify-between pt-2">
     
     <!-- Top / Center: Headline & Subtitle -->
-    <div class="max-w-2xl space-y-4 pt-4 lg:pt-6">
+    <div class="max-w-2xl space-y-4 pt-4 lg:pt-6 lg:pl-4">
       <!-- Eyebrow -->
       <p class="text-xs sm:text-[13px] font-bold tracking-[0.18em] uppercase text-[#A0A5AD]">
         ULTRA HD WALLPAPERS FOR EVERY SCREEN
@@ -44,7 +44,7 @@ import CategoryStrip from './CategoryStrip.astro';
     </div>
 
     <!-- Middle/Bottom Row: Stats Glass Panel & Circular Explore Button -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-6 pb-2">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-6 pb-2 lg:pl-4 lg:pr-8">
       
       <!-- Stats Glass Panel with distinct border stroke -->
       <div class="glass-soft rounded-[20px] p-2.5 sm:p-3 max-w-[580px] flex items-center justify-between gap-2 sm:gap-6 border border-white/20 shadow-glass">
