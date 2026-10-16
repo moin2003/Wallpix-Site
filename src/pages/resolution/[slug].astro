@@ -1,0 +1,305 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import TopicStrip from '../../components/TopicStrip.astro';
+import ResolutionDeviceSidebar from '../../components/ResolutionDeviceSidebar.astro';
+import Footer from '../../components/Footer.astro';
+import { ALL_RESOLUTIONS, type ResolutionItem } from '../../data/resolutions';
+import { wallpapers, type Wallpaper } from '../../data/wallpapers';
+
+export async function getStaticPaths() {
+  return ALL_RESOLUTIONS.map((res) => {
+    // Filter wallpapers fitting aspect ratio or general
+    const matchedWallpapers = wallpapers.filter((w) => {
+      if (res.aspectRatio === '16:9' || res.aspectRatio === '16:10') {
+        return w.aspectRatio === '16:9' || (w.screenTypes || []).includes('desktop-4k');
+      } else if (res.aspectRatio.includes('19.5') || res.aspectRatio.includes('20')) {
+        return (w.screenTypes || []).includes('phone-iphone') || (w.screenTypes || []).includes('phone-android');
+      } else if (res.aspectRatio.includes('32:9') || res.aspectRatio.includes('21:9')) {
+        return (w.screenTypes || []).includes('dual-monitor') || w.aspectRatio === '21:9';
+      }
+      return true;
+    });
+
+    const displayList = Array.from(new Set([...matchedWallpapers, ...wallpapers])).slice(0, 18);
+
+    return {
+      params: { slug: res.slug },
+      props: {
+        resInfo: res,
+        wallpapersList: displayList,
+      },
+    };
+  });
+}
+
+interface Props {
+  resInfo: ResolutionItem;
+  wallpapersList: Wallpaper[];
+}
+
+const { resInfo, wallpapersList } = Astro.props;
+
+const heroImage = wallpapersList[0]?.sourceCdn || '/images/hero-astronaut-master.png';
+const pageTitle = `${resInfo.label} Wallpapers (${resInfo.deviceInfo}) - 4K UHD Free Download`;
+const metaDescription = `Download high quality ${resInfo.label} wallpapers for ${resInfo.deviceInfo}. Pixel-perfect resolution, 100% free with instant canvas cropping and zero watermark.`;
+
+const mostDownloadedRankings = [...wallpapersList]
+  .sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
+  .slice(0, 5);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: pageTitle,
+  description: metaDescription,
+  url: `https://walpix.site/resolution/${resInfo.slug}`,
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: wallpapersList.slice(0, 12).map((wp, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'ImageObject',
+        name: wp.title,
+        contentUrl: wp.sourceCdn,
+        url: `https://walpix.site/wallpapers/${wp.slug}`,
+      },
+    })),
+  },
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={metaDescription}
+  image={heroImage}
+  schema={schema}
+>
+  <Header />
+
+  <main class="min-h-screen bg-[#020406] text-left">
+    
+    <!-- Hero Banner Section -->
+    <section class="relative w-full overflow-hidden bg-[#030508] border-b border-white/[0.08] pt-6 pb-6">
+      
+      <!-- Backdrop Glow -->
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src={heroImage}
+          alt={resInfo.label}
+          class="w-full h-full object-cover object-center opacity-20 filter blur-md scale-105"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#020406] via-[#020406]/95 to-[#020406]/85"></div>
+      </div>
+
+      <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 text-left">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono mb-3 text-left">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <a href="/categories" class="hover:text-white transition-colors">Resolutions</a>
+          <span>/</span>
+          <span class="text-white/40">{resInfo.categoryGroup}</span>
+          <span>/</span>
+          <span class="text-walpix-lime font-bold font-mono">{resInfo.label}</span>
+        </nav>
+
+        <!-- Main Title & Editor's Note -->
+        <div class="space-y-2 text-left">
+          <div class="flex flex-wrap items-center gap-3">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+              {resInfo.label} <span class="text-walpix-lime">Wallpapers</span>
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-xs font-mono text-walpix-lime font-bold">
+              {resInfo.deviceInfo}
+            </span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-gray-300 max-w-3xl leading-relaxed">
+            {resInfo.description} Handpicked native backgrounds matching exact {resInfo.width}×{resInfo.height} pixel aspect ratios.
+          </p>
+        </div>
+
+        <!-- Horizontal Topic Pill Strip -->
+        <div class="mt-4 pt-3 border-t border-white/[0.08]">
+          <TopicStrip />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3-Column Tri-Link Entity Architecture -->
+    <div class="w-full px-4 sm:px-6 lg:px-10 py-8 max-w-[1780px] mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)_300px] xl:grid-cols-[320px_minmax(0,1fr)_320px] gap-6 xl:gap-8 items-start">
+        
+        <!-- LEFT SIDEBAR: Device Resolution Accordion -->
+        <aside class="space-y-6 order-2 lg:order-1 sticky top-24">
+          <ResolutionDeviceSidebar activeRes={resInfo.slug} />
+        </aside>
+
+        <!-- CENTER COLUMN: 1 Large Wallpaper per Row Stream -->
+        <section class="space-y-6 sm:space-y-8 order-1 lg:order-2 min-w-0">
+          
+          <div class="space-y-6 sm:space-y-8">
+            {wallpapersList.map((wp, index) => {
+              const showStreamAd = index === 3 || index === 8;
+              return (
+                <>
+                  <div class="group relative rounded-3xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-2xl transition-all duration-300">
+                    
+                    <!-- Main 16:9 Immersive Wallpaper Visual -->
+                    <a href={`/wallpapers/${wp.slug}`} class="block relative aspect-[16/9] w-full overflow-hidden bg-black/60 cursor-pointer">
+                      <img
+                        src={wp.sourceCdn}
+                        alt={wp.title}
+                        class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                        loading={index < 2 ? "eager" : "lazy"}
+                      />
+
+                      <!-- Subtle Gradient Overlay -->
+                      <div class="absolute inset-0 bg-gradient-to-t from-[#070b12] via-transparent to-black/20 opacity-70 group-hover:opacity-30 transition-opacity"></div>
+
+                      <!-- 4K Badge -->
+                      <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-walpix-lime/40 text-xs font-mono font-bold text-walpix-lime shadow-lg">
+                          {resInfo.width}×{resInfo.height}
+                        </span>
+                        <span class="px-2.5 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 text-xs font-mono text-gray-200 shadow-lg">
+                          {resInfo.aspectRatio}
+                        </span>
+                      </div>
+                    </a>
+
+                    <!-- Bottom Action & Meta Bar -->
+                    <div class="p-4 sm:p-5 bg-[#070b12] flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-white/[0.08]">
+                      <div class="min-w-0">
+                        <a href={`/wallpapers/${wp.slug}`}>
+                          <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-walpix-lime transition-colors truncate">
+                            {wp.title}
+                          </h3>
+                        </a>
+                        <div class="flex items-center gap-2 text-xs text-gray-400 font-mono mt-1">
+                          <span>↓ {wp.downloads?.toLocaleString() || '18.4K'} downloads</span>
+                          <span>•</span>
+                          <span class="text-walpix-lime font-bold">100% Native Resolution</span>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-2.5 shrink-0">
+                        <a
+                          href={`/wallpapers/${wp.slug}`}
+                          class="h-11 px-6 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-[#050608] font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_16px_rgba(194,255,6,0.3)] hover:shadow-[0_0_24px_rgba(194,255,6,0.5)] active:scale-95"
+                        >
+                          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                          </svg>
+                          <span>Download</span>
+                        </a>
+
+                        <a
+                          href={`/tool/cropper?url=${encodeURIComponent(wp.sourceCdn)}&targetW=${resInfo.width}&targetH=${resInfo.height}`}
+                          class="h-11 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.14] border border-white/15 hover:border-white/30 text-xs font-bold text-white flex items-center gap-1.5 transition-all"
+                          title="Custom Crop & Resize"
+                        >
+                          <span>✂️</span>
+                          <span class="hidden sm:inline">Crop</span>
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {showStreamAd && (
+                    <div class="p-6 rounded-3xl bg-[#05070a] border border-white/[0.09] shadow-xl text-center flex flex-col justify-between min-h-[140px] relative overflow-hidden select-none">
+                      <div class="flex items-center justify-between text-[10px] font-mono mb-2">
+                        <span class="text-walpix-lime uppercase tracking-widest font-bold">FOR ADVERTISEMENT</span>
+                        <span class="px-2 py-0.5 rounded bg-walpix-lime/10 border border-walpix-lime/25 text-walpix-lime font-bold uppercase text-[9px]">IN-FEED SPONSOR</span>
+                      </div>
+                      <div class="my-auto py-2">
+                        <h4 class="text-base font-bold text-white">Targeted {resInfo.width}×{resInfo.height} Display Ad</h4>
+                        <p class="text-xs text-[#8E949E] mt-0.5">High-RPM placement targeted to {resInfo.deviceInfo} users</p>
+                      </div>
+                      <div class="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                        <span>AdSense In-Feed Standard</span>
+                        <a href="/contact" class="text-walpix-lime hover:underline font-bold inline-flex items-center gap-1">
+                          <span>Advertise Here</span>
+                          <span>→</span>
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })}
+          </div>
+
+        </section>
+
+        <!-- RIGHT SIDEBAR: Most Downloaded + Ad Slot -->
+        <aside class="space-y-6 order-3 sticky top-24">
+          
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-walpix-lime uppercase tracking-wider pb-1">
+              <span>🔥</span>
+              <span>Top in {resInfo.label}</span>
+            </div>
+
+            <div class="space-y-3.5">
+              {mostDownloadedRankings.map((wp, idx) => (
+                <a
+                  href={`/wallpapers/${wp.slug}`}
+                  class="group relative block aspect-[16/9] w-full rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_8px_25px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                >
+                  <img
+                    src={wp.sourceCdn}
+                    alt={wp.title}
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
+                    loading="lazy"
+                  />
+                  
+                  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+
+                  <div class="absolute top-2.5 left-2.5 z-10">
+                    <span class={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black shadow-md ${
+                      idx === 0 ? 'bg-amber-400 text-black' : idx === 1 ? 'bg-slate-200 text-black' : idx === 2 ? 'bg-amber-600 text-white' : 'bg-neutral-800 text-white/80'
+                    }`}>
+                      {idx + 1}
+                    </span>
+                  </div>
+
+                  <div class="absolute inset-x-0 bottom-0 p-3.5 z-10">
+                    <h4 class="text-sm font-bold text-white group-hover:text-walpix-lime truncate transition-colors leading-tight">
+                      {wp.title}
+                    </h4>
+                    <span class="text-[11px] font-mono text-walpix-lime font-bold block mt-0.5">
+                      ↓ {wp.downloads?.toLocaleString() || '18.4K'} downloads
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Ad Slot -->
+          <div class="p-4 rounded-2xl bg-neutral-900/80 border border-white/10 text-center min-h-[200px] flex flex-col justify-between shadow-xl">
+            <span class="text-[10px] font-mono text-[#8E949E] uppercase tracking-wider block">
+              SPONSORED PLACEMENT
+            </span>
+            <div class="my-auto py-2">
+              <span class="text-xs font-bold text-white block">AdSense High-RPM Slot</span>
+              <span class="text-[10px] text-gray-400">Fixed container • Zero CLS</span>
+            </div>
+            <span class="text-[9px] font-mono text-walpix-lime/70">WALPIX 4K Safe Ad Viewport</span>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+
+  </main>
+
+  <Footer />
+</Layout>

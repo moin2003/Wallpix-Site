@@ -1,0 +1,256 @@
+---
+import { TOPIC_HUBS } from '../data/topics';
+
+interface Props {
+  activeSlug?: string;
+  className?: string;
+  cardSize?: 'normal' | 'large';
+}
+
+const { activeSlug = '', className = '', cardSize = 'normal' } = Astro.props;
+const isLarge = cardSize === 'large';
+
+function getTopicCover(rawUrl: string): string {
+  if (!rawUrl) return '/images/mockup_cards/card-1-mountain.webp';
+  if (rawUrl.startsWith('/images/mockup_cards/') && rawUrl.endsWith('.jpg')) {
+    return rawUrl.replace('.jpg', '.webp');
+  }
+  if (rawUrl.includes('images.unsplash.com')) {
+    try {
+      const u = new URL(rawUrl);
+      u.searchParams.set('w', '360');
+      u.searchParams.set('q', '75');
+      u.searchParams.set('auto', 'format');
+      u.searchParams.set('fit', 'crop');
+      u.searchParams.set('fm', 'webp');
+      return u.toString();
+    } catch {
+      return rawUrl;
+    }
+  }
+  return rawUrl;
+}
+---
+
+<div class={`topic-strip-wrapper relative w-full flex items-center gap-1.5 sm:gap-2 ${className}`}>
+  <!-- Left Slide Arrow Button -->
+  <button
+    class="topic-btn-left hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5"
+    aria-label="Scroll topics left"
+  >
+    <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Topic Scroll Track -->
+  <div class="topic-scroll-track flex items-center gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar scroll-smooth py-2 px-2 flex-grow min-w-0 select-none cursor-grab">
+    {TOPIC_HUBS.map((topic) => {
+      const isActive = activeSlug === topic.slug;
+      const coverUrl = getTopicCover(topic.cover);
+      return (
+        <a
+          href={`/topic/${topic.slug}`}
+          class={`group relative shrink-0 ${
+            isLarge
+              ? 'h-[64px] sm:h-[72px] min-w-[190px] sm:min-w-[220px] rounded-2xl px-4 py-2.5 shadow-lg'
+              : 'h-[46px] sm:h-[50px] min-w-[145px] sm:min-w-[165px] rounded-xl px-3 py-2 shadow-md'
+          } overflow-hidden border transition-all duration-300 select-none flex items-center justify-center ${
+            isActive
+              ? 'border-walpix-lime ring-2 ring-walpix-lime/30 shadow-[0_0_18px_rgba(194,255,6,0.3)]'
+              : 'border-white/10 hover:border-walpix-lime/60 hover:shadow-[0_6px_22px_rgba(194,255,6,0.25)] hover:-translate-y-0.5'
+          }`}
+        >
+          <!-- Background Image (Visible & Vibrant) -->
+          <img
+            src={coverUrl}
+            alt={topic.name}
+            class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 ease-out"
+            loading="lazy"
+            decoding="async"
+          />
+
+          <!-- Balanced Translucent Dark Gradient Overlay -->
+          <div class={`absolute inset-0 transition-colors ${
+            isLarge
+              ? 'bg-gradient-to-r from-black/75 via-black/45 to-black/70 group-hover:from-black/60 group-hover:via-black/35 group-hover:to-black/55'
+              : 'bg-gradient-to-r from-black/70 via-black/50 to-black/65 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/55'
+          }`}></div>
+
+          <!-- Centered Title -->
+          <span class={`relative z-10 font-bold text-white group-hover:text-walpix-lime transition-colors text-center truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] ${
+            isLarge
+              ? 'text-[13px] sm:text-[14.5px] font-extrabold tracking-wide'
+              : 'text-xs sm:text-[13px]'
+          }`}>
+            {topic.name}
+          </span>
+        </a>
+      );
+    })}
+  </div>
+
+  <!-- Right Slide Arrow Button -->
+  <button
+    class="topic-btn-right hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5"
+    aria-label="Scroll topics right"
+  >
+    <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .topic-scroll-track {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    contain: paint;
+  }
+  .topic-scroll-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  const wrappers = document.querySelectorAll<HTMLElement>('.topic-strip-wrapper');
+  wrappers.forEach((wrapper) => {
+    const track = wrapper.querySelector<HTMLElement>('.topic-scroll-track');
+    const leftBtn = wrapper.querySelector<HTMLButtonElement>('.topic-btn-left');
+    const rightBtn = wrapper.querySelector<HTMLButtonElement>('.topic-btn-right');
+
+    if (!track) return;
+
+    function updateArrowState() {
+      if (!track || !leftBtn || !rightBtn) return;
+      const scrollLeft = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (scrollLeft <= 5) {
+        leftBtn.style.opacity = '0.3';
+        leftBtn.style.pointerEvents = 'none';
+      } else {
+        leftBtn.style.opacity = '1';
+        leftBtn.style.pointerEvents = 'auto';
+      }
+
+      if (maxScroll > 0 && scrollLeft >= maxScroll - 5) {
+        rightBtn.style.opacity = '0.3';
+        rightBtn.style.pointerEvents = 'none';
+      } else {
+        rightBtn.style.opacity = '1';
+        rightBtn.style.pointerEvents = 'auto';
+      }
+    }
+
+    updateArrowState();
+    track.addEventListener('scroll', updateArrowState);
+    window.addEventListener('resize', updateArrowState);
+
+    leftBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+
+    rightBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: 320, behavior: 'smooth' });
+    });
+
+    // Mouse wheel horizontal scroll
+    track.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+
+    // Mouse drag-to-scroll
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let moved = false;
+
+    track.addEventListener('mousedown', (e) => {
+      isDown = true;
+      moved = false;
+      track.style.cursor = 'grabbing';
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      if (track) track.style.cursor = 'grab';
+    });
+
+    track.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      moved = true;
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    track.addEventListener('click', (e) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // Gentle Auto-Step Slide for Topics (Advance 1 card every ~4s)
+    let autoStepTimer: any = null;
+    let resumeTimer: any = null;
+
+    function stepTopics() {
+      if (!track || isDown) return;
+      if (document.visibilityState !== 'visible') return;
+
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      if (maxScroll <= 15) return;
+
+      if (track.scrollLeft >= maxScroll - 20) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        track.scrollBy({ left: 165, behavior: 'smooth' });
+      }
+    }
+
+    function startAutoStep() {
+      stopAutoStep();
+      autoStepTimer = setInterval(stepTopics, 4000);
+    }
+
+    function stopAutoStep() {
+      if (autoStepTimer) {
+        clearInterval(autoStepTimer);
+        autoStepTimer = null;
+      }
+    }
+
+    function pauseAndResume() {
+      stopAutoStep();
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        startAutoStep();
+      }, 4500);
+    }
+
+    startAutoStep();
+
+    track.addEventListener('touchstart', pauseAndResume, { passive: true });
+    track.addEventListener('pointerdown', pauseAndResume, { passive: true });
+    track.addEventListener('wheel', pauseAndResume, { passive: true });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        startAutoStep();
+      } else {
+        stopAutoStep();
+      }
+    });
+  });
+</script>

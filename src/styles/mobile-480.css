@@ -1,0 +1,1093 @@
+/* =============================================================================
+   WALPIX 4K - DEDICATED MOBILE VIEW STYLESHEET (max-width: 480px)
+   =============================================================================
+   এই ফাইলটির ভিতরের সব স্টাইল ১০০% শুধুমাত্র <480px মোবাইল স্ক্রিনের জন্য প্রযোজ্য।
+   এখানে মোবাইল ভিউয়ের যেকোনো এলিমেন্ট আপনি স্বাধীনভাবে পরিবর্তন/এডিট করতে পারেন।
+   যেহেতু সম্পূর্ণ ফাইলটি @media (max-width: 480px) এর ভেতরে সুরক্ষিত,
+   তাই এখানে কোনো পরিবর্তন করলে ডেস্কটপ বা ট্যাবলেট ভার্সনে কোনো প্রভাব পড়বে না।
+   ============================================================================= */
+
+@media screen and (max-width: 480px) {
+
+  /* ---------------------------------------------------------------------------
+     ১. GLOBAL & TYPOGRAPHY (বেস বডি ও সাধারণ টেক্সট)
+     --------------------------------------------------------------------------- */
+  html,
+  body {
+    overflow-x: clip !important;
+    font-size: 14px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* মোবাইল সেকশন প্যাডিং */
+  section {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ২. HEADER & STICKY NAVIGATION (মোবাইল নেভিগেশন বার)
+     --------------------------------------------------------------------------- */
+  /* হেডার কন্টেইনার - ফিক্সড/স্টিকি টপ (শুধু প্রধান সাইট হেডার, কোনো আর্টিকেল বা সেকশন হেডার নয়) */
+  #site-header,
+  header.walpix-site-header {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 50 !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* গ্লাসি নেভ বার ব্যাকগ্রাউন্ড ও হাইট */
+  .glassy-nav-container {
+    height: 52px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    border-radius: 14px !important;
+    background-color: rgb(11 11 11 / 48%) !important;
+  }
+
+  /* WALPIX ব্র্যান্ড লোগো সাইজ (মোবাইলে পারফেক্ট স্কেল) */
+  .nav-brand-logo-img {
+    height: 32px !important;
+    max-height: 32px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* হেডার থিম টগল বাটন */
+  #theme-toggle-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  #theme-toggle-btn svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* মোবাইল হ্যামবার্গার মেনু বাটন */
+  #mobile-menu-btn,
+  .mobile-menu-toggle {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  #mobile-menu-btn svg,
+  .mobile-menu-toggle svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* মোবাইল মেনু ড্রপডাউন ড্রয়ার (ফ্লোটিং ওভারলে মোড - পেছনের পেজ যেন নিচে না নামে) */
+  #mobile-nav-menu {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: 8px !important;
+    right: 8px !important;
+    z-index: 100 !important;
+    border-radius: 18px !important;
+    padding: 14px !important;
+    margin-top: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(8, 10, 13, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow-y: auto !important;
+  }
+
+  /* মোবাইল ড্রপডাউন নেভ লিংক আইটেমস */
+  #mobile-nav-menu a {
+    font-size: 14px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৩. HERO SECTION (হিরো ব্যাকগ্রাউন্ড ও ব্যানার)
+     --------------------------------------------------------------------------- */
+  /* হিরো কন্টেইনার (পর্যাপ্ত ফাঁকা জায়গা ও সঠিক অনুপাত বজায় রাখতে) */
+  #hero-section,
+  section.hero-section {
+    min-height: 600px !important;
+    padding-top: 120px !important;
+    padding-bottom: 50px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* ===========================================================================
+     ৩. HERO SLIDESHOW: প্রতিটি স্লাইড ইমেজের সম্পূর্ণ স্বাধীন CSS কন্ট্রোল
+     (এখানে যেকোনো স্লাইডের object-position বা transform পরিবর্তন করলে সাথে সাথে মোবাইলে কাজ করবে)
+     =========================================================================== */
+
+  /* মোবাইল স্লাইডশো কমন কন্টেইনার */
+  #mobile-hero-slider {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    z-index: 0 !important;
+  }
+
+  /* মোবাইল স্লাইড বেস স্টাইল (স্মুথ অপাসিটি ফেড ট্রানজিশন) */
+  .mobile-hero-bg-slide {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 0 !important;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: none !important;
+    will-change: opacity, transform !important;
+  }
+
+  .mobile-hero-bg-slide.active {
+    opacity: 1 !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     [SLIDE 0] অ্যাস্ট্রোনট মাস্টার ইমেজ (Astronaut)
+     ------------------------------------------------------------------------- */
+  #hero-bg-img,
+  #hero-slide-astronaut,
+  .hero-bg-img,
+  .slide-astronaut,
+  .mobile-hero-bg-slide[data-slide-index="0"] {
+    object-position: 64% -40% !important;
+    transform: scale(1.2) translateY(-50px) !important;
+    transform-origin: center center !important;
+    opacity: 1 !important;
+  }
+
+  .slide-highlight-slide-astronaut {
+    color: #C2FF06 !important;
+    /* Electric Neon Lime */
+    filter: drop-shadow(0 0 16px rgba(194, 255, 6, 0.45)) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     [SLIDE 1] সুপারকার ব্যাকগ্রাউন্ড ইমেজ (Supercar)
+     ------------------------------------------------------------------------- */
+  #hero-slide-supercar,
+  .slide-supercar,
+  .mobile-hero-bg-slide[data-slide-index="1"] {
+    object-position: 77% 50% !important;
+    transform: scale(1) !important;
+    transform-origin: center center !important;
+  }
+
+  .slide-highlight-slide-supercar {
+    color: #FF2E54 !important;
+    /* Electric Crimson Red (কারের টেললাইট ও স্পিড ম্যাচিং) */
+    filter: drop-shadow(0 0 18px rgba(255, 46, 84, 0.55)) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     [SLIDE 2] ডার্ক নেচার / মাউন্টেন ব্যাকগ্রাউন্ড ইমেজ (Dark Nature)
+     ------------------------------------------------------------------------- */
+  #hero-slide-nature,
+  .slide-nature,
+  .mobile-hero-bg-slide[data-slide-index="2"] {
+    object-position: 65% 50% !important;
+    transform: scale(1) !important;
+    transform-origin: center center !important;
+  }
+
+  .slide-highlight-slide-nature {
+    color: #00FF88 !important;
+    /* Vibrant Emerald Nature Green (পাহাড় ও সবুজ বনাঞ্চল ম্যাচিং) */
+    filter: drop-shadow(0 0 18px rgba(0, 255, 136, 0.55)) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     [SLIDE 3] সাই-ফাই / সাইবারপাঙ্ক মেগাসিটি ব্যাকগ্রাউন্ড ইমেজ (Sci-Fi City)
+     ------------------------------------------------------------------------- */
+  #hero-slide-scifi,
+  .slide-scifi,
+  .mobile-hero-bg-slide[data-slide-index="3"] {
+    object-position: 45% 50% !important;
+    transform: scale(1.0) !important;
+    transform-origin: center center !important;
+  }
+
+  .slide-highlight-slide-scifi {
+    color: #00E5FF !important;
+    /* Cyber Neon Blue/Cyan (ফিউচারিস্টিক টাওয়ার ম্যাচিং) */
+    filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.55)) !important;
+  }
+
+  /* -------------------------------------------------------------------------
+     [SLIDE 4] অ্যামোলেড কসমিক ব্ল্যাক হোল ব্যাকগ্রাউন্ড ইমেজ (AMOLED Cosmos)
+     ------------------------------------------------------------------------- */
+  #hero-slide-amoled,
+  .slide-amoled,
+  .mobile-hero-bg-slide[data-slide-index="4"] {
+    object-position: 70% 50% !important;
+    transform: scale(1.5) translateY(-90px) !important;
+    transform-origin: center center !important;
+  }
+
+  .slide-highlight-slide-amoled {
+    color: #FFB800 !important;
+    /* Radiant Solar Amber / Gold (ব্ল্যাক হোলের অ্যাক্রিশন ডিস্ক ম্যাচিং) */
+    filter: drop-shadow(0 0 20px rgba(255, 184, 0, 0.60)) !important;
+  }
+
+  /* মোবাইল স্লাইডশো টেক্সট কন্টেইনার ও কার্ডস */
+  #mobile-hero-text-container {
+    height: 180px !important;
+    min-height: 180px !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .mobile-hero-text-slide {
+    position: absolute !important;
+    inset: 0 !important;
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .mobile-hero-text-slide.active {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+  }
+
+  .mobile-hero-text-slide:not(.active) {
+    opacity: 0 !important;
+    transform: translateY(8px) !important;
+    pointer-events: none !important;
+  }
+
+  /* ===========================================================================
+     ৩.২ মোবাইল হেডিং টেক্সট ফন্ট কন্ট্রোল (লাইন ১, ২ ও ৩ এর আলাদা আলাদা কন্ট্রোল)
+     এখানে যেকোনো লাইনের font-family, font-weight, font-size ইত্যাদি স্বাধীনভাবে পরিবর্তন করতে পারবেন!
+     =========================================================================== */
+
+  /* [১] উপরের লাইন (Line 1 - e.g. "Unleash Pure", "Pure Adrenaline") */
+  .mobile-hero-text-slide .hero-title-top {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 35px !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.04em !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+  }
+
+  /* [২] মাঝখানের কালার লাইন (Line 2 - e.g. "Visual Power", "Midnight Hypercar") */
+  .hero-title-highlight,
+  .hero-highlight-text {
+    font-family: "Moon Dance", cursive !important;
+    font-style: italic !important;
+    font-weight: 600 !important;
+    font-size: 40px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.01em !important;
+    display: inline-block !important;
+  }
+
+  /* [৩] নিচের লাইন (Line 3 - e.g. "On Your Screen", "Built For Velocity") */
+  .mobile-hero-text-slide .hero-title-bottom {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.04em !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+  }
+
+  /* ===========================================================================
+     ৩.৩ মোবাইল স্লাইডশো টেক্সট সিকোয়েন্সিয়াল অ্যানিমেশন (Staggered Sequential Reveal)
+     - লাইন ১ (hero-title-top): প্রথমে স্মুথ স্লাইড আপ হয়ে আসবে
+     - লাইন ২ (hero-title-highlight / hero-highlight-text): মাঝখানে ব্লার ও গ্লো থেকে শার্প হয়ে ভেসে উঠবে
+     - লাইন ৩ (hero-title-bottom): তৃতীয়তে সিকোয়েন্স অনুসারে স্লাইড হয়ে আসবে
+     - সাবটাইটেল (hero-subtitle): সর্বশেষে সফট ফেড দিয়ে ফিনিশ করবে
+     =========================================================================== */
+
+  /* আইব্রো ট্যাগ (Eyebrow) - সবার আগে হালকা ভেসে আসবে */
+  .mobile-hero-text-slide.active .hero-eyebrow {
+    animation: heroSeqEyebrow 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both !important;
+  }
+
+  /* [১ম লাইন] টপ টেক্সট (Line 1) - মসৃণভাবে নিচ থেকে স্লাইড হয়ে আসবে */
+  .mobile-hero-text-slide.active .hero-title-top {
+    animation: heroSeqLineOne 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both !important;
+  }
+
+  /* [২য় লাইন] হাইলাইট টেক্সট (Line 2) - ব্লার ও গ্লো ইফেক্ট থেকে শার্প হয়ে ফুটে উঠবে */
+  .mobile-hero-text-slide.active .hero-highlight-text,
+  .mobile-hero-text-slide.active .hero-title-highlight {
+    animation: heroSeqHighlightBlur 0.58s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both !important;
+  }
+
+  /* [৩য় লাইন] বটম টেক্সট (Line 3) - ২য় লাইনের পর সিকোয়েন্সে আসবে */
+  .mobile-hero-text-slide.active .hero-title-bottom {
+    animation: heroSeqLineThree 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both !important;
+  }
+
+  /* [সাবটাইটেল] বর্ণনামূলক সাবটেক্সট - সর্বশেষে সফট ফেড হয়ে আসবে */
+  .mobile-hero-text-slide.active .hero-subtitle {
+    animation: heroSeqSubtitle 0.50s ease-out 0.68s both !important;
+  }
+
+  /* সিকোয়েন্সিয়াল কিফ্রেমস */
+  @keyframes heroSeqEyebrow {
+    0% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    100% {
+      opacity: 0.9;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes heroSeqLineOne {
+    0% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes heroSeqHighlightBlur {
+    0% {
+      opacity: 0;
+      filter: blur(14px);
+      transform: translateY(8px) scale(0.95);
+    }
+
+    60% {
+      opacity: 0.9;
+      filter: blur(3px);
+    }
+
+    100% {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes heroSeqLineThree {
+    0% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes heroSeqSubtitle {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    100% {
+      opacity: 0.85;
+      transform: translateY(0);
+    }
+  }
+
+  /* বাম সাইডের কোণা থেকে টেক্সটের পেছন পর্যন্ত খুব হালকা ব্ল্যাক শেড (অনলি মোবাইল) */
+  .hero-mobile-overlay {
+    opacity: 1 !important;
+    background: radial-gradient(ellipse 90% 55% at 0% 28%, rgba(3, 4, 5, 0.80) 0%, rgba(3, 4, 5, 0.12) 40%, transparent 70%),
+      linear-gradient(to right, rgba(3, 4, 5, 0.80) 0%, rgba(3, 4, 5, 0.08) 35%, transparent 55%) !important;
+  }
+
+  /* হিরো বটম এজ ব্লেন্ড: ইনস্ট্যান্ট অ্যাক্সেস বাটন পর্যন্ত অর্গানিক ফেদার ব্লেন্ড (কোনো শেপ বা কাট দাগ নেই) */
+  .hero-mobile-edge-dark {
+    height: 110px !important;
+    bottom: 0 !important;
+    background: linear-gradient(to top,
+        #030405 0%,
+        #030405 18%,
+        rgba(3, 4, 5, 0.72) 45%,
+        rgba(3, 4, 5, 0.35) 70%,
+        rgba(3, 4, 5, 0.08) 88%,
+        transparent 100%) !important;
+  }
+
+  #hero-section .hero-bottom-fade {
+    display: none !important;
+  }
+
+  /* হিরো টেক্সট ব্লক (কনসেপ্ট ডিজাইন অনুযায়ী মার্জিন) */
+  #hero-text-block {
+    margin-top: 100px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0 !important;
+  }
+
+  #hero-text-block .hero-text-inner {
+    min-height: auto !important;
+    gap: 1px !important;
+  }
+
+  /* হিরো সেকশন আইব্রো টেক্সট */
+  .hero-eyebrow {
+    font-size: 10px !important;
+    letter-spacing: 0.14em !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* হিরো মূল টাইটেল (কমপ্যাক্ট টাইট স্পেসিং) */
+  #hero-section h1,
+  .hero-headline {
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.04em !important;
+    margin-top: 2px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* হিরো সাবটাইটেল প্যারাগ্রাফ */
+  #hero-section p.hero-subtitle,
+  .hero-subtitle {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    max-width: 100% !important;
+    padding-top: 2px !important;
+    margin-top: 0 !important;
+  }
+
+  /* হিরো বটম জোন (বটমে প্রাকৃতিক অ্যাংকরিং) */
+  #hero-bottom-zone {
+    margin-top: auto !important;
+  }
+
+  #hero-bottom-zone>div:first-child {
+    padding-bottom: 8px !important;
+    gap: 26px !important;
+  }
+
+  /* হিরো স্ট্যাটাস গ্লাস প্যানেল - মোবাইল অপ্টিমাইজড সাইজ */
+  .hero-stats-panel,
+  #hero-section .glass-container {
+    padding: 10px 10px !important;
+    border-radius: 12px !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
+  }
+
+  /* স্ট্যাট আইটেম ভেতরের স্পেসিং */
+  .hero-stats-panel>div.flex {
+    gap: 6px !important;
+  }
+
+  /* স্কয়ার আইকন বক্স (বক্সের সাইজ পারফেক্ট অনুপাতে) */
+  .hero-stats-panel .w-9.h-9 {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 9px !important;
+  }
+
+  .hero-stats-panel .w-9.h-9 svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* সংখ্যা ও প্রধান টেক্সট (50,000+, 100%, 4K UHD) */
+  .hero-stats-panel .font-bold.text-sm,
+  .hero-stats-panel div>.font-bold {
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* নিচের সাব-লেবেল (Wallpapers, Free Forever, Ultra Quality) */
+  .hero-stats-panel .text-\[10px\],
+  .hero-stats-panel div>.font-medium {
+    font-size: 8.5px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* হিরো Explore CTA বাটন (স্মার্টফোন অপ্টিমাইজড + ভাইব্রেন্ট গ্রিন ব্যাকগ্রাউন্ড) */
+  .hero-explore-cta {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #C2FF06 !important;
+    background: linear-gradient(135deg, #C2FF06 0%, #B8F52A 100%) !important;
+    border: 1px solid #C2FF06 !important;
+    padding: 8px 16px !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 4px 20px rgba(194, 255, 6, 0.4) !important;
+  }
+
+  /* বাম পাশের ডাউনলোড সার্কেল আইকন */
+  .hero-explore-cta>div:first-child {
+    background: #030405 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 9999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero-explore-cta>div:first-child svg {
+    color: #C2FF06 !important;
+    stroke: #C2FF06 !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* মাঝখানের টেক্সট ব্লক */
+  .hero-explore-cta>div:nth-child(2) {
+    flex: 1 1 0% !important;
+    text-align: left !important;
+    padding-left: 12px !important;
+  }
+
+  .hero-explore-cta>div:nth-child(2)>div:first-child {
+    color: rgba(3, 4, 5, 0.70) !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .hero-explore-cta>div:nth-child(2)>div:last-child {
+    color: #030405 !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* ডান পাশের অ্যারো আইকন */
+  .hero-explore-cta>svg:last-child {
+    color: #030405 !important;
+    stroke: #030405 !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৪. AESTHETIC COLOR EXPLORER (কালার প্যালেট সেকশন)
+     --------------------------------------------------------------------------- */
+  /* কালার এক্সপ্লোরার মেইন সেকশন */
+  #color-explorer {
+    padding-top: 20px !important;
+    padding-bottom: 24px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* আউটার ফ্রেম ও ইনার কমান্ড প্যানেল */
+  #color-explorer .rounded-3xl {
+    border-radius: 18px !important;
+  }
+
+  #color-explorer .rounded-\[23px\] {
+    border-radius: 17px !important;
+    padding: 14px 12px !important;
+  }
+
+  /* কালার এক্সপ্লোরার হেডার টাইটেল */
+  #color-explorer h2 {
+    font-size: 18px !important;
+  }
+
+  /* ডুয়াল-টোন ব্যাজ */
+  #color-explorer span.font-mono {
+    font-size: 10px !important;
+    padding: 2px 8px !important;
+  }
+
+  /* ক্যাটাগরি ড্রপডাউন সিলেক্টর */
+  #palette-category-dropdown {
+    height: 36px !important;
+    font-size: 11px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    width: 100% !important;
+  }
+
+  /* ক্যাটাগরি সুইচ ট্যাব ট্র্যাক ও বাটন */
+  #palette-category-tabs,
+  .palette-category-track {
+    gap: 6px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .palette-cat-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    border-radius: 10px !important;
+  }
+
+  /* প্যালেট কার্ড স্ক্রল র‍্যাপার (উচ্চতা নির্দিষ্ট যাতে মোবাইল স্ক্রিন বেশি না বাড়ে) */
+  #palette-cards-scroll-wrapper,
+  .palette-scroll-container {
+    max-height: 380px !important;
+    padding-right: 4px !important;
+  }
+
+  /* প্যালেট গ্রিড (মোবাইলে প্রতি রো-তে ২টি বা ১টি কার্ড) */
+  #palette-cards-scroll-wrapper>div {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  /* সিঙ্গেল প্যালেট কার্ড আইটেম */
+  .palette-card-item {
+    padding: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .palette-card-item .palette-name {
+    font-size: 11px !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৫. ORIENTATION TOGGLE BAR (ডিসপ্লে মোড সুইচ: 16:9, 9:16, 32:9)
+     --------------------------------------------------------------------------- */
+  /* ওরিয়েন্টেশন ডিভাইস সুইচার বার (মোবাইলে ১০০% অপ্টিমাইজড সেন্টার্ড পিল ক্যাপসুল) */
+  .walpix-device-switcher-container,
+  #orientation-toggle-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .walpix-device-switcher {
+    width: 100% !important;
+    max-width: 420px !important;
+    min-width: 0 !important;
+    display: flex !important;
+    padding: 3.5px !important;
+    gap: 3px !important;
+    border-radius: 9999px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: rgba(6, 8, 13, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  /* ওরিয়েন্টেশন বাটন (মোবাইলে ৩৬ পিক্সেল কমফোর্টেবল হাইট, ক্রিস্প পিল ও ৪টি সমান উইডথ সেগমেন্ট) */
+  .device-switcher-btn,
+  .orientation-btn,
+  #orientation-toggle-container button {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    height: 36px !important;
+    padding: 0 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 11.5px !important;
+    gap: 3.5px !important;
+    border-radius: 9999px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    touch-action: manipulation;
+    outline: none !important;
+    outline-width: 0 !important;
+    border: none !important;
+  }
+
+  .device-switcher-btn .switcher-icon {
+    width: 13.5px !important;
+    height: 13.5px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .device-switcher-btn .switcher-label {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৬. CATEGORY STRIP & TOPIC PILLS (ক্যাটাগরি স্ক্রল স্ট্রিপ)
+     --------------------------------------------------------------------------- */
+  .category-strip,
+  .topic-strip {
+    gap: 6px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .category-pill,
+  .topic-pill {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    border-radius: 9999px !important;
+  }
+
+  /* মোবাইলে পপুলার ড্রপডাউন হাইড (ক্যাটাগরি পিলসের পুরো উইডথ ফ্রি রাখা) */
+  #sort-dropdown-btn,
+  .sort-dropdown-container {
+    display: none !important;
+  }
+
+  /* মোবাইলে ক্যাটাগরি স্ক্রল ট্র্যাক: ১০০% স্মুথ হার্ডওয়্যার অ্যাকসিলারেটেড */
+  .category-pills-scroll-track.has-scrolled-left {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৭. WALLPAPER GRID & CARDS (ওয়ালপেপার গ্রিড ও কার্ড)
+     --------------------------------------------------------------------------- */
+  /* ওয়ালপেপার গ্রিড কন্টেইনার */
+  #wallpaper-grid-container,
+  #wallpapers-grid-container {
+    gap: 12px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  /* মোড ১: Phone Mode (9:16 Portrait) - মোবাইলে ২টি কলাম */
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  /* মোড ২: Desktop 16:9 ও All Mode - মোবাইলে ১টি ফুল কলাম */
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  /* মোড ৩: Dual Monitor / Ultrawide 32:9 - মোবাইলে ১টি কলাম */
+  #wallpaper-grid-container.grid-mode-dual,
+  #wallpapers-grid-container.grid-mode-dual {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  /* কার্ড স্টাইলিং ও বর্ডার রেডিয়াস */
+  .wallpaper-card,
+  .walpix-gallery-card-item,
+  .lumina-gallery-card-item {
+    border-radius: 14px !important;
+  }
+
+  /* কার্ডের ভেতরে ডাউনলোড বাটন */
+  .card-download-btn {
+    height: 30px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-size: 11px !important;
+    border-radius: 8px !important;
+  }
+
+  /* রেজোলিউশন ব্যাজ (4K, 8K) */
+  .card-badge-res,
+  .card-badge-aspect {
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+    border-radius: 6px !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৮. SEARCH & FILTER TOOLBARS (সার্চ বার ও ফিল্টার)
+     --------------------------------------------------------------------------- */
+  .search-input-field,
+  #hero-search-input,
+  #global-search-input {
+    height: 42px !important;
+    font-size: 13px !important;
+    padding-left: 36px !important;
+    padding-right: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  /* ---------------------------------------------------------------------------
+     ৯. FOOTER (মোবাইল ফুটার)
+     --------------------------------------------------------------------------- */
+  footer,
+  #site-footer {
+    padding-top: 32px !important;
+    padding-bottom: 78px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* ফুটারের কলামগুলো মোবাইলে এক লাইনে একের নিচে এক স্ট্যাক হবে */
+  footer .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 24px !important;
+  }
+
+  /* ফুটার ব্র্যান্ড ও কপিরাইট টেক্সট */
+  footer p,
+  footer a {
+    font-size: 12px !important;
+  }
+
+}
+
+/* =============================================================================
+   TIER 2: LARGE SMARTPHONES & PHABLETS (481px - 639px)
+   iPhone Pro Max / Plus (Landscape & Large Portrait), Samsung Ultra, Foldables
+   ============================================================================= */
+@media screen and (min-width: 481px) and (max-width: 639px) {
+
+  /* হেডার কন্টেইনার */
+  #site-header,
+  header.walpix-site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  /* হিরো কন্টেইনার - হেডার নিচ থেকে সুন্দর স্পেসিং */
+  #hero-section,
+  section.hero-section {
+    min-height: 680px !important;
+    padding-top: 124px !important;
+    padding-bottom: 20px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* হিরো ব্যাকগ্রাউন্ড ইমেজ (মাঝখানে ৫০% এবং স্কেল ১.২) */
+  #hero-bg-img,
+  .hero-bg-img {
+    object-position: 50% 12% !important;
+    transform: scale(1.2) !important;
+    transform-origin: center center !important;
+    opacity: 1 !important;
+  }
+
+  /* ব্যাকগ্রাউন্ড কালো শেড/ওভারলে অপাসিটি কমানো */
+  .hero-mobile-overlay {
+    opacity: 0.55 !important;
+  }
+
+  #hero-section .hero-bottom-fade {
+    opacity: 0.45 !important;
+  }
+
+  /* হিরো টাইটেল ও সাবটাইটেল */
+  #hero-section h1,
+  .hero-headline {
+    font-size: 38px !important;
+    line-height: 1.0 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  #hero-section p.hero-subtitle,
+  .hero-subtitle {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    max-width: 90% !important;
+  }
+
+  /* ওয়ালপেপার গ্রিড */
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  #wallpaper-grid-container.grid-mode-dual,
+  #wallpapers-grid-container.grid-mode-dual {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  /* হিরো Explore CTA বাটন */
+  .hero-explore-cta {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #C2FF06 !important;
+    background: linear-gradient(135deg, #C2FF06 0%, #B8F52A 100%) !important;
+    border: 1px solid #C2FF06 !important;
+    padding: 8px 18px !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 4px 20px rgba(194, 255, 6, 0.4) !important;
+  }
+
+  .hero-explore-cta>div:first-child {
+    background: #030405 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 9999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero-explore-cta>div:first-child svg {
+    color: #C2FF06 !important;
+    stroke: #C2FF06 !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .hero-explore-cta>div:nth-child(2) {
+    flex: 1 1 0% !important;
+    text-align: left !important;
+    padding-left: 12px !important;
+  }
+
+  .hero-explore-cta>div:nth-child(2)>div:first-child {
+    color: rgba(3, 4, 5, 0.70) !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .hero-explore-cta>div:nth-child(2)>div:last-child {
+    color: #030405 !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .hero-explore-cta>svg:last-child {
+    color: #030405 !important;
+    stroke: #030405 !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ===========================================================================
+     মোবাইল ফুটার অপ্টিমাইজেশন (Ultra-Compact Luxury Mobile Footer)
+     অতিরিক্ত লম্বা ভাব দূর করে কম্প্যাক্ট, ব্যালান্সড ও প্রফেশনাল লেআউট
+     =========================================================================== */
+  footer .footer-brand-logo-img {
+    height: 46px !important;
+    width: auto !important;
+  }
+
+  footer .footer-brand-col {
+    gap: 10px !important;
+    margin-bottom: 2px !important;
+  }
+
+  footer ul li a {
+    min-height: 22px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+}
+
+/* =============================================================================
+   TIER 3 & 4: SMALL TABLETS, iPADS & FOLDABLES (640px - 820px)
+   iPad Mini (768px), iPad 10.2" (810px), iPad Air (820px), Galaxy Tab
+   ডেস্কটপ ভিউ (1024px+) পুরোপুরি সুরক্ষিত ও অপরিবর্তিত থাকবে।
+   ============================================================================= */
+@media screen and (min-width: 640px) and (max-width: 820px) {
+
+  /* হেডার কন্টেইনার */
+  #site-header,
+  header.walpix-site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* হিরো কন্টেইনার - আইপ্যাড ও ট্যাবলেটের জন্য সঠিক ভারসাম্য */
+  #hero-section,
+  section.hero-section {
+    min-height: 720px !important;
+    padding-top: 132px !important;
+    padding-bottom: 24px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  /* হিরো ব্যাকগ্রাউন্ড ইমেজ (ট্যাবলেট রেশিওতে সেন্টার্ড) */
+  #hero-bg-img,
+  .hero-bg-img {
+    object-position: 62% 18% !important;
+    opacity: 0.95 !important;
+  }
+
+  /* হিরো টাইটেল ও সাবটাইটেল */
+  #hero-section h1,
+  .hero-headline {
+    font-size: 44px !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.045em !important;
+  }
+
+  #hero-section p.hero-subtitle,
+  .hero-subtitle {
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+    max-width: 480px !important;
+  }
+
+  /* ওয়ালপেপার গ্রিড: ট্যাবলেটে ৩ কলাম (ফোন) ও ২ কলাম (ডেস্কটপ) */
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  #wallpaper-grid-container.grid-mode-dual,
+  #wallpapers-grid-container.grid-mode-dual {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+}

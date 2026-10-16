@@ -2,282 +2,1148 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import AdSenseSlot from '../../components/AdSenseSlot.astro';
+
+// Pristine, clean 4K wallpapers for instant 1-click loading without baked-in card UI
+const sampleWallpapers = [
+  {
+    title: 'Mountain Serenity',
+    category: 'Nature',
+    url: '/images/hero-clean.jpg'
+  },
+  {
+    title: 'Cyberpunk Tokyo',
+    category: 'Cyberpunk',
+    url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'AMOLED Minimal',
+    category: 'AMOLED',
+    url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Deep Space Horizon',
+    category: 'Space',
+    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Nordic Alpine Sunset',
+    category: 'Nature',
+    url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Night Beast GT',
+    category: 'Cars',
+    url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Shadow Samurai',
+    category: 'Anime',
+    url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Emerald Calm Lake',
+    category: 'Landscape',
+    url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=85'
+  }
+];
 ---
 
 <Layout
-  title="Online 4K Wallpaper Resizer & Smart Cropper"
-  description="Free online wallpaper crop and resize tool. Resize any image to 4K Ultra HD, 1080p, Ultrawide, iPhone, or Samsung resolution with zero quality loss and instant download."
+  title="Online 4K Wallpaper Resizer & Canvas Studio Cropper - WALPIX 4K"
+  description="Crop, resize, rotate, and frame any 4K wallpaper with movable crop box, multi-device aspect ratios (Desktop 4K, Ultrawide, iPhone, iPad, Dual Monitor), and zero-loss client-side export."
 >
-  <Header />
+  <Header currentCategory="tool" />
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="text-center max-w-2xl mx-auto mb-8 space-y-3">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neon-lime/10 border border-neon-lime/30 text-neon-lime text-xs font-bold font-mono uppercase tracking-wider">
-        ⚡ Zero-Loss Canvas Engine
-      </div>
-      <h1 class="text-3xl sm:text-4xl font-display font-black text-white">
-        Smart Wallpaper <span class="bg-gradient-to-r from-neon-lime via-neon-cyan to-neon-pink bg-clip-text text-transparent">Cropper & Resizer</span>
-      </h1>
-      <p class="text-gray-400 text-sm sm:text-base">
-        Paste any image URL or upload your wallpaper to crop, resize, and convert to 4K, 2K, Ultrawide, or Smartphone formats in seconds.
-      </p>
-    </div>
-
-    <!-- Interactive Cropping Studio UI -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      
-      <!-- Left: Interactive Canvas Viewport (8 Cols) -->
-      <div class="lg:col-span-8 glass-panel rounded-2xl p-4 sm:p-6 border border-white/10 space-y-4">
-        
-        <!-- Top Toolbar -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/5">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-gray-300">Preset Resolutions:</span>
-          </div>
-          <div class="flex flex-wrap items-center gap-1.5" id="preset-buttons">
-            <button data-w="3840" data-h="2160" class="preset-btn px-2.5 py-1 rounded-lg bg-neon-lime text-obsidian-950 text-xs font-bold shadow-glow-lime">4K Desktop (16:9)</button>
-            <button data-w="2560" data-h="1440" class="preset-btn px-2.5 py-1 rounded-lg bg-obsidian-800 text-gray-300 hover:text-white border border-white/10 text-xs font-medium">2K QHD</button>
-            <button data-w="3440" data-h="1440" class="preset-btn px-2.5 py-1 rounded-lg bg-obsidian-800 text-gray-300 hover:text-white border border-white/10 text-xs font-medium">Ultrawide (21:9)</button>
-            <button data-w="1080" data-h="2400" class="preset-btn px-2.5 py-1 rounded-lg bg-obsidian-800 text-gray-300 hover:text-white border border-white/10 text-xs font-medium">📱 Mobile (9:20)</button>
-            <button data-w="2048" data-h="2732" class="preset-btn px-2.5 py-1 rounded-lg bg-obsidian-800 text-gray-300 hover:text-white border border-white/10 text-xs font-medium">iPad / Tablet</button>
-          </div>
-        </div>
-
-        <!-- Canvas Stage -->
-        <div class="relative w-full aspect-[16/10] bg-obsidian-950 rounded-xl overflow-hidden flex items-center justify-center border border-white/5 shadow-inner">
-          <canvas id="crop-canvas" class="max-w-full max-h-full object-contain"></canvas>
-          <div id="canvas-placeholder" class="text-center p-6 space-y-3">
-            <span class="text-4xl">🎨</span>
-            <h4 class="text-base font-bold text-white">Select a wallpaper or enter an image URL to begin</h4>
-            <p class="text-xs text-gray-500">Image is processed securely inside your browser.</p>
-          </div>
-        </div>
-
-        <!-- Image Loader Input -->
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          <input
-            id="image-url-input"
-            type="text"
-            placeholder="Paste direct Image URL (e.g. https://...)"
-            value="https://wallpapercat.com/w/featured-for-top/xmini-sq/6/7/b/6189.jpg"
-            class="flex-grow px-4 py-2.5 bg-obsidian-850 border border-white/10 rounded-xl text-xs sm:text-sm text-ice focus:outline-none focus:border-neon-lime"
-          />
-          <button
-            id="load-image-btn"
-            class="px-5 py-2.5 bg-obsidian-800 hover:bg-obsidian-700 text-white font-semibold rounded-xl text-xs sm:text-sm border border-white/10 transition"
-          >
-            Load URL
-          </button>
-          <label class="px-5 py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold rounded-xl text-xs sm:text-sm border border-white/10 transition cursor-pointer text-center">
-            Upload Local
-            <input id="local-file-input" type="file" accept="image/*" class="hidden" />
-          </label>
-        </div>
-      </div>
-
-      <!-- Right: Control Panel & Export (4 Cols) -->
-      <div class="lg:col-span-4 space-y-6">
-        <div class="glass-panel rounded-2xl p-5 sm:p-6 border border-white/10 space-y-5">
-          <h3 class="text-base font-bold text-white flex items-center gap-2">
-            <span>⚙️</span> Export Settings
-          </h3>
-
-          <!-- Custom Dimensions -->
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-gray-400 mb-1">Target Width (px)</label>
-              <input
-                id="target-w"
-                type="number"
-                value="3840"
-                class="w-full px-3 py-2 bg-obsidian-850 border border-white/10 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-neon-lime"
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-400 mb-1">Target Height (px)</label>
-              <input
-                id="target-h"
-                type="number"
-                value="2160"
-                class="w-full px-3 py-2 bg-obsidian-850 border border-white/10 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-neon-lime"
-              />
-            </div>
-          </div>
-
-          <!-- Format Selector -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1">Output Format</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button data-format="image/jpeg" class="format-btn active px-3 py-2 rounded-xl bg-neon-lime text-obsidian-950 text-xs font-bold">JPG (High-Res)</button>
-              <button data-format="image/png" class="format-btn px-3 py-2 rounded-xl bg-obsidian-850 text-gray-300 border border-white/10 text-xs font-medium">PNG (Lossless)</button>
-              <button data-format="image/webp" class="format-btn px-3 py-2 rounded-xl bg-obsidian-850 text-gray-300 border border-white/10 text-xs font-medium">WebP (Fast)</button>
-            </div>
-          </div>
-
-          <!-- Quality Slider -->
-          <div>
-            <div class="flex items-center justify-between text-xs font-semibold text-gray-400 mb-1">
-              <span>Quality Factor</span>
-              <span id="quality-val" class="text-neon-lime font-mono">95%</span>
-            </div>
-            <input
-              id="quality-slider"
-              type="range"
-              min="50"
-              max="100"
-              value="95"
-              class="w-full accent-neon-lime cursor-pointer"
-            />
-          </div>
-
-          <!-- Process & Download Button -->
-          <button
-            id="download-cropped-btn"
-            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-neon-lime to-neon-cyan text-obsidian-950 font-display font-extrabold text-sm sm:text-base hover:opacity-95 transition-all shadow-glow-lime flex items-center justify-center gap-2"
-          >
+  <main class="wallpaper-cropper-studio min-h-screen bg-[#030508] text-[#F3F5F7] pb-16 selection:bg-walpix-lime selection:text-black">
+    
+    <!-- Top Header Toolbar -->
+    <div class="w-full max-w-[1780px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#C2FF06]/15 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_12px_rgba(194,255,6,0.18)]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z"/>
             </svg>
-            <span>Generate & Download 4K</span>
-          </button>
-
-          <p class="text-[11px] text-gray-500 text-center">
-            🔒 100% Client-Side Private • Instant Download
-          </p>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">
+                4K Canvas Resizer & Studio Cropper
+              </h1>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#C2FF06]/15 border border-[#C2FF06]/40 text-[#C2FF06] uppercase tracking-wider">
+                PRO Studio
+              </span>
+            </div>
+          </div>
         </div>
 
-        <!-- High-RPM Ad Slot -->
-        <AdSenseSlot format="rectangle" slotId="cropper-sidebar-ad" />
+        <!-- Studio Quick Switcher with Circular Icons -->
+        <div class="flex items-center gap-2">
+          <a
+            href="/tool/avatar"
+            class="px-3.5 py-1.5 rounded-xl bg-[#0D121B] hover:bg-[#141B26] border border-white/10 text-xs font-medium text-gray-200 hover:text-white transition flex items-center gap-2 group"
+          >
+            <span class="w-4 h-4 rounded-full bg-[#FF28B8] flex items-center justify-center text-[9px] text-white font-bold shadow-sm">
+              P
+            </span>
+            <span>Avatar Maker</span>
+          </a>
+          <a
+            href="/tool/splitter"
+            class="px-3.5 py-1.5 rounded-xl bg-[#0D121B] hover:bg-[#141B26] border border-white/10 text-xs font-medium text-gray-200 hover:text-white transition flex items-center gap-2 group"
+          >
+            <span class="w-4 h-4 rounded-full bg-[#00F0FF] flex items-center justify-center text-[9px] text-black font-bold shadow-sm">
+              S
+            </span>
+            <span>Screen Splitter</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="w-full max-w-[1780px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      
+      <!-- Top Device Presets Bar -->
+      <div class="bg-[#090D14] border border-white/10 rounded-xl p-2.5 shadow-lg">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-gray-400 px-2 shrink-0">Presets:</span>
+          
+          <!-- 1. 4K UHD -->
+          <button
+            data-preset="4k-desktop"
+            data-w="3840"
+            data-h="2160"
+            data-ratio="16:9"
+            class="preset-btn is-active px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-walpix-lime text-black font-semibold"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">4K UHD</div>
+              <div class="text-[10px] font-mono opacity-80">3840 × 2160 (16:9)</div>
+            </div>
+          </button>
+
+          <!-- 2. 2K QHD -->
+          <button
+            data-preset="2k-qhd"
+            data-w="2560"
+            data-h="1440"
+            data-ratio="16:9"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">2K Quad HD</div>
+              <div class="text-[10px] font-mono text-gray-400">2560 × 1440 (16:9)</div>
+            </div>
+          </button>
+
+          <!-- 3. Full HD 1080p -->
+          <button
+            data-preset="fhd-1080p"
+            data-w="1920"
+            data-h="1080"
+            data-ratio="16:9"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Full HD 1080p</div>
+              <div class="text-[10px] font-mono text-gray-400">1920 × 1080 (16:9)</div>
+            </div>
+          </button>
+
+          <!-- 4. Ultrawide 21:9 -->
+          <button
+            data-preset="ultrawide"
+            data-w="3440"
+            data-h="1440"
+            data-ratio="21:9"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 18h16M4 6v12M20 6v12"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Ultrawide 21:9</div>
+              <div class="text-[10px] font-mono text-gray-400">3440 × 1440</div>
+            </div>
+          </button>
+
+          <!-- 5. Super Ultrawide 32:9 -->
+          <button
+            data-preset="super-ultrawide"
+            data-w="5120"
+            data-h="1440"
+            data-ratio="32:9"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8h18M3 16h18M3 8v8M21 8v8"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Super Ultrawide</div>
+              <div class="text-[10px] font-mono text-gray-400">5120 × 1440 (32:9)</div>
+            </div>
+          </button>
+
+          <!-- 6. iPhone 16 Pro -->
+          <button
+            data-preset="iphone"
+            data-w="1290"
+            data-h="2796"
+            data-ratio="9:19.5"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">iPhone 16 Pro Max</div>
+              <div class="text-[10px] font-mono text-gray-400">1290 × 2796 (9:19.5)</div>
+            </div>
+          </button>
+
+          <!-- 7. Android FHD+ -->
+          <button
+            data-preset="android"
+            data-w="1080"
+            data-h="2400"
+            data-ratio="9:20"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Android FHD+</div>
+              <div class="text-[10px] font-mono text-gray-400">1080 × 2400 (9:20)</div>
+            </div>
+          </button>
+
+          <!-- 8. iPad / Tablet -->
+          <button
+            data-preset="ipad"
+            data-w="2048"
+            data-h="2732"
+            data-ratio="3:4"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">iPad / Tablet</div>
+              <div class="text-[10px] font-mono text-gray-400">2048 × 2732 (3:4)</div>
+            </div>
+          </button>
+
+          <!-- 9. Square 1:1 -->
+          <button
+            data-preset="square"
+            data-w="2160"
+            data-h="2160"
+            data-ratio="1:1"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Square 1:1</div>
+              <div class="text-[10px] font-mono text-gray-400">2160 × 2160</div>
+            </div>
+          </button>
+
+          <!-- 10. Story 9:16 -->
+          <button
+            data-preset="story"
+            data-w="1080"
+            data-h="1920"
+            data-ratio="9:16"
+            class="preset-btn px-3 py-2 rounded-xl text-left cursor-pointer transition select-none shrink-0 flex items-center gap-2.5 bg-[#101622] hover:bg-[#161F2E] border border-white/10 text-gray-300"
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <div>
+              <div class="text-xs font-bold leading-none">Story / Reel</div>
+              <div class="text-[10px] font-mono text-gray-400">1080 × 1920 (9:16)</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Workbench Layout (Stage + Control Panel) -->
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px] gap-5 items-start">
+        
+        <!-- Left: Large High-Impact Stage Viewport -->
+        <div class="space-y-3">
+          
+          <div class="bg-[#090D14] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+            
+            <!-- Stage Top Bar -->
+            <div class="px-4 py-2.5 bg-[#0D121B] border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime"></span>
+                <span id="canvas-ratio-text" class="text-xs font-mono font-bold text-white">16:9 (3840 × 2160)</span>
+                <span id="source-native-res" class="text-[11px] font-mono text-gray-400 ml-2 hidden sm:inline">Source: 3840 × 2160</span>
+              </div>
+
+              <!-- Zoom & Actions -->
+              <div class="flex items-center gap-2">
+                <!-- Zoom Controls -->
+                <div class="flex items-center bg-[#131A26] border border-white/10 rounded-lg p-0.5">
+                  <button id="btn-zoom-out" class="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-white/10 rounded cursor-pointer" title="Zoom Out">−</button>
+                  <span id="zoom-value" class="px-2 text-[11px] font-mono text-gray-300 font-semibold">100%</span>
+                  <button id="btn-zoom-in" class="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-white/10 rounded cursor-pointer" title="Zoom In">+</button>
+                </div>
+
+                <!-- Transform Tools -->
+                <div class="flex items-center gap-1">
+                  <button id="btn-rotate-ccw" class="p-1.5 rounded-lg bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 hover:text-white transition cursor-pointer" title="Rotate 90° CCW">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2m-15-7l3-3m-3 3l3 3"/></svg>
+                  </button>
+                  <button id="btn-rotate-cw" class="p-1.5 rounded-lg bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 hover:text-white transition cursor-pointer" title="Rotate 90° CW">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a5 5 0 00-5 5v2m15-7l-3-3m3 3l-3 3"/></svg>
+                  </button>
+                  <button id="btn-flip-h" class="p-1.5 rounded-lg bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 hover:text-white transition cursor-pointer" title="Flip Horizontal">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                  </button>
+                  <button id="btn-reset-crop" class="px-2.5 py-1 rounded-lg bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-xs font-semibold text-gray-300 hover:text-white transition cursor-pointer">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grand Interactive Stage (Mobile-Responsive Height & Touch-Optimized) -->
+            <div id="canvas-stage" class="relative w-full h-[360px] sm:h-[500px] lg:h-[700px] xl:h-[760px] bg-[#020305] flex items-center justify-center overflow-hidden select-none p-2 sm:p-4 touch-none">
+              
+              <!-- Checkered Subgrid Background -->
+              <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+
+              <!-- Main Proportional Image Stage Wrapper -->
+              <div id="image-stage-wrapper" class="relative flex items-center justify-center pointer-events-none transition-transform duration-75">
+                <img
+                  id="stage-img"
+                  src="/images/hero-clean.jpg"
+                  alt="4K Studio Wallpaper"
+                  crossorigin="anonymous"
+                  class="max-w-none pointer-events-none select-none transition-all duration-75"
+                />
+
+                <!-- Dimmed Outer Mask -->
+                <div id="crop-mask-backdrop" class="absolute inset-0 pointer-events-none">
+                  <div id="mask-top" class="absolute bg-black/75"></div>
+                  <div id="mask-bottom" class="absolute bg-black/75"></div>
+                  <div id="mask-left" class="absolute bg-black/75"></div>
+                  <div id="mask-right" class="absolute bg-black/75"></div>
+                </div>
+
+                <!-- Movable & Resizable Crop Box -->
+                <div
+                  id="crop-box"
+                  class="absolute pointer-events-auto cursor-move border-2 border-walpix-lime select-none shadow-[0_0_20px_rgba(194,255,6,0.35)]"
+                >
+                  <!-- 3x3 Grid Overlay -->
+                  <div class="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 opacity-30 border border-walpix-lime/30">
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div class="border-b border-walpix-lime/30"></div>
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div class="border-b border-walpix-lime/30"></div>
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div class="border-r border-b border-walpix-lime/30"></div>
+                    <div></div>
+                  </div>
+
+                  <!-- 4 Corner Resizing Handles -->
+                  <div data-handle="nw" class="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-walpix-lime rounded-sm cursor-nwse-resize shadow"></div>
+                  <div data-handle="ne" class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-walpix-lime rounded-sm cursor-nesw-resize shadow"></div>
+                  <div data-handle="se" class="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-walpix-lime rounded-sm cursor-nwse-resize shadow"></div>
+                  <div data-handle="sw" class="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-walpix-lime rounded-sm cursor-nesw-resize shadow"></div>
+                </div>
+
+              </div>
+
+              <!-- Floating Bottom Tip -->
+              <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none text-[11px] text-gray-400">
+                <span class="bg-black/80 px-2.5 py-1 rounded-md border border-white/10">Drag box to frame • Drag corner squares to resize</span>
+                <span id="canvas-zoom-pill" class="bg-black/80 px-2 py-1 rounded-md border border-white/10 font-mono">100% Canvas</span>
+              </div>
+
+            </div>
+
+            <!-- Color Grade Filters Bar (Under Stage) -->
+            <div class="p-2.5 bg-[#0D121B] border-t border-white/10 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+              <span class="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-wider px-2 shrink-0">Color Tone:</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button data-filter="none" class="filter-btn is-active px-2.5 py-1 rounded-lg text-xs font-semibold bg-walpix-lime text-black cursor-pointer transition">Original</button>
+                <button data-filter="vivid" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">Vivid HDR</button>
+                <button data-filter="cyberpunk" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">Cyberpunk Neon</button>
+                <button data-filter="warm" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">Cinematic Warm</button>
+                <button data-filter="emerald" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">Emerald Film</button>
+                <button data-filter="oled" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">OLED B&W</button>
+                <button data-filter="vaporwave" class="filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer transition">Vaporwave</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Curated Pristine 4K Wallpapers -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-3 shadow-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-300">Quick Test With 4K Wallpapers:</span>
+              <span class="text-[10px] text-gray-400">Click to load instantly</span>
+            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              {sampleWallpapers.map((wp) => (
+                <button
+                  type="button"
+                  data-sample-url={wp.url}
+                  class="sample-wp-btn group relative aspect-video rounded-lg overflow-hidden border border-white/10 hover:border-walpix-lime transition cursor-pointer"
+                >
+                  <img
+                    src={wp.url}
+                    alt={wp.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                  <span class="absolute bottom-1 left-1 right-1 text-[9px] font-medium text-white truncate px-1 py-0.5 rounded bg-black/70">
+                    {wp.title}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Control Panel -->
+        <div class="space-y-4">
+          
+          <!-- Image Upload & Dropzone Area -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-4 space-y-3 shadow-lg">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-gray-200 uppercase tracking-wider font-mono">Image Source</h3>
+              <div class="flex gap-1 text-[11px]">
+                <button id="tab-upload" class="px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10">Upload File</button>
+                <button id="tab-url" class="px-2 py-0.5 rounded text-gray-400 hover:text-white">Direct URL</button>
+              </div>
+            </div>
+
+            <!-- Drag & Drop Zone Box -->
+            <div id="dropzone-box" class="relative border-2 border-dashed border-white/15 hover:border-walpix-lime/50 rounded-xl p-5 text-center cursor-pointer transition-colors bg-[#0D121B]/50">
+              <input id="file-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
+              <div class="flex flex-col items-center justify-center gap-2 pointer-events-none">
+                <div class="w-10 h-10 rounded-xl bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_12px_rgba(194,255,6,0.15)]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white">Choose or drag wallpaper</div>
+                  <div class="text-[10px] text-gray-400 mt-0.5">PNG, JPG, WebP, AVIF up to 100MB (or Ctrl+V)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direct URL Input (Toggleable) -->
+            <div id="url-box" class="hidden space-y-2 pt-1">
+              <div class="flex gap-1.5">
+                <input
+                  id="direct-url-input"
+                  type="url"
+                  placeholder="https://example.com/wallpaper-4k.jpg"
+                  class="flex-1 px-3 py-2 rounded-lg bg-[#06080D] border border-white/15 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-walpix-lime font-mono"
+                />
+                <button
+                  id="btn-load-url"
+                  class="px-3.5 py-2 rounded-lg bg-walpix-lime hover:bg-[#b0ec00] text-black text-xs font-bold transition cursor-pointer"
+                >
+                  Load
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Configuration -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-4 space-y-4 shadow-lg">
+            <h3 class="text-xs font-bold text-gray-200 uppercase tracking-wider font-mono">Output Dimensions</h3>
+
+            <!-- Dimensions -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1 font-mono">Width (px)</label>
+                <input
+                  id="custom-w"
+                  type="number"
+                  value="3840"
+                  class="w-full px-3 py-2 rounded-lg bg-[#06080D] border border-white/15 text-xs text-white font-mono font-bold focus:outline-none focus:border-walpix-lime"
+                />
+              </div>
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1 font-mono">Height (px)</label>
+                <input
+                  id="custom-h"
+                  type="number"
+                  value="2160"
+                  class="w-full px-3 py-2 rounded-lg bg-[#06080D] border border-white/15 text-xs text-white font-mono font-bold focus:outline-none focus:border-walpix-lime"
+                />
+              </div>
+            </div>
+
+            <!-- Format & Quality -->
+            <div>
+              <label class="block text-[11px] text-gray-400 mb-1.5 font-mono">Format & Quality</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" data-format="image/jpeg" class="format-btn is-active py-1.5 rounded-lg text-xs font-bold bg-walpix-lime text-black cursor-pointer">
+                  JPG (Photos)
+                </button>
+                <button type="button" data-format="image/png" class="format-btn py-1.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer">
+                  PNG (Lossless)
+                </button>
+                <button type="button" data-format="image/webp" class="format-btn py-1.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer">
+                  WebP (Compact)
+                </button>
+              </div>
+            </div>
+
+            <!-- Quality Slider -->
+            <div id="quality-slider-container">
+              <div class="flex items-center justify-between text-[11px] text-gray-400 mb-1">
+                <span class="font-mono">Export Quality</span>
+                <span id="quality-val" class="font-mono text-walpix-lime font-bold">95%</span>
+              </div>
+              <input
+                id="quality-slider"
+                type="range"
+                min="60"
+                max="100"
+                value="95"
+                class="w-full accent-walpix-lime cursor-pointer"
+              />
+            </div>
+
+            <!-- Generate & Download CTA -->
+            <button
+              id="btn-download-crop"
+              type="button"
+              class="w-full py-4 px-4 rounded-xl bg-walpix-lime hover:bg-[#b0ec00] active:scale-[0.99] text-black font-extrabold text-sm tracking-wide transition cursor-pointer shadow-[0_0_20px_rgba(194,255,6,0.3)] flex items-center justify-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Generate & Download 4K UHD</span>
+            </button>
+
+            <div class="text-[11px] text-center text-gray-500 flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>100% Native UHD • Zero Watermark • Client GPU</span>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
+
+    <!-- Hidden Export Canvas -->
+    <canvas id="export-canvas" class="hidden"></canvas>
   </main>
 
   <Footer />
 </Layout>
 
 <script>
-  // Client-Side Canvas Cropper Logic
-  const canvas = document.getElementById('crop-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
-  const placeholder = document.getElementById('canvas-placeholder');
-  const urlInput = document.getElementById('image-url-input') as HTMLInputElement;
-  const loadBtn = document.getElementById('load-image-btn');
-  const fileInput = document.getElementById('local-file-input') as HTMLInputElement;
-  const targetW = document.getElementById('target-w') as HTMLInputElement;
-  const targetH = document.getElementById('target-h') as HTMLInputElement;
+  // DOM Elements
+  const canvasStage = document.getElementById('canvas-stage') as HTMLDivElement;
+  const imageStageWrapper = document.getElementById('image-stage-wrapper') as HTMLDivElement;
+  const stageImg = document.getElementById('stage-img') as HTMLImageElement;
+  const cropBox = document.getElementById('crop-box') as HTMLDivElement;
+  const canvasRatioText = document.getElementById('canvas-ratio-text');
+  const sourceNativeRes = document.getElementById('source-native-res');
+  const customWInput = document.getElementById('custom-w') as HTMLInputElement;
+  const customHInput = document.getElementById('custom-h') as HTMLInputElement;
   const qualitySlider = document.getElementById('quality-slider') as HTMLInputElement;
   const qualityVal = document.getElementById('quality-val');
-  const downloadBtn = document.getElementById('download-cropped-btn');
-  const presetButtons = document.querySelectorAll('.preset-btn');
-  const formatButtons = document.querySelectorAll('.format-btn');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const exportCanvas = document.getElementById('export-canvas') as HTMLCanvasElement;
+  const btnDownload = document.getElementById('btn-download-crop');
+  const zoomValue = document.getElementById('zoom-value');
+  const canvasZoomPill = document.getElementById('canvas-zoom-pill');
 
-  let currentImage: HTMLImageElement | null = null;
+  const maskTop = document.getElementById('mask-top') as HTMLDivElement;
+  const maskBottom = document.getElementById('mask-bottom') as HTMLDivElement;
+  const maskLeft = document.getElementById('mask-left') as HTMLDivElement;
+  const maskRight = document.getElementById('mask-right') as HTMLDivElement;
+
+  // State
+  let targetRatio = 16 / 9;
+  let targetW = 3840;
+  let targetH = 2160;
   let selectedFormat = 'image/jpeg';
+  let quality = 0.95;
+  let rotation = 0;
+  let flipH = 1;
+  let zoom = 1.0;
+  let activeFilter = 'none';
 
-  function renderToCanvas() {
-    if (!currentImage || !canvas || !ctx) return;
-    if (placeholder) placeholder.style.display = 'none';
+  let dispW = 0;
+  let dispH = 0;
+  let cropX = 0;
+  let cropY = 0;
+  let cropW = 0;
+  let cropH = 0;
 
-    const w = parseInt(targetW.value) || 3840;
-    const h = parseInt(targetH.value) || 2160;
+  let isBoxDragging = false;
+  let activeHandle: string | null = null;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let initialCropX = 0;
+  let initialCropY = 0;
+  let initialCropW = 0;
+  let initialCropH = 0;
 
-    canvas.width = w;
-    canvas.height = h;
+  const FILTER_MAP: Record<string, string> = {
+    none: 'none',
+    vivid: 'contrast(1.2) saturate(1.35)',
+    cyberpunk: 'hue-rotate(15deg) saturate(1.6) contrast(1.15)',
+    warm: 'sepia(0.2) contrast(1.1) saturate(1.15)',
+    emerald: 'hue-rotate(-20deg) saturate(1.2)',
+    oled: 'grayscale(1) contrast(1.4)',
+    vaporwave: 'hue-rotate(280deg) saturate(1.4)'
+  };
 
-    // Draw scaled center crop
-    const imgRatio = currentImage.naturalWidth / currentImage.naturalHeight;
-    const targetRatio = w / h;
-    let sWidth = currentImage.naturalWidth;
-    let sHeight = currentImage.naturalHeight;
-    let sx = 0;
-    let sy = 0;
+  // 1. Image Layout & Stage Sizing (Utilizes Full Stage Space)
+  function updateLayout(maintainCenter = false) {
+    if (!stageImg || !canvasStage || !imageStageWrapper) return;
+    if (!stageImg.naturalWidth || stageImg.naturalWidth <= 0) return;
 
-    if (imgRatio > targetRatio) {
-      sWidth = currentImage.naturalHeight * targetRatio;
-      sx = (currentImage.naturalWidth - sWidth) / 2;
-    } else {
-      sHeight = currentImage.naturalWidth / targetRatio;
-      sy = (currentImage.naturalHeight - sHeight) / 2;
+    // Use almost full stage dimensions with minimal 16px margins
+    const stageWidth = Math.max(canvasStage.clientWidth - 20, 260);
+    const stageHeight = Math.max(canvasStage.clientHeight - 20, 260);
+
+    const nw = stageImg.naturalWidth;
+    const nh = stageImg.naturalHeight;
+
+    const isSideways = rotation % 180 !== 0;
+    const effW = isSideways ? nh : nw;
+    const effH = isSideways ? nw : nh;
+
+    let fitW = stageWidth;
+    let fitH = (stageWidth / effW) * effH;
+
+    if (fitH > stageHeight) {
+      fitH = stageHeight;
+      fitW = (stageHeight / effH) * effW;
     }
 
-    ctx.drawImage(currentImage, sx, sy, sWidth, sHeight, 0, 0, w, h);
+    dispW = Math.round(fitW * zoom);
+    dispH = Math.round(fitH * zoom);
+
+    imageStageWrapper.style.width = `${dispW}px`;
+    imageStageWrapper.style.height = `${dispH}px`;
+
+    stageImg.style.width = isSideways ? `${dispH}px` : `${dispW}px`;
+    stageImg.style.height = isSideways ? `${dispW}px` : `${dispH}px`;
+    stageImg.style.transform = `rotate(${rotation}deg) scaleX(${flipH})`;
+    stageImg.style.filter = FILTER_MAP[activeFilter] || 'none';
+
+    if (cropW === 0 || cropH === 0 || maintainCenter) {
+      fitCropBoxToPreset();
+    } else {
+      clampCropBox();
+    }
+
+    renderCropBox();
   }
 
-  function loadImageFromSrc(src: string) {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.referrerPolicy = 'no-referrer';
-    img.onload = () => {
-      currentImage = img;
-      renderToCanvas();
-    };
-    img.src = src;
+  function fitCropBoxToPreset() {
+    let newW = dispW * 0.95;
+    let newH = newW / targetRatio;
+
+    if (newH > dispH * 0.95) {
+      newH = dispH * 0.95;
+      newW = newH * targetRatio;
+    }
+
+    cropW = Math.max(Math.round(newW), 30);
+    cropH = Math.max(Math.round(newH), 30);
+    cropX = Math.round((dispW - cropW) / 2);
+    cropY = Math.round((dispH - cropH) / 2);
   }
 
-  // Load default image on mount
-  if (urlInput && urlInput.value) {
-    loadImageFromSrc(urlInput.value);
+  function clampCropBox() {
+    if (cropW > dispW) {
+      cropW = dispW;
+      cropH = cropW / targetRatio;
+    }
+    if (cropH > dispH) {
+      cropH = dispH;
+      cropW = cropH * targetRatio;
+    }
+    cropX = Math.max(0, Math.min(cropX, dispW - cropW));
+    cropY = Math.max(0, Math.min(cropY, dispH - cropH));
   }
 
-  loadBtn?.addEventListener('click', () => {
-    if (urlInput.value) loadImageFromSrc(urlInput.value);
+  function renderCropBox() {
+    if (!cropBox) return;
+
+    cropBox.style.left = `${cropX}px`;
+    cropBox.style.top = `${cropY}px`;
+    cropBox.style.width = `${cropW}px`;
+    cropBox.style.height = `${cropH}px`;
+
+    if (maskTop && maskBottom && maskLeft && maskRight) {
+      maskTop.style.top = '0px';
+      maskTop.style.left = '0px';
+      maskTop.style.width = `${dispW}px`;
+      maskTop.style.height = `${cropY}px`;
+
+      maskBottom.style.top = `${cropY + cropH}px`;
+      maskBottom.style.left = '0px';
+      maskBottom.style.width = `${dispW}px`;
+      maskBottom.style.height = `${Math.max(0, dispH - (cropY + cropH))}px`;
+
+      maskLeft.style.top = `${cropY}px`;
+      maskLeft.style.left = '0px';
+      maskLeft.style.width = `${cropX}px`;
+      maskLeft.style.height = `${cropH}px`;
+
+      maskRight.style.top = `${cropY}px`;
+      maskRight.style.left = `${cropX + cropW}px`;
+      maskRight.style.width = `${Math.max(0, dispW - (cropX + cropW))}px`;
+      maskRight.style.height = `${cropH}px`;
+    }
+  }
+
+  window.addEventListener('resize', () => updateLayout(false), { passive: true });
+
+  function onImageLoaded() {
+    if (!stageImg) return;
+    if (sourceNativeRes) {
+      sourceNativeRes.textContent = `Source: ${stageImg.naturalWidth} × ${stageImg.naturalHeight}`;
+    }
+    rotation = 0;
+    flipH = 1;
+    zoom = 1.0;
+    if (zoomValue) zoomValue.textContent = '100%';
+    if (canvasZoomPill) canvasZoomPill.textContent = '100% Canvas';
+    updateLayout(true);
+  }
+
+  stageImg.addEventListener('load', onImageLoaded);
+  if (stageImg.complete && stageImg.naturalWidth > 0) {
+    onImageLoaded();
+  }
+
+  function loadImageUrl(url: string) {
+    if (!stageImg) return;
+    stageImg.src = url;
+  }
+
+  // URL query parameter loader
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialUrl = urlParams.get('url') || urlParams.get('img') || urlParams.get('image');
+  if (initialUrl) {
+    loadImageUrl(initialUrl);
+  }
+
+  // Drag & Resize Events
+  cropBox?.addEventListener('mousedown', (e) => {
+    const target = e.target as HTMLElement;
+    const handle = target.getAttribute('data-handle');
+
+    if (handle) {
+      activeHandle = handle;
+      isBoxDragging = false;
+    } else {
+      isBoxDragging = true;
+      activeHandle = null;
+    }
+
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    initialCropX = cropX;
+    initialCropY = cropY;
+    initialCropW = cropW;
+    initialCropH = cropH;
+
+    e.preventDefault();
+    e.stopPropagation();
   });
 
+  function handleMove(clientX: number, clientY: number) {
+    if (!isBoxDragging && !activeHandle) return;
+
+    const dx = clientX - dragStartX;
+    const dy = clientY - dragStartY;
+
+    if (isBoxDragging) {
+      cropX = Math.max(0, Math.min(initialCropX + dx, dispW - cropW));
+      cropY = Math.max(0, Math.min(initialCropY + dy, dispH - cropH));
+      renderCropBox();
+    } else if (activeHandle) {
+      let newW = initialCropW;
+      let newH = initialCropH;
+      let newX = initialCropX;
+      let newY = initialCropY;
+
+      if (activeHandle === 'se') {
+        newW = Math.max(30, initialCropW + dx);
+        newH = newW / targetRatio;
+        if (newX + newW > dispW) {
+          newW = dispW - newX;
+          newH = newW / targetRatio;
+        }
+        if (newY + newH > dispH) {
+          newH = dispH - newY;
+          newW = newH * targetRatio;
+        }
+      } else if (activeHandle === 'sw') {
+        newW = Math.max(30, initialCropW - dx);
+        newH = newW / targetRatio;
+        newX = initialCropX + (initialCropW - newW);
+        if (newX < 0) {
+          newX = 0;
+          newW = initialCropX + initialCropW;
+          newH = newW / targetRatio;
+        }
+        if (newY + newH > dispH) {
+          newH = dispH - newY;
+          newW = newH * targetRatio;
+          newX = initialCropX + (initialCropW - newW);
+        }
+      } else if (activeHandle === 'ne') {
+        newW = Math.max(30, initialCropW + dx);
+        newH = newW / targetRatio;
+        newY = initialCropY + (initialCropH - newH);
+        if (newX + newW > dispW) {
+          newW = dispW - newX;
+          newH = newW / targetRatio;
+          newY = initialCropY + (initialCropH - newH);
+        }
+        if (newY < 0) {
+          newY = 0;
+          newH = initialCropY + initialCropH;
+          newW = newH * targetRatio;
+        }
+      } else if (activeHandle === 'nw') {
+        newW = Math.max(30, initialCropW - dx);
+        newH = newW / targetRatio;
+        newX = initialCropX + (initialCropW - newW);
+        newY = initialCropY + (initialCropH - newH);
+        if (newX < 0) {
+          newX = 0;
+          newW = initialCropX + initialCropW;
+          newH = newW / targetRatio;
+        }
+        if (newY < 0) {
+          newY = 0;
+          newH = initialCropY + initialCropH;
+          newW = newH * targetRatio;
+          newX = initialCropX + (initialCropW - newW);
+        }
+      }
+
+      cropW = Math.round(newW);
+      cropH = Math.round(newH);
+      cropX = Math.round(newX);
+      cropY = Math.round(newY);
+
+      renderCropBox();
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    handleMove(e.clientX, e.clientY);
+  });
+
+  window.addEventListener('mouseup', () => {
+    isBoxDragging = false;
+    activeHandle = null;
+  });
+
+  // Touch Support (Full Dragging AND Handle Resizing)
+  cropBox?.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const target = e.target as HTMLElement;
+    const handle = target.getAttribute('data-handle');
+
+    if (handle) {
+      activeHandle = handle;
+      isBoxDragging = false;
+    } else {
+      isBoxDragging = true;
+      activeHandle = null;
+    }
+
+    dragStartX = touch.clientX;
+    dragStartY = touch.clientY;
+    initialCropX = cropX;
+    initialCropY = cropY;
+    initialCropW = cropW;
+    initialCropH = cropH;
+
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if ((isBoxDragging || activeHandle) && e.touches.length === 1) {
+      handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    isBoxDragging = false;
+    activeHandle = null;
+  });
+
+  // Presets Bar Buttons
+  const presetBtns = document.querySelectorAll('.preset-btn');
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      presetBtns.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'font-semibold');
+        b.classList.add('bg-[#101622]', 'text-gray-300');
+        const icon = b.querySelector('svg');
+        if (icon) icon.classList.add('text-gray-400');
+      });
+      btn.classList.add('bg-walpix-lime', 'text-black', 'font-semibold');
+      btn.classList.remove('bg-[#101622]', 'text-gray-300');
+      const activeIcon = btn.querySelector('svg');
+      if (activeIcon) activeIcon.classList.remove('text-gray-400');
+
+      targetW = parseInt(btn.getAttribute('data-w') || '3840', 10);
+      targetH = parseInt(btn.getAttribute('data-h') || '2160', 10);
+      const ratioAttr = btn.getAttribute('data-ratio') || '16:9';
+
+      if (ratioAttr.includes(':')) {
+        const parts = ratioAttr.split(':');
+        targetRatio = parseFloat(parts[0]) / parseFloat(parts[1]);
+      } else {
+        targetRatio = targetW / targetH;
+      }
+
+      if (customWInput) customWInput.value = String(targetW);
+      if (customHInput) customHInput.value = String(targetH);
+      if (canvasRatioText) canvasRatioText.textContent = `${ratioAttr} (${targetW} × ${targetH})`;
+
+      fitCropBoxToPreset();
+      renderCropBox();
+    });
+  });
+
+  // Custom Dimension Inputs
+  customWInput?.addEventListener('input', () => {
+    const val = parseInt(customWInput.value, 10);
+    if (val > 0) {
+      targetW = val;
+      targetRatio = targetW / targetH;
+      fitCropBoxToPreset();
+      renderCropBox();
+    }
+  });
+
+  customHInput?.addEventListener('input', () => {
+    const val = parseInt(customHInput.value, 10);
+    if (val > 0) {
+      targetH = val;
+      targetRatio = targetW / targetH;
+      fitCropBoxToPreset();
+      renderCropBox();
+    }
+  });
+
+  // Zoom Controls
+  document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
+    zoom = Math.min(zoom + 0.15, 2.5);
+    if (zoomValue) zoomValue.textContent = `${Math.round(zoom * 100)}%`;
+    if (canvasZoomPill) canvasZoomPill.textContent = `${Math.round(zoom * 100)}% Canvas`;
+    updateLayout(false);
+  });
+
+  document.getElementById('btn-zoom-out')?.addEventListener('click', () => {
+    zoom = Math.max(zoom - 0.15, 0.5);
+    if (zoomValue) zoomValue.textContent = `${Math.round(zoom * 100)}%`;
+    if (canvasZoomPill) canvasZoomPill.textContent = `${Math.round(zoom * 100)}% Canvas`;
+    updateLayout(false);
+  });
+
+  // Transform Controls
+  document.getElementById('btn-rotate-cw')?.addEventListener('click', () => {
+    rotation = (rotation + 90) % 360;
+    updateLayout(true);
+  });
+
+  document.getElementById('btn-rotate-ccw')?.addEventListener('click', () => {
+    rotation = (rotation - 90 + 360) % 360;
+    updateLayout(true);
+  });
+
+  document.getElementById('btn-flip-h')?.addEventListener('click', () => {
+    flipH = flipH * -1;
+    updateLayout(false);
+  });
+
+  document.getElementById('btn-reset-crop')?.addEventListener('click', () => {
+    rotation = 0;
+    flipH = 1;
+    zoom = 1.0;
+    if (zoomValue) zoomValue.textContent = '100%';
+    if (canvasZoomPill) canvasZoomPill.textContent = '100% Canvas';
+    updateLayout(true);
+  });
+
+  // Color Filter Buttons
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'font-semibold');
+        b.classList.add('bg-[#131A26]', 'text-gray-300');
+      });
+      btn.classList.add('bg-walpix-lime', 'text-black', 'font-semibold');
+      btn.classList.remove('bg-[#131A26]', 'text-gray-300');
+      activeFilter = btn.getAttribute('data-filter') || 'none';
+      if (stageImg) stageImg.style.filter = FILTER_MAP[activeFilter] || 'none';
+    });
+  });
+
+  // Sample Wallpapers Strip
+  document.querySelectorAll('.sample-wp-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const url = btn.getAttribute('data-sample-url');
+      if (url) loadImageUrl(url);
+    });
+  });
+
+  // File Upload & Drag-and-Drop
   fileInput?.addEventListener('change', (e) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) loadImageFromSrc(event.target.result as string);
+      reader.onload = (evt) => {
+        if (evt.target?.result) loadImageUrl(evt.target.result as string);
       };
       reader.readAsDataURL(file);
     }
   });
 
-  presetButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      presetButtons.forEach((b) => {
-        b.className = 'preset-btn px-2.5 py-1 rounded-lg bg-obsidian-800 text-gray-300 hover:text-white border border-white/10 text-xs font-medium';
-      });
-      btn.className = 'preset-btn px-2.5 py-1 rounded-lg bg-neon-lime text-obsidian-950 text-xs font-bold shadow-glow-lime';
-
-      const w = btn.getAttribute('data-w') || '3840';
-      const h = btn.getAttribute('data-h') || '2160';
-      if (targetW) targetW.value = w;
-      if (targetH) targetH.value = h;
-      renderToCanvas();
-    });
+  // Paste Support (Ctrl+V)
+  window.addEventListener('paste', (e: ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const blob = items[i].getAsFile();
+        if (blob) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            if (evt.target?.result) loadImageUrl(evt.target.result as string);
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    }
   });
 
-  formatButtons.forEach((btn) => {
+  // Tabs (Upload vs URL)
+  const tabUpload = document.getElementById('tab-upload');
+  const tabUrl = document.getElementById('tab-url');
+  const dropzoneBox = document.getElementById('dropzone-box');
+  const urlBox = document.getElementById('url-box');
+
+  tabUpload?.addEventListener('click', () => {
+    tabUpload.className = 'px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10';
+    tabUrl!.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white';
+    dropzoneBox?.classList.remove('hidden');
+    urlBox?.classList.add('hidden');
+  });
+
+  tabUrl?.addEventListener('click', () => {
+    tabUrl.className = 'px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10';
+    tabUpload!.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white';
+    urlBox?.classList.remove('hidden');
+    dropzoneBox?.classList.add('hidden');
+  });
+
+  document.getElementById('btn-load-url')?.addEventListener('click', () => {
+    const input = document.getElementById('direct-url-input') as HTMLInputElement;
+    if (input?.value.trim()) {
+      loadImageUrl(input.value.trim());
+    }
+  });
+
+  // Format Selection
+  const formatBtns = document.querySelectorAll('.format-btn');
+  formatBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      formatButtons.forEach((b) => {
-        b.className = 'format-btn px-3 py-2 rounded-xl bg-obsidian-850 text-gray-300 border border-white/10 text-xs font-medium';
+      formatBtns.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'font-bold');
+        b.classList.add('bg-[#131A26]', 'text-gray-300');
       });
-      btn.className = 'format-btn active px-3 py-2 rounded-xl bg-neon-lime text-obsidian-950 text-xs font-bold';
+      btn.classList.add('bg-walpix-lime', 'text-black', 'font-bold');
+      btn.classList.remove('bg-[#131A26]', 'text-gray-300');
       selectedFormat = btn.getAttribute('data-format') || 'image/jpeg';
     });
   });
 
-  qualitySlider?.addEventListener('input', (e) => {
-    const val = (e.target as HTMLInputElement).value;
-    if (qualityVal) qualityVal.textContent = `${val}%`;
+  qualitySlider?.addEventListener('input', () => {
+    quality = parseInt(qualitySlider.value, 10) / 100;
+    if (qualityVal) qualityVal.textContent = `${qualitySlider.value}%`;
   });
 
-  targetW?.addEventListener('change', renderToCanvas);
-  targetH?.addEventListener('change', renderToCanvas);
+  // Export & Download
+  btnDownload?.addEventListener('click', () => {
+    if (!stageImg || !exportCanvas) return;
+    const nw = stageImg.naturalWidth;
+    const nh = stageImg.naturalHeight;
+    if (nw <= 0 || nh <= 0) return;
 
-  downloadBtn?.addEventListener('click', () => {
-    if (!canvas) return;
-    const quality = (parseInt(qualitySlider?.value || '95') / 100);
-    const dataUrl = canvas.toDataURL(selectedFormat, quality);
+    exportCanvas.width = targetW;
+    exportCanvas.height = targetH;
+    const ctx = exportCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    const normX = cropX / dispW;
+    const normY = cropY / dispH;
+    const normW = cropW / dispW;
+    const normH = cropH / dispH;
+
+    const isSideways = rotation % 180 !== 0;
+    const effNW = isSideways ? nh : nw;
+    const effNH = isSideways ? nw : nh;
+
+    const sourceCropX = Math.round(normX * effNW);
+    const sourceCropY = Math.round(normY * effNH);
+    const sourceCropW = Math.round(normW * effNW);
+    const sourceCropH = Math.round(normH * effNH);
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = effNW;
+    tempCanvas.height = effNH;
+    const tCtx = tempCanvas.getContext('2d');
+    if (!tCtx) return;
+
+    // Apply color grading filter if active
+    if (activeFilter !== 'none' && FILTER_MAP[activeFilter]) {
+      tCtx.filter = FILTER_MAP[activeFilter];
+    }
+
+    tCtx.translate(effNW / 2, effNH / 2);
+    tCtx.rotate((rotation * Math.PI) / 180);
+    tCtx.scale(flipH, 1);
+    tCtx.drawImage(stageImg, -nw / 2, -nh / 2, nw, nh);
+
+    ctx.drawImage(
+      tempCanvas,
+      sourceCropX, sourceCropY, sourceCropW, sourceCropH,
+      0, 0, targetW, targetH
+    );
+
     const ext = selectedFormat === 'image/png' ? 'png' : selectedFormat === 'image/webp' ? 'webp' : 'jpg';
-
-    const link = document.createElement('a');
-    link.download = `lumina-wallpaper-${targetW?.value || '4k'}x${targetH?.value || '2k'}.${ext}`;
-    link.href = dataUrl;
-    link.click();
+    const dataUrl = exportCanvas.toDataURL(selectedFormat, quality);
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `walpix-4k-crop-${targetW}x${targetH}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   });
 </script>

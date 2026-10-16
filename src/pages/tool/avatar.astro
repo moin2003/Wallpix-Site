@@ -1,0 +1,890 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// Pristine 4K wallpapers for instant avatar cropping
+const sampleWallpapers = [
+  {
+    title: 'Shadow Samurai',
+    category: 'Anime',
+    url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Cyberpunk Tokyo',
+    category: 'Cyberpunk',
+    url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'AMOLED Minimal',
+    category: 'AMOLED',
+    url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Deep Space Horizon',
+    category: 'Space',
+    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Mountain Serenity',
+    category: 'Nature',
+    url: '/images/hero-clean.jpg'
+  },
+  {
+    title: 'Night Beast GT',
+    category: 'Cars',
+    url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Nordic Alpine Sunset',
+    category: 'Nature',
+    url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Emerald Calm Lake',
+    category: 'Landscape',
+    url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=85'
+  }
+];
+---
+
+<Layout
+  title="Online Avatar & PFP Maker Studio - WALPIX 4K"
+  description="Turn any 4K wallpaper or photo into a high-res Discord, Steam, or social media avatar with custom shapes (Circle, Squircle, Hexagon) and lossless PNG export."
+>
+  <Header currentCategory="tool" />
+
+  <main class="min-h-screen bg-[#030508] text-[#F3F5F7] pb-16 selection:bg-walpix-lime selection:text-black">
+    
+    <!-- Top Header -->
+    <div class="w-full max-w-[1780px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#FF28B8]/15 border border-[#FF28B8]/40 flex items-center justify-center text-[#FF28B8] shadow-[0_0_12px_rgba(255,40,184,0.18)]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">
+                Social Avatar & PFP Studio
+              </h1>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#FF28B8]/15 border border-[#FF28B8]/40 text-[#FF28B8] uppercase tracking-wider">
+                PRO Studio
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Switcher with Circular Icons -->
+        <div class="flex items-center gap-2">
+          <a
+            href="/tool/cropper"
+            class="px-3.5 py-1.5 rounded-xl bg-[#0D121B] hover:bg-[#141B26] border border-white/10 text-xs font-medium text-gray-200 hover:text-white transition flex items-center gap-2 group"
+          >
+            <span class="w-4 h-4 rounded-full bg-walpix-lime flex items-center justify-center text-[9px] text-black font-bold shadow-sm">
+              C
+            </span>
+            <span>4K Resizer</span>
+          </a>
+          <a
+            href="/tool/splitter"
+            class="px-3.5 py-1.5 rounded-xl bg-[#0D121B] hover:bg-[#141B26] border border-white/10 text-xs font-medium text-gray-200 hover:text-white transition flex items-center gap-2 group"
+          >
+            <span class="w-4 h-4 rounded-full bg-[#00F0FF] flex items-center justify-center text-[9px] text-black font-bold shadow-sm">
+              S
+            </span>
+            <span>Screen Splitter</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="w-full max-w-[1780px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      
+      <!-- Studio Two-Column Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px] gap-5 items-start">
+        
+        <!-- Left: Stage Viewer -->
+        <div class="space-y-3">
+          
+          <div class="bg-[#090D14] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+            
+            <!-- Stage Top Bar -->
+            <div class="px-4 py-2.5 bg-[#0D121B] border-b border-white/10 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime"></span>
+                <span id="shape-label" class="text-xs font-mono font-bold text-white">Circle Avatar (1:1)</span>
+                <span id="avatar-source-res" class="text-[11px] font-mono text-gray-400 ml-2 hidden sm:inline">Source: 2400 × 3000</span>
+              </div>
+
+              <!-- Quick Stage Actions -->
+              <div class="flex items-center gap-1.5">
+                <button id="btn-reset-avatar" class="px-3 py-1 rounded-lg bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-xs font-semibold text-gray-300 hover:text-white transition cursor-pointer">
+                  Center Lens
+                </button>
+              </div>
+            </div>
+
+            <!-- Grand Interactive Stage (Responsive Mobile Height) -->
+            <div id="avatar-canvas-stage" class="relative w-full h-[360px] sm:h-[500px] lg:h-[700px] xl:h-[760px] bg-[#020305] flex items-center justify-center overflow-hidden select-none p-2 sm:p-4 touch-none">
+              
+              <!-- Checkered Subgrid Background -->
+              <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+
+              <!-- Main Proportional Image Stage Container -->
+              <div id="avatar-stage-wrapper" class="relative flex items-center justify-center pointer-events-none transition-transform duration-75">
+                <img
+                  id="avatar-stage-img"
+                  src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=2400&q=85"
+                  alt="Avatar Source Wallpaper"
+                  crossorigin="anonymous"
+                  class="max-w-none pointer-events-none select-none transition-all duration-75"
+                />
+
+                <!-- Dimmed Mask Overlay with Cutout Lens Hole -->
+                <svg id="avatar-mask-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10">
+                  <defs>
+                    <mask id="avatar-hole-mask">
+                      <!-- White backdrop dims outer area -->
+                      <rect width="100%" height="100%" fill="white" />
+                      <!-- Black shape cuts out transparent lens hole -->
+                      <path id="avatar-mask-hole-path" fill="black" />
+                    </mask>
+                  </defs>
+                  <rect width="100%" height="100%" fill="rgba(0, 0, 0, 0.75)" mask="url(#avatar-hole-mask)" />
+                </svg>
+
+                <!-- Movable & Resizable Avatar Shape Lens Border & Handles (No Glow, Clean Solid) -->
+                <div
+                  id="avatar-lens"
+                  class="avatar-lens-circle absolute pointer-events-auto cursor-move select-none border-2 border-walpix-lime z-20 touch-none"
+                >
+                  <!-- 4 Corner Handles with enlarged touch hitboxes -->
+                  <div data-handle="nw" class="avatar-handle absolute -top-2 -left-2 w-4 h-4 bg-walpix-lime rounded-sm cursor-nwse-resize shadow-md touch-none"></div>
+                  <div data-handle="ne" class="avatar-handle absolute -top-2 -right-2 w-4 h-4 bg-walpix-lime rounded-sm cursor-nesw-resize shadow-md touch-none"></div>
+                  <div data-handle="se" class="avatar-handle absolute -bottom-2 -right-2 w-4 h-4 bg-walpix-lime rounded-sm cursor-nwse-resize shadow-md touch-none"></div>
+                  <div data-handle="sw" class="avatar-handle absolute -bottom-2 -left-2 w-4 h-4 bg-walpix-lime rounded-sm cursor-nesw-resize shadow-md touch-none"></div>
+                </div>
+
+              </div>
+
+              <!-- Floating Bottom Tip -->
+              <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none text-[11px] text-gray-400">
+                <span class="bg-black/80 px-2.5 py-1 rounded-md border border-white/10">Highlighted area will be exported • Outer area is dimmed</span>
+                <span id="lens-dim-text" class="bg-black/80 px-2 py-1 rounded-md border border-white/10 font-mono">1:1 Square Lens</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Curated High-Res Wallpapers for 1-Click Load -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-3 shadow-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-300">Quick Test With 4K Wallpapers:</span>
+              <span class="text-[10px] text-gray-400">Click to load instantly</span>
+            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              {sampleWallpapers.map((wp) => (
+                <button
+                  type="button"
+                  data-sample-url={wp.url}
+                  class="sample-avatar-btn group relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-walpix-lime transition cursor-pointer"
+                >
+                  <img
+                    src={wp.url}
+                    alt={wp.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                  <span class="absolute bottom-1 left-1 right-1 text-[9px] font-medium text-white truncate px-1 py-0.5 rounded bg-black/70">
+                    {wp.title}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Control Panel (3 Clean Separate Containers) -->
+        <div class="space-y-4">
+          
+          <!-- Container 1: Image Upload & Source -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-4 space-y-3 shadow-lg">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-gray-200 uppercase tracking-wider font-mono">Source Image</h3>
+              <div class="flex gap-1 text-[11px]">
+                <button id="tab-avatar-upload" class="px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10">Upload Photo</button>
+                <button id="tab-avatar-url" class="px-2 py-0.5 rounded text-gray-400 hover:text-white">Direct URL</button>
+              </div>
+            </div>
+
+            <!-- Drag & Drop Zone Box -->
+            <div id="avatar-dropzone-box" class="relative border-2 border-dashed border-white/15 hover:border-walpix-lime/50 rounded-xl p-5 text-center cursor-pointer transition-colors bg-[#0D121B]/50">
+              <input id="avatar-file-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
+              <div class="flex flex-col items-center justify-center gap-2 pointer-events-none">
+                <div class="w-10 h-10 rounded-xl bg-[#FF28B8]/10 border border-[#FF28B8]/40 flex items-center justify-center text-[#FF28B8] shadow-[0_0_12px_rgba(255,40,184,0.15)]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white">Choose or drag photo</div>
+                  <div class="text-[10px] text-gray-400 mt-0.5">PNG, JPG, WebP up to 100MB (or Ctrl+V)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direct URL Input -->
+            <div id="avatar-url-box" class="hidden space-y-2 pt-1">
+              <div class="flex gap-1.5">
+                <input
+                  id="avatar-url-input"
+                  type="url"
+                  placeholder="https://example.com/photo.jpg"
+                  class="flex-1 px-3 py-2 rounded-lg bg-[#06080D] border border-white/15 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-walpix-lime font-mono"
+                />
+                <button
+                  id="btn-avatar-load-url"
+                  class="px-3.5 py-2 rounded-lg bg-walpix-lime hover:bg-[#b0ec00] text-black text-xs font-bold transition cursor-pointer"
+                >
+                  Load
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Container 2: Avatar Shape & Format Settings -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-4 space-y-4 shadow-lg">
+            
+            <!-- Shape Selection -->
+            <div>
+              <label class="block text-[11px] text-gray-400 mb-1.5 uppercase font-mono">Avatar Shape</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  data-shape="circle"
+                  class="avatar-shape-btn is-active py-2.5 rounded-lg text-xs font-bold bg-walpix-lime text-black flex flex-col items-center gap-1 cursor-pointer transition"
+                >
+                  <span class="w-4 h-4 rounded-full border-2 border-black"></span>
+                  <span>Circle</span>
+                </button>
+                <button
+                  type="button"
+                  data-shape="squircle"
+                  class="avatar-shape-btn py-2.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 flex flex-col items-center gap-1 cursor-pointer transition"
+                >
+                  <span class="w-4 h-4 rounded-md border-2 border-gray-400"></span>
+                  <span>Squircle</span>
+                </button>
+                <button
+                  type="button"
+                  data-shape="hexagon"
+                  class="avatar-shape-btn py-2.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 flex flex-col items-center gap-1 cursor-pointer transition"
+                >
+                  <span class="w-4 h-4 border-2 border-gray-400" style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></span>
+                  <span>Hexagon</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Border Accent Swatches -->
+            <div>
+              <label class="block text-[11px] text-gray-400 mb-1.5 uppercase font-mono">Border Accent</label>
+              <div class="flex items-center gap-2">
+                <button type="button" data-accent="lime" class="accent-btn is-active w-7 h-7 rounded-full bg-walpix-lime ring-2 ring-white cursor-pointer transition" title="Lumina Lime"></button>
+                <button type="button" data-accent="cyan" class="accent-btn w-7 h-7 rounded-full bg-[#00F0FF] ring-1 ring-white/20 cursor-pointer transition" title="Cyber Cyan"></button>
+                <button type="button" data-accent="pink" class="accent-btn w-7 h-7 rounded-full bg-[#FF28B8] ring-1 ring-white/20 cursor-pointer transition" title="Neon Pink"></button>
+                <button type="button" data-accent="white" class="accent-btn w-7 h-7 rounded-full bg-white ring-1 ring-white/20 cursor-pointer transition" title="Clean White"></button>
+                <button type="button" data-accent="none" class="accent-btn px-2.5 py-1 rounded-lg bg-[#131A26] border border-white/10 text-[10px] text-gray-300 hover:text-white cursor-pointer transition" title="None">No Border</button>
+              </div>
+            </div>
+
+            <!-- Output Resolution -->
+            <div>
+              <label class="block text-[11px] text-gray-400 mb-1.5 uppercase font-mono">Output Resolution</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" data-size="1024" class="avatar-size-btn is-active py-1.5 rounded-lg text-xs font-bold bg-walpix-lime text-black cursor-pointer">
+                  1024×1024
+                </button>
+                <button type="button" data-size="512" class="avatar-size-btn py-1.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer">
+                  512×512
+                </button>
+                <button type="button" data-size="256" class="avatar-size-btn py-1.5 rounded-lg text-xs font-semibold bg-[#131A26] hover:bg-[#1B2536] border border-white/10 text-gray-300 cursor-pointer">
+                  256×256
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Container 3: Dedicated Live Profile Preview & Download -->
+          <div class="bg-[#090D14] border border-white/10 rounded-xl p-4 space-y-4 shadow-lg">
+            
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <span class="text-xs font-bold text-gray-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-walpix-lime"></span>
+                <span>Live Profile Preview</span>
+              </span>
+              <span id="preview-res-badge" class="text-[10px] font-mono text-walpix-lime font-bold">1024×1024 PNG</span>
+            </div>
+
+            <!-- Discord Mockup Card Container -->
+            <div class="rounded-xl overflow-hidden bg-[#0D121B] border border-white/10 shadow-md">
+              <!-- Discord Banner Header -->
+              <div class="h-12 bg-gradient-to-r from-[#1E2838] via-[#2A374D] to-[#1E2838] w-full relative"></div>
+              
+              <!-- Discord User Body -->
+              <div class="px-3.5 pb-3.5 pt-0 relative">
+                <!-- Avatar Preview -->
+                <div class="relative -mt-7 w-14 h-14 mb-2">
+                  <canvas id="preview-avatar-canvas" class="w-14 h-14 rounded-full overflow-hidden bg-black"></canvas>
+                  <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0D121B]"></span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>WalpixUser</span>
+                      <span class="px-1.5 py-0.2 rounded text-[8px] font-bold bg-walpix-lime text-black font-mono">PRO</span>
+                    </div>
+                    <div class="text-[10px] text-gray-400 font-mono">@walpix.pfp</div>
+                  </div>
+                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300">
+                    Online
+                  </span>
+                </div>
+
+                <div class="mt-2.5 pt-2 border-t border-white/5 text-[10px] text-gray-300 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime"></span>
+                  <span class="truncate">Custom 4K Avatar • Discord / Steam Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Download CTA Button (Lumina Lime, Solid, High-Impact) -->
+            <button
+              id="btn-download-avatar"
+              type="button"
+              class="w-full py-4 px-4 rounded-xl bg-walpix-lime hover:bg-[#b0ec00] active:scale-[0.99] text-black font-extrabold text-sm tracking-wide transition cursor-pointer shadow-lg flex items-center justify-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Download Transparent Avatar (PNG)</span>
+            </button>
+
+            <div class="text-[11px] text-center text-gray-500 flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>100% Client-Side Lossless PNG • Transparent Background</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Hidden Export Canvas -->
+    <canvas id="avatar-export-canvas" class="hidden"></canvas>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .avatar-lens-circle {
+    border-radius: 9999px;
+  }
+  .avatar-lens-squircle {
+    border-radius: 28%;
+  }
+  .avatar-lens-hexagon {
+    border-radius: 8px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+</style>
+
+<script>
+  // Elements
+  const stage = document.getElementById('avatar-canvas-stage') as HTMLDivElement;
+  const wrapper = document.getElementById('avatar-stage-wrapper') as HTMLDivElement;
+  const img = document.getElementById('avatar-stage-img') as HTMLImageElement;
+  const lens = document.getElementById('avatar-lens') as HTMLDivElement;
+  const maskHolePath = document.getElementById('avatar-mask-hole-path');
+  const shapeLabel = document.getElementById('shape-label');
+  const sourceRes = document.getElementById('avatar-source-res');
+  const previewCanvas = document.getElementById('preview-avatar-canvas') as HTMLCanvasElement;
+  const previewResBadge = document.getElementById('preview-res-badge');
+  const exportCanvas = document.getElementById('avatar-export-canvas') as HTMLCanvasElement;
+  const btnDownload = document.getElementById('btn-download-avatar');
+  const fileInput = document.getElementById('avatar-file-input') as HTMLInputElement;
+
+  // State
+  let currentShape: 'circle' | 'squircle' | 'hexagon' = 'circle';
+  let currentAccent: string = 'lime';
+  let outputSize = 1024;
+
+  let dispW = 0;
+  let dispH = 0;
+  let lensX = 0;
+  let lensY = 0;
+  let lensSize = 200;
+
+  let isDragging = false;
+  let activeHandle: string | null = null;
+  let startX = 0;
+  let startY = 0;
+  let initLensX = 0;
+  let initLensY = 0;
+  let initLensSize = 0;
+
+  const ACCENT_COLORS: Record<string, string> = {
+    lime: '#C2FF06',
+    cyan: '#00F0FF',
+    pink: '#FF28B8',
+    white: '#FFFFFF',
+    none: 'transparent'
+  };
+
+  function updateAvatarLayout(resetLens = false) {
+    if (!img || !stage || !wrapper) return;
+    if (!img.naturalWidth || img.naturalWidth <= 0) return;
+
+    const maxW = Math.max(stage.clientWidth - 20, 260);
+    const maxH = Math.max(stage.clientHeight - 20, 260);
+
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+
+    let fitW = maxW;
+    let fitH = (maxW / nw) * nh;
+
+    if (fitH > maxH) {
+      fitH = maxH;
+      fitW = (maxH / nh) * nw;
+    }
+
+    dispW = Math.round(fitW);
+    dispH = Math.round(fitH);
+
+    wrapper.style.width = `${dispW}px`;
+    wrapper.style.height = `${dispH}px`;
+
+    img.style.width = `${dispW}px`;
+    img.style.height = `${dispH}px`;
+
+    if (resetLens || lensSize === 0) {
+      lensSize = Math.min(dispW, dispH) * 0.75;
+      lensX = (dispW - lensSize) / 2;
+      lensY = (dispH - lensSize) / 2;
+    } else {
+      lensSize = Math.min(lensSize, Math.min(dispW, dispH));
+      lensX = Math.max(0, Math.min(lensX, dispW - lensSize));
+      lensY = Math.max(0, Math.min(lensY, dispH - lensSize));
+    }
+
+    renderLens();
+    renderLivePreview();
+  }
+
+  function renderLens() {
+    if (!lens) return;
+    lens.style.left = `${lensX}px`;
+    lens.style.top = `${lensY}px`;
+    lens.style.width = `${lensSize}px`;
+    lens.style.height = `${lensSize}px`;
+
+    lens.className = `avatar-lens-${currentShape} absolute pointer-events-auto cursor-move select-none border-2 z-20`;
+    const hex = ACCENT_COLORS[currentAccent] || '#C2FF06';
+    lens.style.borderColor = hex;
+    lens.style.boxShadow = 'none';
+
+    // Update SVG Cutout Hole Mask to Dim Outer Area
+    if (maskHolePath) {
+      if (currentShape === 'circle') {
+        const cx = lensX + lensSize / 2;
+        const cy = lensY + lensSize / 2;
+        const r = lensSize / 2;
+        maskHolePath.setAttribute('d', `M ${cx - r} ${cy} a ${r} ${r} 0 1 0 ${r * 2} 0 a ${r} ${r} 0 1 0 ${-r * 2} 0 Z`);
+      } else if (currentShape === 'squircle') {
+        const r = lensSize * 0.24;
+        const x = lensX;
+        const y = lensY;
+        const w = lensSize;
+        const h = lensSize;
+        maskHolePath.setAttribute('d', `M ${x + r} ${y} h ${w - 2 * r} a ${r} ${r} 0 0 1 ${r} ${r} v ${h - 2 * r} a ${r} ${r} 0 0 1 ${-r} ${r} h ${-(w - 2 * r)} a ${r} ${r} 0 0 1 ${-r} ${-r} v ${-(h - 2 * r)} a ${r} ${r} 0 0 1 ${r} ${-r} Z`);
+      } else if (currentShape === 'hexagon') {
+        const p1x = lensX + lensSize / 2, p1y = lensY;
+        const p2x = lensX + lensSize, p2y = lensY + lensSize * 0.25;
+        const p3x = lensX + lensSize, p3y = lensY + lensSize * 0.75;
+        const p4x = lensX + lensSize / 2, p4y = lensY + lensSize;
+        const p5x = lensX, p5y = lensY + lensSize * 0.75;
+        const p6x = lensX, p6y = lensY + lensSize * 0.25;
+        maskHolePath.setAttribute('d', `M ${p1x} ${p1y} L ${p2x} ${p2y} L ${p3x} ${p3y} L ${p4x} ${p4y} L ${p5x} ${p5y} L ${p6x} ${p6y} Z`);
+      }
+    }
+  }
+
+  function renderLivePreview() {
+    if (!img || !previewCanvas || dispW <= 0) return;
+    previewCanvas.width = 140;
+    previewCanvas.height = 140;
+    const ctx = previewCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, 140, 140);
+
+    const normX = lensX / dispW;
+    const normY = lensY / dispH;
+    const normS = lensSize / dispW;
+
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+
+    const srcX = normX * nw;
+    const srcY = normY * nh;
+    const srcS = normS * nw;
+
+    ctx.save();
+    if (currentShape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(70, 70, 70, 0, Math.PI * 2);
+      ctx.clip();
+    } else if (currentShape === 'squircle') {
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 140, 140, 32);
+      ctx.clip();
+    } else if (currentShape === 'hexagon') {
+      ctx.beginPath();
+      ctx.moveTo(70, 0);
+      ctx.lineTo(140, 35);
+      ctx.lineTo(140, 105);
+      ctx.lineTo(70, 140);
+      ctx.lineTo(0, 105);
+      ctx.lineTo(0, 35);
+      ctx.closePath();
+      ctx.clip();
+    }
+
+    ctx.drawImage(img, srcX, srcY, srcS, srcS, 0, 0, 140, 140);
+
+    if (currentAccent !== 'none') {
+      ctx.strokeStyle = ACCENT_COLORS[currentAccent] || '#C2FF06';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  window.addEventListener('resize', () => updateAvatarLayout(false), { passive: true });
+
+  function onAvatarImgLoaded() {
+    if (!img) return;
+    if (sourceRes) sourceRes.textContent = `Source: ${img.naturalWidth} × ${img.naturalHeight}`;
+    updateAvatarLayout(true);
+  }
+
+  img.addEventListener('load', onAvatarImgLoaded);
+  if (img.complete && img.naturalWidth > 0) onAvatarImgLoaded();
+
+  function loadAvatarUrl(url: string) {
+    if (!img) return;
+    img.src = url;
+  }
+
+  // URL query parameter loader
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialUrl = urlParams.get('url') || urlParams.get('img') || urlParams.get('image');
+  if (initialUrl) loadAvatarUrl(initialUrl);
+
+  // Drag & Scale Interaction
+  lens?.addEventListener('mousedown', (e) => {
+    const target = e.target as HTMLElement;
+    const handle = target.getAttribute('data-handle');
+
+    if (handle) {
+      activeHandle = handle;
+      isDragging = false;
+    } else {
+      isDragging = true;
+      activeHandle = null;
+    }
+
+    startX = e.clientX;
+    startY = e.clientY;
+    initLensX = lensX;
+    initLensY = lensY;
+    initLensSize = lensSize;
+
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  function handleAvatarMove(clientX: number, clientY: number) {
+    if (!isDragging && !activeHandle) return;
+
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+
+    if (isDragging) {
+      lensX = Math.max(0, Math.min(initLensX + dx, dispW - lensSize));
+      lensY = Math.max(0, Math.min(initLensY + dy, dispH - lensSize));
+      renderLens();
+      renderLivePreview();
+    } else if (activeHandle) {
+      let delta = Math.max(dx, dy);
+      if (activeHandle === 'nw' || activeHandle === 'sw') delta = -dx;
+
+      let newSize = Math.max(40, Math.min(initLensSize + delta, Math.min(dispW, dispH)));
+      
+      let newX = initLensX;
+      let newY = initLensY;
+
+      if (activeHandle === 'nw') {
+        newX = initLensX + (initLensSize - newSize);
+        newY = initLensY + (initLensSize - newSize);
+      } else if (activeHandle === 'sw') {
+        newX = initLensX + (initLensSize - newSize);
+      } else if (activeHandle === 'ne') {
+        newY = initLensY + (initLensSize - newSize);
+      }
+
+      newX = Math.max(0, Math.min(newX, dispW - newSize));
+      newY = Math.max(0, Math.min(newY, dispH - newSize));
+
+      lensSize = newSize;
+      lensX = newX;
+      lensY = newY;
+
+      renderLens();
+      renderLivePreview();
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    handleAvatarMove(e.clientX, e.clientY);
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    activeHandle = null;
+  });
+
+  // Touch Support (Full Lens Dragging AND Corner Handle Resizing on Mobile)
+  lens?.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const target = e.target as HTMLElement;
+    const handle = target.getAttribute('data-handle');
+
+    if (handle) {
+      activeHandle = handle;
+      isDragging = false;
+    } else {
+      isDragging = true;
+      activeHandle = null;
+    }
+
+    startX = touch.clientX;
+    startY = touch.clientY;
+    initLensX = lensX;
+    initLensY = lensY;
+    initLensSize = lensSize;
+
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging && !activeHandle) return;
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    handleAvatarMove(touch.clientX, touch.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+    activeHandle = null;
+  });
+
+  // Shape Toggles
+  const shapeBtns = document.querySelectorAll('.avatar-shape-btn');
+  shapeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      shapeBtns.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'font-bold');
+        b.classList.add('bg-[#131A26]', 'text-gray-300');
+        const icon = b.querySelector('span');
+        if (icon) icon.className = 'w-4 h-4 border-2 border-gray-400 rounded-full';
+      });
+      btn.classList.add('bg-walpix-lime', 'text-black', 'font-bold');
+      btn.classList.remove('bg-[#131A26]', 'text-gray-300');
+      const activeIcon = btn.querySelector('span');
+      if (activeIcon) activeIcon.className = 'w-4 h-4 border-2 border-black rounded-full';
+
+      currentShape = (btn.getAttribute('data-shape') || 'circle') as any;
+      if (shapeLabel) {
+        shapeLabel.textContent = `${currentShape.charAt(0).toUpperCase() + currentShape.slice(1)} Avatar (1:1)`;
+      }
+      renderLens();
+      renderLivePreview();
+    });
+  });
+
+  // Accent Colors
+  const accentBtns = document.querySelectorAll('.accent-btn');
+  accentBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      accentBtns.forEach((b) => b.classList.remove('ring-2', 'ring-white'));
+      btn.classList.add('ring-2', 'ring-white');
+      currentAccent = btn.getAttribute('data-accent') || 'lime';
+      renderLens();
+      renderLivePreview();
+    });
+  });
+
+  // Size Selection
+  const sizeBtns = document.querySelectorAll('.avatar-size-btn');
+  sizeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      sizeBtns.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'font-bold');
+        b.classList.add('bg-[#131A26]', 'text-gray-300');
+      });
+      btn.classList.add('bg-walpix-lime', 'text-black', 'font-bold');
+      btn.classList.remove('bg-[#131A26]', 'text-gray-300');
+      outputSize = parseInt(btn.getAttribute('data-size') || '1024', 10);
+      if (previewResBadge) previewResBadge.textContent = `${outputSize}×${outputSize} PNG`;
+    });
+  });
+
+  // Sample Wallpapers
+  document.querySelectorAll('.sample-avatar-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const url = btn.getAttribute('data-sample-url');
+      if (url) loadAvatarUrl(url);
+    });
+  });
+
+  // Reset Center
+  document.getElementById('btn-reset-avatar')?.addEventListener('click', () => {
+    updateAvatarLayout(true);
+  });
+
+  // File Upload
+  fileInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (evt.target?.result) loadAvatarUrl(evt.target.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Tabs (Upload vs URL)
+  const tabAvatarUpload = document.getElementById('tab-avatar-upload');
+  const tabAvatarUrl = document.getElementById('tab-avatar-url');
+  const avatarDropzoneBox = document.getElementById('avatar-dropzone-box');
+  const avatarUrlBox = document.getElementById('avatar-url-box');
+
+  tabAvatarUpload?.addEventListener('click', () => {
+    tabAvatarUpload.className = 'px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10';
+    tabAvatarUrl!.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white';
+    avatarDropzoneBox?.classList.remove('hidden');
+    avatarUrlBox?.classList.add('hidden');
+  });
+
+  tabAvatarUrl?.addEventListener('click', () => {
+    tabAvatarUrl.className = 'px-2 py-0.5 rounded text-walpix-lime font-bold bg-walpix-lime/10';
+    tabAvatarUpload!.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white';
+    avatarUrlBox?.classList.remove('hidden');
+    avatarDropzoneBox?.classList.add('hidden');
+  });
+
+  document.getElementById('btn-avatar-load-url')?.addEventListener('click', () => {
+    const input = document.getElementById('avatar-url-input') as HTMLInputElement;
+    if (input?.value.trim()) {
+      loadAvatarUrl(input.value.trim());
+    }
+  });
+
+  // Export Lossless Avatar PNG
+  btnDownload?.addEventListener('click', () => {
+    if (!img || !exportCanvas || dispW <= 0) return;
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+    if (nw <= 0 || nh <= 0) return;
+
+    exportCanvas.width = outputSize;
+    exportCanvas.height = outputSize;
+    const ctx = exportCanvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, outputSize, outputSize);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    const normX = lensX / dispW;
+    const normY = lensY / dispH;
+    const normS = lensSize / dispW;
+
+    const srcX = Math.round(normX * nw);
+    const srcY = Math.round(normY * nh);
+    const srcS = Math.round(normS * nw);
+
+    ctx.save();
+    if (currentShape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+    } else if (currentShape === 'squircle') {
+      ctx.beginPath();
+      ctx.roundRect(0, 0, outputSize, outputSize, outputSize * 0.22);
+      ctx.clip();
+    } else if (currentShape === 'hexagon') {
+      ctx.beginPath();
+      ctx.moveTo(outputSize / 2, 0);
+      ctx.lineTo(outputSize, outputSize * 0.25);
+      ctx.lineTo(outputSize, outputSize * 0.75);
+      ctx.lineTo(outputSize / 2, outputSize);
+      ctx.lineTo(0, outputSize * 0.75);
+      ctx.lineTo(0, outputSize * 0.25);
+      ctx.closePath();
+      ctx.clip();
+    }
+
+    ctx.drawImage(img, srcX, srcY, srcS, srcS, 0, 0, outputSize, outputSize);
+
+    if (currentAccent !== 'none') {
+      ctx.strokeStyle = ACCENT_COLORS[currentAccent] || '#C2FF06';
+      ctx.lineWidth = Math.max(6, Math.round(outputSize * 0.02));
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    const a = document.createElement('a');
+    a.href = exportCanvas.toDataURL('image/png');
+    a.download = `walpix-avatar-${currentShape}-${outputSize}x${outputSize}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+</script>
+
+<style>
+  .avatar-handle {
+    touch-action: none;
+  }
+  .avatar-handle::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
+</style>

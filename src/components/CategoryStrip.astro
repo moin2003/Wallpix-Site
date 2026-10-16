@@ -15,119 +15,541 @@ const categories = [
   {
     name: 'AMOLED Black',
     slug: 'amoled-black',
-    image: '/images/mockup_cards/cat-amoled.jpg',
+    image: '/images/mockup_cards/cat-amoled.webp',
   },
   {
     name: 'Cyberpunk',
     slug: 'cyberpunk-neon',
-    image: '/images/mockup_cards/cat-cyberpunk.jpg',
+    image: '/images/mockup_cards/card-2-neondrive.webp',
   },
   {
     name: '4K UHD',
     slug: '4k-ultra-hd',
-    image: '/images/mockup_cards/cat-4k.jpg',
+    image: '/images/mockup_cards/cat-4k.webp',
+  },
+  {
+    name: 'HD Wallpapers',
+    slug: 'hd-wallpapers',
+    image: '/images/mockup_cards/cat-minimalist.webp',
+  },
+  {
+    name: 'Movies & TV',
+    slug: 'movies',
+    image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'TV Shows',
+    slug: 'tv-shows',
+    image: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=240&q=75&auto=format&fm=webp',
   },
   {
     name: 'Anime',
     slug: 'anime-gaming',
-    image: '/images/mockup_cards/cat-anime.jpg',
+    image: '/images/mockup_cards/card-3-shadowrealm.webp',
+  },
+  {
+    name: 'Space & Cosmic',
+    slug: 'space-cosmic',
+    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
   },
   {
     name: 'Nature',
     slug: 'nature-scenery',
-    image: '/images/mockup_cards/cat-nature.jpg',
+    image: '/images/mockup_cards/card-1-mountain.webp',
+  },
+  {
+    name: 'Cars & Bikes',
+    slug: 'cars-supercars',
+    image: '/images/mockup_cards/card-6-nightbeast.webp',
+  },
+  {
+    name: 'Cartoons',
+    slug: 'cartoon',
+    image: '/images/mockup_cards/cat-anime.webp',
+  },
+  {
+    name: 'Music & Bands',
+    slug: 'music',
+    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=240&q=75&auto=format&fm=webp',
   },
   {
     name: 'Minimalist',
     slug: 'minimalist-abstract',
-    image: '/images/mockup_cards/cat-minimalist.jpg',
+    image: '/images/mockup_cards/cat-minimalist.webp',
   },
   {
-    name: 'Cars',
-    slug: 'cars-supercars',
-    image: '/images/mockup_cards/cat-cars.jpg',
+    name: 'Neon City',
+    slug: 'cyberpunk-neon',
+    image: '/images/mockup_cards/cat-cyberpunk.webp',
+  },
+  {
+    name: 'Dark Mystery',
+    slug: 'dark-mode',
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'Forest Waterfall',
+    slug: 'nature-scenery',
+    image: '/images/mockup_cards/card-5-forestcalm.webp',
+  },
+  {
+    name: 'Fantasy & Castle',
+    slug: 'fantasy',
+    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
+  },
+  {
+    name: 'Animals & Cyber',
+    slug: 'animals',
+    image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'Sports & Athletes',
+    slug: 'sports',
+    image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'Celebrities',
+    slug: 'celebrities',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'Comics & Heroes',
+    slug: 'superheroes',
+    image: '/images/mockup_cards/cat-cyberpunk.webp',
+  },
+  {
+    name: 'Holidays & Events',
+    slug: 'holidays',
+    image: 'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=240&q=75&auto=format&fm=webp',
+  },
+  {
+    name: 'Food & Drinks',
+    slug: 'food',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=240&q=75&auto=format&fm=webp',
   },
 ];
 ---
 
 <div id="categories" class="w-full px-4 sm:px-8 lg:px-12 py-3">
-  <div class="relative flex items-center gap-2.5">
+  <div class="relative flex items-center gap-3">
     
-    <!-- Left Navigation Arrow -->
+    <!-- Left Navigation Arrow (Clean Floating Lime Arrow) -->
     <button
       id="cat-scroll-left"
       aria-label="Scroll categories left"
-      class="hidden sm:flex w-9 h-9 rounded-full glass border border-white/12 items-center justify-center text-gray-400 hover:text-white hover:border-white/25 shrink-0 transition"
+      class="hidden sm:flex items-center justify-center shrink-0 select-none z-30 hover:scale-110 transition-all duration-200 cursor-pointer"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <svg class="w-8 h-8 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
 
-    <!-- Scrollable Pills Carousel -->
-    <div
-      id="category-carousel-track"
-      class="flex items-center gap-3 overflow-x-auto no-scrollbar scroll-smooth py-2 flex-grow"
-    >
-      {categories.map((cat) => {
-        const isActive = activeSlug === cat.slug;
-        return (
-          <a
-            href={cat.slug === 'all' ? '/' : `/category/${cat.slug}`}
-            class={`flex items-center gap-3 h-[52px] px-4.5 rounded-full transition-all shrink-0 border select-none ${
-              isActive
-                ? 'glass-pill-active font-semibold text-white'
-                : 'glass-pill text-[#D7D9DC] hover:text-white'
-            }`}
-          >
-            {/* Thumbnail Image or Grid Icon */}
-            {cat.image ? (
-              <img
-                src={cat.image}
-                alt={cat.name}
-                referrerpolicy="no-referrer"
-                class="w-8 h-8 rounded-full object-cover border border-white/20 shadow-sm"
-              />
-            ) : (
-              <div class={`w-7 h-7 rounded-lg flex items-center justify-center ${isActive ? 'text-lumina-lime' : 'text-gray-400'}`}>
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
-                </svg>
-              </div>
-            )}
+    <!-- Carousel Container with Pinned Stationary "All Wallpapers" Button -->
+    <div class="carousel-container relative flex items-center flex-grow overflow-hidden min-w-0">
+      
+      <!-- 1. PINNED / FIXED "All Wallpapers" Button (Never Scrolls, Always Locked on Left) -->
+      <div class="pinned-all-wrapper shrink-0 z-20 pr-3 relative">
+        <a
+          href="/wallpapers"
+          class={`pinned-all-capsule flex items-center select-none ${activeSlug === 'all' ? 'active' : ''}`}
+          title="Browse All 4K Wallpapers"
+        >
+          <!-- 3x3 Lime Dots Grid Box with Gradient Mask -->
+          <div class="pinned-icon-box">
+            <svg class="w-6 h-6 text-[#050608] fill-current" viewBox="0 0 20 20">
+              <circle cx="4" cy="4" r="2.2" />
+              <circle cx="10" cy="4" r="2.2" />
+              <circle cx="16" cy="4" r="2.2" />
+              <circle cx="4" cy="10" r="2.2" />
+              <circle cx="10" cy="10" r="2.2" />
+              <circle cx="16" cy="10" r="2.2" />
+              <circle cx="4" cy="16" r="2.2" />
+              <circle cx="10" cy="16" r="2.2" />
+              <circle cx="16" cy="16" r="2.2" />
+            </svg>
+          </div>
+          <span class="pinned-text">All Wallpapers</span>
+        </a>
+      </div>
 
-            <span class="text-xs sm:text-[13px] whitespace-nowrap font-medium">
-              {cat.name}
-            </span>
-          </a>
-        );
-      })}
+      <!-- 2. Scrollable Carousel Track for Other Categories (Sliding Underneath Pinned Button) -->
+      <div
+        id="category-carousel-track"
+        class="flex items-center gap-3.5 overflow-x-auto no-scrollbar scroll-smooth py-2 flex-grow z-10 pl-1"
+      >
+        {categories.filter(c => c.slug !== 'all').map((cat) => {
+          const isActive = activeSlug === cat.slug;
+          return (
+            <a
+              href={`/category/${cat.slug}`}
+              class={`category-capsule shrink-0 transition-all select-none ${isActive ? 'active' : ''}`}
+            >
+              {cat.image && (
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  width="115"
+                  height="68"
+                  loading="lazy"
+                  decoding="async"
+                  referrerpolicy="no-referrer"
+                />
+              )}
+              <span>{cat.name}</span>
+            </a>
+          );
+        })}
+      </div>
+
     </div>
 
-    <!-- Right Navigation Arrow -->
+    <!-- Right Navigation Arrow (Clean Floating Lime Arrow - Accessible 44px) -->
     <button
       id="cat-scroll-right"
       aria-label="Scroll categories right"
-      class="hidden sm:flex w-9 h-9 rounded-full glass border border-white/10 items-center justify-center text-gray-400 hover:text-white hover:border-white/20 shrink-0 transition"
+      class="hidden sm:flex items-center justify-center shrink-0 select-none z-30 min-w-[44px] min-h-[44px] w-11 h-11 hover:scale-110 transition-all duration-200 cursor-pointer"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      <svg class="w-8 h-8 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
       </svg>
     </button>
 
   </div>
 </div>
 
+<style>
+  /* Category Section Top Margin */
+  #categories {
+    margin-top: 16px;
+  }
+
+  /* Carousel Container */
+  .carousel-container {
+    position: relative;
+  }
+
+  /* Track: High-speed hardware-accelerated smooth scrolling with seamless edge dissolving/fade */
+  #category-carousel-track {
+    contain: paint;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0px,
+      black 60px,
+      black calc(100% - 110px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0px,
+      black 60px,
+      black calc(100% - 110px),
+      transparent 100%
+    );
+  }
+
+  /* Pinned "All Wallpapers" Container Wrapper */
+  .pinned-all-wrapper {
+    position: relative;
+    background: transparent;
+  }
+
+  /* Ultra-Premium Glassy Pinned All Wallpapers Capsule (Taller & Bolder: 68px) */
+  .pinned-all-capsule {
+    height: 68px;
+    min-width: 220px;
+    background: rgba(14, 18, 24, 0.95);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgba(194, 255, 6, 0.3);
+    border-radius: 9999px;
+    padding-left: 0;
+    padding-right: 22px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Active Pinned State */
+  .pinned-all-capsule.active {
+    background: rgba(194, 255, 6, 0.06) !important;
+    border: 1px solid rgba(194, 255, 6, 0.35) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65) !important;
+    height: 68px;
+    border-radius: 9999px;
+    padding-left: 0;
+    overflow: hidden;
+  }
+
+  .pinned-all-capsule:hover {
+    border-color: rgba(194, 255, 6, 0.70);
+    box-shadow: 0 0 20px rgba(194, 255, 6, 0.25);
+  }
+
+  /* Solid Edge (The Icon Box) */
+  .pinned-icon-box {
+    background: #C2FF06 !important;
+    width: 58px;
+    height: 100%;
+    color: #000 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    border-radius: 0;
+    flex-shrink: 0;
+    margin-right: 14px;
+  }
+
+  .pinned-text {
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFFFFF;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+    flex: 1;
+    text-align: center;
+  }
+
+  /* Scrollable Category Capsules (Taller & Bolder: 68px) - 60FPS Hardware Accelerated */
+  .category-capsule {
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+    height: 68px;
+    background: linear-gradient(90deg, #090c10 0%, #06070a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    overflow: hidden;
+    padding: 0;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .category-capsule:hover {
+    border-color: rgba(194, 255, 6, 0.55);
+    background: linear-gradient(90deg, #10151c 0%, #0a0d12 100%);
+    box-shadow: 0 0 16px rgba(194, 255, 6, 0.2);
+  }
+
+  .category-capsule.active {
+    background: linear-gradient(90deg, rgba(194, 255, 6, 0.12) 0%, rgba(194, 255, 6, 0.04) 100%);
+    border-color: #C2FF06;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  .category-capsule img {
+    width: 115px;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+    -webkit-mask-image: linear-gradient(to right, #000 20%, rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 20%, rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+  }
+
+  .category-capsule span {
+    flex: 1;
+    text-align: center;
+    padding-right: 22px;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+    white-space: nowrap;
+  }
+
+  /* --- RESPONSIVE CATEGORIES --- */
+
+  /* 1. Mobile Styles (< 640px) */
+  @media (max-width: 640px) {
+    #cat-scroll-left, #cat-scroll-right {
+      display: none !important;
+    }
+    
+    .pinned-all-wrapper {
+      padding-right: 6px !important;
+    }
+
+    .pinned-all-capsule {
+      height: 36px;
+      min-width: 116px;
+      padding-right: 8px;
+    }
+    
+    .pinned-icon-box {
+      width: 36px;
+      height: 36px;
+      margin-right: 6px;
+    }
+
+    .pinned-text {
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    #category-carousel-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
+      gap: 6px;
+      padding: 0 4px;
+      scrollbar-width: none;
+      min-width: 0;
+      flex: 1 1 0%;
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 16px,
+        black calc(100% - 36px),
+        transparent 100%
+      );
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 16px,
+        black calc(100% - 36px),
+        transparent 100%
+      );
+    }
+    
+    #category-carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .category-capsule {
+      height: 36px !important;
+      min-width: 116px !important;
+      scroll-snap-align: start;
+    }
+    
+    .category-capsule img {
+      width: 44px !important;
+      height: 36px !important;
+      -webkit-mask-image: linear-gradient(to right, #000 25%, transparent 100%) !important;
+      mask-image: linear-gradient(to right, #000 25%, transparent 100%) !important;
+    }
+    
+    .category-capsule span {
+      font-size: 12px !important;
+      padding-right: 8px !important;
+      white-space: nowrap;
+    }
+  }
+
+  /* 2. Tablet Styles (641px - 1024px) */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .pinned-all-capsule {
+      height: 46px;
+      min-width: 160px;
+    }
+    .pinned-icon-box {
+      width: 46px;
+      height: 46px;
+    }
+    .pinned-text {
+      font-size: 14.5px;
+    }
+    .category-capsule {
+      height: 46px !important;
+      min-width: 160px !important;
+    }
+    .category-capsule img {
+      width: 70px !important;
+      height: 100% !important;
+    }
+    .category-capsule span {
+      font-size: 14.5px !important;
+      padding-right: 14px !important;
+    }
+  }
+
+  /* Clean Floating Neon Arrow Buttons (No circle background) */
+  #cat-scroll-left,
+  #cat-scroll-right {
+    width: 32px;
+    height: 48px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #C2FF06 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    z-index: 30;
+    padding: 0;
+    filter: drop-shadow(0 0 6px rgba(194, 255, 6, 0.5));
+  }
+
+  #cat-scroll-left:hover,
+  #cat-scroll-right:hover {
+    color: #DCFC44 !important;
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 14px rgba(194, 255, 6, 0.95)) drop-shadow(0 0 24px rgba(194, 255, 6, 0.6));
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
 <script>
   const track = document.getElementById('category-carousel-track');
-  const leftBtn = document.getElementById('cat-scroll-left');
+  const leftArrow = document.getElementById('cat-scroll-left');
   const rightBtn = document.getElementById('cat-scroll-right');
 
-  leftBtn?.addEventListener('click', () => {
-    track?.scrollBy({ left: -240, behavior: 'smooth' });
+  function updateArrowState() {
+    if (!track || !leftArrow || !rightBtn) return;
+    const scrollLeft = track.scrollLeft;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+
+    if (scrollLeft <= 5) {
+      leftArrow.style.opacity = '0.35';
+      leftArrow.style.pointerEvents = 'none';
+      leftArrow.style.cursor = 'default';
+    } else {
+      leftArrow.style.opacity = '1';
+      leftArrow.style.pointerEvents = 'auto';
+      leftArrow.style.cursor = 'pointer';
+    }
+
+    if (maxScroll > 0 && scrollLeft >= maxScroll - 5) {
+      rightBtn.style.opacity = '0.35';
+      rightBtn.style.pointerEvents = 'none';
+      rightBtn.style.cursor = 'default';
+    } else {
+      rightBtn.style.opacity = '1';
+      rightBtn.style.pointerEvents = 'auto';
+      rightBtn.style.cursor = 'pointer';
+    }
+  }
+
+  updateArrowState();
+  track?.addEventListener('scroll', updateArrowState);
+  window.addEventListener('resize', updateArrowState);
+
+  // Smooth mouse wheel horizontal scrolling
+  track?.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      track.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+
+  leftArrow?.addEventListener('click', () => {
+    track?.scrollBy({ left: -320, behavior: 'smooth' });
   });
 
   rightBtn?.addEventListener('click', () => {
-    track?.scrollBy({ left: 240, behavior: 'smooth' });
+    track?.scrollBy({ left: 320, behavior: 'smooth' });
   });
 </script>

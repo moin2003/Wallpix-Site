@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+
+const tools = [
+  {
+    id: 'cropper',
+    name: '4K Canvas Resizer & Cropper',
+    badge: 'Live Editor',
+    badgeColor: 'text-[#C2FF06] bg-[#C2FF06]/10 border-[#C2FF06]/30',
+    accentBorder: 'group-hover:border-[#C2FF06]/50',
+    accentGlow: 'from-[#C2FF06]/20',
+    btnBg: 'bg-[#C2FF06] text-[#050608] hover:bg-[#b5ff00]',
+    href: '/tool/cropper',
+    desc: 'Crop, zoom, pan, and reframe any 4K wallpaper with pixel precision for desktop, mobile (9:16), iPad, or ultrawide monitors. High-speed client-side canvas engine with zero image compression loss.',
+    features: [
+      'Universal aspect presets: 16:9, 9:16, 21:9, 1:1, 4:3',
+      'Smooth zoom, pan, drag & interactive canvas scaling',
+      'Instant WebP & PNG downloads at full 4K UHD resolution',
+      '100% client-side privacy — images stay in your browser'
+    ],
+    iconD: 'M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z',
+    tag: 'Popular'
+  },
+  {
+    id: 'avatar',
+    name: 'Social Avatar & PFP Maker',
+    badge: 'PFP Studio',
+    badgeColor: 'text-[#FF28B8] bg-[#FF28B8]/10 border-[#FF28B8]/30',
+    accentBorder: 'group-hover:border-[#FF28B8]/50',
+    accentGlow: 'from-[#FF28B8]/20',
+    btnBg: 'bg-[#FF28B8] text-white hover:bg-[#e01fa0]',
+    href: '/tool/avatar',
+    desc: 'Turn any wallpaper or character artwork into a stunning circular profile picture for Discord, Steam, Twitter, and TikTok with cyberpunk neon rings and glass glowing borders.',
+    features: [
+      'Circular 1:1 avatar framing with real-time preview',
+      'Cyberpunk RGB glow rings, neon borders & halo effects',
+      'Custom border thickness, shadow spread & saturation',
+      'One-click download formatted for Discord, Steam & Instagram'
+    ],
+    iconD: 'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+    tag: 'Trending'
+  },
+  {
+    id: 'splitter',
+    name: 'Multi-Monitor Wallpaper Splitter',
+    badge: 'Panoramic Dual/Triple',
+    badgeColor: 'text-[#00F0FF] bg-[#00F0FF]/10 border-[#00F0FF]/30',
+    accentBorder: 'group-hover:border-[#00F0FF]/50',
+    accentGlow: 'from-[#00F0FF]/20',
+    btnBg: 'bg-[#00F0FF] text-[#050608] hover:bg-[#00d0de]',
+    href: '/tool/splitter',
+    desc: 'Slice ultra-wide 8K panoramas seamlessly across dual (32:9) or triple (48:9) display setups with custom bezel gap compensation. Generates separated left and right monitor files.',
+    features: [
+      'Dual monitor (3840×1080 / 5120×1440 / 7680×2160) setups',
+      'Triple screen ultrawide panoramic splitting with alignment',
+      'Bezel offset correction so lines match across physical frames',
+      'Numbered zip/batch download for left, center & right screens'
+    ],
+    iconD: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+    tag: 'Pro Feature'
+  }
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Creative Studio Tools | WALPIX 4K',
+  url: 'https://walpix.site/tools',
+  description: 'Free online 4K wallpaper studio tools. Live canvas cropper, circular PFP avatar maker, and dual monitor wallpaper splitter.',
+};
+---
+
+<Layout
+  title="Creative Studio Tools - 4K Cropper, Avatar Maker & Splitter"
+  description="Explore WALPIX free creative tools: 4K Live Canvas Resizer, Cyberpunk Avatar & PFP Maker, and Dual-Monitor Wallpaper Splitter. 100% free in your browser."
+  schema={schema}
+>
+  <!-- Floating Glass Header -->
+  <Header currentCategory="tool" />
+
+  <main class="relative min-h-screen bg-[#020406] text-[#F8FAFC] overflow-hidden pb-20">
+    
+    <!-- Ambient Background Glows & Matrix Grid -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-32 right-1/4 w-[700px] h-[700px] bg-walpix-lime/[0.045] rounded-full blur-[160px]"></div>
+      <div class="absolute top-1/2 -left-32 w-[650px] h-[650px] bg-[#00F0FF]/[0.035] rounded-full blur-[180px]"></div>
+      <div class="absolute bottom-20 right-10 w-[600px] h-[600px] bg-[#FF28B8]/[0.035] rounded-full blur-[170px]"></div>
+      <div class="absolute inset-0 bg-matrix-dots opacity-35"></div>
+    </div>
+
+    <div class="relative z-10">
+      
+      <!-- Studio Hero Header -->
+      <section class="w-full px-4 sm:px-8 lg:px-12 pt-8 sm:pt-14 pb-8 sm:pb-12 text-center max-w-5xl mx-auto">
+        <!-- Eyebrow Pill -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-gray-300 mb-4 backdrop-blur-md">
+          <span class="w-2 h-2 rounded-full bg-[#C2FF06] shadow-[0_0_8px_#C2FF06] animate-pulse"></span>
+          <span class="text-[#C2FF06] font-bold">WALPIX STUDIO SUITE</span>
+          <span class="text-white/40">•</span>
+          <span>100% Free & Browser-Based</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white font-display leading-[1.1] mb-4">
+          Professional <span class="text-[#C2FF06] drop-shadow-[0_0_24px_rgba(194,255,6,0.35)]">4K Wallpaper</span> & Studio Tools
+        </h1>
+
+        <p class="text-sm sm:text-base lg:text-lg text-[#9CA3AF] max-w-2xl mx-auto leading-relaxed">
+          Craft pixel-perfect backgrounds for any device, forge glowing RGB avatars for Discord and Steam, or split panoramas across multi-screen setups. No signups, no watermarks, completely free.
+        </p>
+      </section>
+
+      <!-- AdSense Top Leaderboard Banner -->
+      <div class="w-full max-w-6xl mx-auto px-4 sm:px-8 mb-8">
+        <AdSenseLeaderboard variant="top" />
+      </div>
+
+      <!-- Tools Grid -->
+      <section class="w-full px-4 sm:px-8 lg:px-12 max-w-6xl mx-auto mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+          {tools.map((t) => (
+            <div class="group relative rounded-3xl bg-[#080C12]/90 border border-white/[0.08] hover:border-white/20 p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden">
+              
+              <!-- Ambient Card Gradient Glow -->
+              <div class={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${t.accentGlow} to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
+
+              <div>
+                <!-- Top Row: Icon + Badge -->
+                <div class="flex items-center justify-between mb-5">
+                  <div class="w-12 h-12 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-300 shadow-md">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={t.iconD} />
+                    </svg>
+                  </div>
+                  <span class={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border ${t.badgeColor}`}>
+                    {t.badge}
+                  </span>
+                </div>
+
+                <!-- Title & Description -->
+                <h2 class="text-xl font-bold text-white mb-2.5 group-hover:text-white transition-colors">
+                  {t.name}
+                </h2>
+                <p class="text-xs sm:text-[13px] text-[#8E949E] leading-relaxed mb-5">
+                  {t.desc}
+                </p>
+
+                <!-- Features Checklist -->
+                <div class="space-y-2 mb-6 pt-4 border-t border-white/[0.06]">
+                  {t.features.map((f) => (
+                    <div class="flex items-start gap-2 text-[11px] sm:text-xs text-gray-300">
+                      <svg class="w-3.5 h-3.5 text-[#C2FF06] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <!-- CTA Launch Button -->
+              <a
+                href={t.href}
+                class={`w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-98 shadow-md ${t.btnBg}`}
+              >
+                <span>Launch {t.name.split('&')[0].trim()}</span>
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Why Use Walpix Studio Banner -->
+      <section class="w-full px-4 sm:px-8 lg:px-12 max-w-6xl mx-auto mb-16">
+        <div class="rounded-3xl bg-gradient-to-r from-white/[0.03] to-white/[0.01] border border-white/[0.08] p-6 sm:p-10 backdrop-blur-xl">
+          <h3 class="text-lg sm:text-2xl font-bold text-white mb-2 text-center">
+            Built for Creators, Gamers & Wallpaper Enthusiasts
+          </h3>
+          <p class="text-xs sm:text-sm text-[#8E949E] text-center max-w-xl mx-auto mb-8">
+            All tools operate directly on HTML5 Canvas in your web browser. No software installation, no laggy server uploads, and 100% data privacy.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.04]">
+              <div class="text-2xl font-black text-[#C2FF06] mb-1">0ms</div>
+              <div class="text-xs font-bold text-white mb-0.5">Zero Upload Wait</div>
+              <div class="text-[11px] text-[#8E949E]">All processing happens locally on your GPU</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.04]">
+              <div class="text-2xl font-black text-[#00F0FF] mb-1">100%</div>
+              <div class="text-xs font-bold text-white mb-0.5">Private & Secure</div>
+              <div class="text-[11px] text-[#8E949E]">Your images are never transmitted or stored</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.04]">
+              <div class="text-2xl font-black text-[#FF28B8] mb-1">8K UHD</div>
+              <div class="text-xs font-bold text-white mb-0.5">Lossless Export</div>
+              <div class="text-[11px] text-[#8E949E]">Supports ultra-high DPI WebP, PNG & JPG</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

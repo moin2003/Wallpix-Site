@@ -1,0 +1,353 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+import AdCard from '../components/AdCard.astro';
+import TopicStrip from '../components/TopicStrip.astro';
+import { TOPIC_HUBS } from '../data/topics';
+import { RESOLUTION_GROUPS } from '../data/resolutions';
+import { wallpapers } from '../data/wallpapers';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Wallpaper Topics & Display Resolutions | WALPIX 4K',
+  description: 'Explore ultra HD wallpapers by high-intent topic and exact pixel resolution: 4K, 8K, iPhone, PC, Full HD, Laptop, 3840x2160, 1920x1080.',
+  url: 'https://walpix.site/topics',
+};
+
+const ultraHdGroup = RESOLUTION_GROUPS.find(g => g.name === 'Ultra HD');
+const appleGroup = RESOLUTION_GROUPS.find(g => g.name === 'Apple');
+const androidGroup = RESOLUTION_GROUPS.find(g => g.name === 'Android Device');
+const widescreenGroup = RESOLUTION_GROUPS.find(g => g.name === 'Widescreen');
+const desktopResolutions = [...(ultraHdGroup?.items || []), ...(widescreenGroup?.items || [])];
+const appleResolutions = appleGroup?.items || [];
+const androidResolutions = androidGroup?.items || [];
+---
+
+<Layout
+  title="Wallpaper Topics & Screen Resolutions (4K, 8K, iPhone, PC) | WALPIX 4K"
+  description="Discover 4K & 8K wallpapers organized by topic and display resolution. Instant download for desktop, laptop, iPhone, and Android."
+  schema={schema}
+>
+  <!-- Floating Glass Capsule Header -->
+  <Header currentCategory="topics" />
+
+  <main class="relative min-h-screen bg-[#020406] text-white overflow-hidden pb-16">
+    
+    <!-- Ambient Green Background Glows & Matrix Texture -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-32 right-10 w-[600px] h-[600px] bg-walpix-lime/[0.04] rounded-full blur-[140px]"></div>
+      <div class="absolute top-1/3 -left-32 w-[650px] h-[650px] bg-walpix-lime/[0.03] rounded-full blur-[160px]"></div>
+      <div class="absolute bottom-20 right-1/4 w-[700px] h-[700px] bg-walpix-lime/[0.035] rounded-full blur-[180px]"></div>
+      <div class="absolute inset-0 bg-matrix-dots opacity-35"></div>
+    </div>
+
+    <!-- Full-Width Page Content (Left-Aligned, Matching Categories & Wallpapers Layout) -->
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-6">
+      
+      <!-- Breadcrumbs (Left-Aligned) -->
+      <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono mb-4 text-left">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-walpix-lime font-bold">Topics & Resolutions</span>
+      </nav>
+
+      <!-- Full-Width Left-Aligned Header Bar -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08] text-left">
+        <div class="space-y-2.5 max-w-3xl text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C2FF06]/10 border border-[#C2FF06]/30 text-xs font-mono font-bold text-[#C2FF06] uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] shadow-[0_0_6px_#C2FF06]"></span>
+            <span>Browse Wallpaper Topics & Resolutions</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none text-left">
+            EXPLORE BY <span class="text-walpix-lime">TOPIC & DEVICE</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-[#8E949E] text-left">
+            Curated wallpapers tailored for desktop, mobile, and ultrawide setups.
+          </p>
+        </div>
+
+        <!-- Quick Search for Topics -->
+        <div class="relative w-full md:w-80 shrink-0">
+          <input
+            id="topic-search-input"
+            type="text"
+            placeholder="Search topics (e.g. 4K, iPhone, Pixel, 8K)..."
+            class="w-full h-11 pl-10 pr-4 bg-[#080C10] border border-white/15 focus:border-walpix-lime rounded-xl text-xs text-white placeholder-gray-400 outline-none transition-all shadow-inner"
+          />
+          <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Quick Topic Carousel Strip -->
+      <div class="w-full pt-4 pb-2">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold">Quick Switcher</span>
+          <span class="text-xs font-mono text-walpix-lime">{TOPIC_HUBS.length} Hubs Available</span>
+        </div>
+        <TopicStrip />
+      </div>
+
+    </div>
+
+    <!-- AdSense Top Leaderboard Banner -->
+    <AdSenseLeaderboard className="pt-4 pb-6" variant="top" />
+
+    <!-- Main Content Container (Left-Aligned Grid) -->
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 space-y-16 text-left">
+      
+      <!-- 1. All High-Intent Topics Grid (3 Columns on Large Screen) -->
+      <section class="text-left">
+        <div class="flex items-center justify-between mb-6 text-left">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime shadow-[0_0_10px_#C2FF06]"></span>
+              All Wallpaper Topics & Formats
+            </h2>
+          </div>
+          <span class="text-xs font-mono text-walpix-lime bg-walpix-lime/10 px-3 py-1 rounded-lg border border-walpix-lime/20">
+            {TOPIC_HUBS.length} Topics
+          </span>
+        </div>
+
+        <div id="topics-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          {TOPIC_HUBS.map((topic, idx) => {
+            return (
+              <>
+                <a
+                  href={`/topic/${topic.slug}`}
+                  data-topic-name={topic.name.toLowerCase()}
+                  class="topic-card group relative rounded-2xl overflow-hidden border border-white/10 bg-[#06090D] hover:border-walpix-lime/60 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(194,255,6,0.18)] hover:-translate-y-1 flex flex-col justify-between"
+                >
+                  <!-- 16:9 Wallpaper Visual Preview -->
+                  <div class="relative aspect-[16/9] w-full overflow-hidden bg-black/60">
+                    <img
+                      src={topic.cover}
+                      alt={topic.name}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      loading="lazy"
+                    />
+                    
+                    <!-- Translucent Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#06090D] via-black/30 to-black/20 group-hover:via-black/15 transition-colors"></div>
+
+                    <!-- Top Left Badge -->
+                    <div class="absolute top-3 left-3">
+                      <span class="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md text-white text-[11px] font-bold border border-white/15 flex items-center gap-1.5 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime"></span>
+                        <span>{topic.badge}</span>
+                      </span>
+                    </div>
+
+                    <!-- Top Right Wallpaper Count -->
+                    <div class="absolute top-3 right-3">
+                      <span class="px-2.5 py-1 rounded-lg bg-walpix-lime text-[#050608] text-[10px] font-extrabold uppercase font-mono shadow-md">
+                        {topic.count}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Content Area -->
+                  <div class="p-5 flex-1 flex flex-col justify-between text-left">
+                    <div>
+                      <h3 class="text-lg font-bold text-white group-hover:text-walpix-lime transition-colors">
+                        {topic.name}
+                      </h3>
+                      <p class="text-xs text-[#8E949E] mt-2 line-clamp-2 leading-relaxed">
+                        {topic.description}
+                      </p>
+                    </div>
+
+                    <!-- Tags & Action Bar -->
+                    <div class="mt-5 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs">
+                      <div class="flex items-center gap-1.5 overflow-hidden max-w-[65%]">
+                        {topic.tags.slice(0, 2).map((tag) => (
+                          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-gray-400 truncate">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <span class="text-walpix-lime font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform shrink-0">
+                        View Wallpapers →
+                      </span>
+                    </div>
+                  </div>
+                </a>
+
+                {/* Native In-Grid Ad after #3 and #9 */}
+                {(idx === 2 || idx === 8) && (
+                  <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+                    <AdCard />
+                  </div>
+                )}
+              </>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- 2. Exact Display Resolution & Screen Directory -->
+      <section class="pt-8 border-t border-white/[0.08] text-left">
+        <div class="mb-6 text-left">
+          <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime shadow-[0_0_10px_#C2FF06]"></span>
+            Pixel-Exact Display Resolutions
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Ultra HD & Desktop Grid -->
+          <div class="bg-[#06090D] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+            <div class="flex items-center gap-2.5 pb-3 border-b border-white/[0.08]">
+              <div class="w-8 h-8 rounded-lg bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_8px_rgba(194,255,6,0.15)]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Ultra HD & Desktop Monitors</h3>
+                <span class="text-[11px] text-gray-400">16:9 & Ultrawide aspect ratio</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              {desktopResolutions.map((res) => (
+                <a
+                  href={`/resolution/${res.slug}`}
+                  class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-[#C2FF06]/40 transition-all group"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-white group-hover:text-[#C2FF06] transition-colors">
+                      {res.width}×{res.height}
+                    </span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
+                      {res.aspectRatio}
+                    </span>
+                  </div>
+                  <span class="text-[11px] text-gray-400 group-hover:text-white transition-colors">
+                    Download →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Apple Devices Grid -->
+          <div class="bg-[#06090D] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+            <div class="flex items-center gap-2.5 pb-3 border-b border-white/[0.08]">
+              <div class="w-8 h-8 rounded-lg bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_8px_rgba(194,255,6,0.15)]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Apple iPhone & iPad Hubs</h3>
+                <span class="text-[11px] text-gray-400">iOS Retina Super AMOLED</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              {appleResolutions.map((res) => (
+                <a
+                  href={`/resolution/${res.slug}`}
+                  class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-[#C2FF06]/40 transition-all group"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-white group-hover:text-[#C2FF06] transition-colors">
+                      {res.width}×{res.height}
+                    </span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-gray-300 truncate max-w-[110px]">
+                      {res.deviceInfo}
+                    </span>
+                  </div>
+                  <span class="text-[11px] text-gray-400 group-hover:text-white transition-colors">
+                    Download →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Android Flagship Devices Grid -->
+          <div class="bg-[#06090D] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+            <div class="flex items-center gap-2.5 pb-3 border-b border-white/[0.08]">
+              <div class="w-8 h-8 rounded-lg bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_8px_rgba(194,255,6,0.15)]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Android Flagship Devices</h3>
+                <span class="text-[11px] text-gray-400">Samsung, Xiaomi, Pixel QHD+</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              {androidResolutions.map((res) => (
+                <a
+                  href={`/resolution/${res.slug}`}
+                  class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-walpix-lime/40 transition-all group"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-white group-hover:text-walpix-lime transition-colors">
+                      {res.width}×{res.height}
+                    </span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
+                      {res.deviceInfo}
+                    </span>
+                  </div>
+                  <span class="text-[11px] text-gray-400 group-hover:text-white transition-colors">
+                    Download →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Bottom AdSense Banner -->
+    <AdSenseLeaderboard className="py-8" variant="bottom" />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Fast Client-Side Topic Filter
+  const topicSearch = document.getElementById('topic-search-input') as HTMLInputElement;
+  const topicCards = document.querySelectorAll('.topic-card');
+
+  if (topicSearch) {
+    topicSearch.addEventListener('input', (e) => {
+      const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      topicCards.forEach((card) => {
+        const name = card.getAttribute('data-topic-name') || '';
+        if (name.includes(q)) {
+          (card as HTMLElement).style.display = 'flex';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  /* Matrix background dots */
+  .bg-matrix-dots {
+    background-image: radial-gradient(rgba(194, 255, 6, 0.22) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+  }
+</style>

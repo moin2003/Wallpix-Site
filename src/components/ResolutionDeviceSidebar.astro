@@ -1,0 +1,66 @@
+---
+import { RESOLUTION_GROUPS } from '../data/resolutions';
+
+interface Props {
+  activeRes?: string;
+  className?: string;
+}
+
+const { activeRes = '', className = '' } = Astro.props;
+---
+
+<div class={`p-4 sm:p-5 rounded-2xl bg-[#070b10] border border-white/[0.10] shadow-xl space-y-4 ${className}`}>
+  
+  <div class="pb-3 border-b border-white/[0.08] flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-walpix-lime text-base">📐</span>
+      <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-white">
+        Device Resolutions
+      </h3>
+    </div>
+    <span class="text-[10px] font-mono text-walpix-lime bg-walpix-lime/10 px-2 py-0.5 rounded border border-walpix-lime/30">
+      Pixel-Perfect
+    </span>
+  </div>
+
+  <div class="space-y-4 text-xs font-mono">
+    {RESOLUTION_GROUPS.map((group) => (
+      <div class="space-y-2">
+        <!-- Group Header -->
+        <div class="flex items-center justify-between text-gray-400 font-bold uppercase tracking-wider text-[11px]">
+          <span class="flex items-center gap-1.5 text-white">
+            {group.name === 'Ultra HD' && '🖥️'}
+            {group.name === 'Apple' && '🍎'}
+            {group.name === 'Android Device' && '🤖'}
+            {group.name === 'Widescreen' && '📺'}
+            <span>{group.name}</span>
+          </span>
+          <span class="text-[10px] text-gray-500 font-normal">({group.items.length})</span>
+        </div>
+
+        <!-- Resolution Links -->
+        <div class="space-y-1 pl-2 border-l border-white/[0.06]">
+          {group.items.map((item) => {
+            const isActive = activeRes === item.slug;
+            return (
+              <a
+                href={`/resolution/${item.slug}`}
+                class={`flex items-center justify-between py-1.5 px-2 rounded-lg transition-all ${
+                  isActive
+                    ? 'bg-walpix-lime/15 text-walpix-lime font-bold border border-walpix-lime/30'
+                    : 'text-gray-300 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                <span class="truncate">{item.width}×{item.height}</span>
+                <span class="text-[10px] text-gray-500 group-hover:text-gray-400 shrink-0 truncate max-w-[120px]">
+                  {item.deviceInfo.split('/')[0]}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </div>
+
+</div>

@@ -1,0 +1,106 @@
+---
+interface Props {
+  title: string;
+  count: number;
+  href: string;
+  images: string[];
+  category?: string;
+  description?: string;
+}
+
+const {
+  title,
+  count,
+  href,
+  images = [],
+  category = 'Collection',
+  description,
+} = Astro.props;
+
+// Ensure 3 images with fallback defaults
+const defaultFallbacks = [
+  '/images/mockup_cards/card-2-neondrive.jpg',
+  '/images/mockup_cards/card-1-mountain.jpg',
+  '/images/mockup_cards/card-6-nightbeast.jpg',
+];
+
+const img1 = images[0] || defaultFallbacks[0];
+const img2 = images[1] || defaultFallbacks[1];
+const img3 = images[2] || defaultFallbacks[2];
+---
+
+<a
+  href={href}
+  class="group relative block rounded-2xl overflow-hidden bg-[#06090d]/80 border border-white/[0.09] hover:border-walpix-lime/50 transition-all duration-300 hover:scale-[1.02] shadow-xl hover:shadow-[0_0_30px_rgba(194,246,0,0.18)]"
+>
+  <!-- 3-in-1 Split Thumbnail Grid (50% Portrait Left, 2 Stacked Landscape Right) -->
+  <div class="relative w-full aspect-[16/10] sm:aspect-[16/9] grid grid-cols-2 grid-rows-2 gap-[1.5px] bg-[#020406] overflow-hidden">
+    
+    <!-- Image 1: Tall Left Portrait (Spans both rows) -->
+    <div class="row-span-2 col-start-1 h-full w-full overflow-hidden bg-[#080c10] relative">
+      <img
+        src={img1}
+        alt={`${title} Preview 1`}
+        class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+        loading="lazy"
+        onerror="this.src='/images/mockup_cards/card-2-neondrive.jpg'"
+      />
+      <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+    </div>
+
+    <!-- Image 2: Top-Right Landscape -->
+    <div class="col-start-2 row-start-1 h-full w-full overflow-hidden bg-[#080c10] relative border-b border-black/40">
+      <img
+        src={img2}
+        alt={`${title} Preview 2`}
+        class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+        loading="lazy"
+        onerror="this.src='/images/mockup_cards/card-1-mountain.jpg'"
+      />
+      <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+    </div>
+
+    <!-- Image 3: Bottom-Right Landscape -->
+    <div class="col-start-2 row-start-2 h-full w-full overflow-hidden bg-[#080c10] relative">
+      <img
+        src={img3}
+        alt={`${title} Preview 3`}
+        class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+        loading="lazy"
+        onerror="this.src='/images/mockup_cards/card-6-nightbeast.jpg'"
+      />
+      <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+    </div>
+
+    <!-- Top Gradient Overlay with Title -->
+    <div class="absolute inset-x-0 top-0 pt-3.5 pb-8 px-4 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none z-10 flex flex-col justify-start">
+      {category && (
+        <span class="text-[10px] font-mono text-walpix-lime uppercase tracking-widest font-bold drop-shadow-md">
+          {category}
+        </span>
+      )}
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-tight group-hover:text-walpix-lime transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] line-clamp-1">
+        {title}
+      </h3>
+    </div>
+
+    <!-- Bottom-Right Floating Glass Count Badge -->
+    <div class="absolute bottom-3 right-3 z-20 pointer-events-none">
+      <span class="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/15 text-white text-[11px] font-mono font-bold flex items-center gap-1.5 shadow-lg group-hover:border-walpix-lime/40 group-hover:text-walpix-lime transition-colors">
+        <svg class="w-3.5 h-3.5 text-walpix-lime shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+        </svg>
+        <span>{count} Wallpapers</span>
+      </span>
+    </div>
+
+  </div>
+
+  {description && (
+    <div class="p-4 bg-[#05070a]/90 border-t border-white/[0.06]">
+      <p class="text-xs text-[#8E949E] line-clamp-2 leading-relaxed">
+        {description}
+      </p>
+    </div>
+  )}
+</a>

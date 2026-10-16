@@ -1,0 +1,20 @@
+# WALPIX 4K Production SEO & AdSense robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /search?*
+
+# Allow Google AdSense & MediaPartners Crawler full access
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Sitemap Index location
+Sitemap: https://walpix.site/sitemap-index.xml
+Sitemap: https://walpix.site/sitemap.xml

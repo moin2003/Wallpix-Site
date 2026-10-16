@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+import '../styles/mobile-480.css';
+import { ADSENSE_CONFIG } from '../config/adsense';
+import MobileBottomNav from '../components/MobileBottomNav.astro';
 
 interface Props {
   title: string;
@@ -7,17 +10,34 @@ interface Props {
   image?: string;
   type?: string;
   schema?: any;
+  preloadImage?: string;
 }
 
 const {
   title,
   description = 'Download ultra high-definition 4K, 2K and AMOLED wallpapers for PC, Mac, iPhone, and Android. Free, fast and customizable with instant live canvas cropper.',
-  image = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80',
+  image = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80',
   type = 'website',
   schema,
+  preloadImage,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://lumina-wallpapers.com');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://walpix.site');
+
+const defaultWebsiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'WALPIX 4K',
+  url: 'https://walpix.site',
+  description: description,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://walpix.site/wallpapers?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const activeSchema = schema || defaultWebsiteSchema;
 ---
 
 <!doctype html>
@@ -28,47 +48,72 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://lumina-w
     <!-- Critical for hotlinked CDN images bypass -->
     <meta name="referrer" content="no-referrer" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    <!-- Favicon and App Icons (Ultra-High Resolution Suite) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=2" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=2" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png?v=2" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#030405" />
     
     <!-- Primary Meta -->
-    <title>{title} | Lumina 4K Wallpapers</title>
-    <meta name="title" content={`${title} | Lumina 4K Wallpapers`} />
+    <title>{title} | WALPIX 4K Wallpapers</title>
+    <meta name="title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#08090C" />
+    <meta name="theme-color" content="#030405" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | Lumina 4K Wallpapers`} />
+    <meta property="og:title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={`${title} | Lumina 4K Wallpapers`} />
+    <meta property="twitter:title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={image} />
+
+    <!-- LCP Image Preload for 0ms Discovery Delay -->
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
 
     <!-- Google Fonts Preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Beau+Rivage&family=Bonheur+Royale&family=Ephesis&family=Felipa&family=Handlee&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,400..900;1,400..900&family=Moon+Dance&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,600;1,700&family=Zen+Dots&display=swap" rel="stylesheet" />
 
     <!-- JSON-LD Structured Data -->
-    {schema && (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(activeSchema)} />
+
+    <!-- Google AdSense Integration (Activates automatically upon approval) -->
+    {ADSENSE_CONFIG.isLive && (
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CONFIG.publisherId}`}
+        crossorigin="anonymous"
+      ></script>
     )}
   </head>
   <body class="bg-obsidian-950 text-ice font-sans min-h-screen flex flex-col selection:bg-neon-lime selection:text-obsidian-950">
-    <!-- Ambient Background Glows -->
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-neon-lime/5 rounded-full blur-[140px] pointer-events-none -z-10"></div>
-    <div class="fixed bottom-1/3 right-1/4 w-[30rem] h-[30rem] bg-neon-pink/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <!-- Ambient Background Glows (GPU Accelerated) -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-neon-lime/5 rounded-full blur-[100px] pointer-events-none -z-10 transform-gpu will-change-transform"></div>
+    <div class="fixed bottom-1/3 right-1/4 w-96 h-96 bg-neon-pink/5 rounded-full blur-[120px] pointer-events-none -z-10 transform-gpu will-change-transform"></div>
 
     <slot />
+
+    <!-- Smart Floating Mobile Bottom Navigation Dock (Appears on scroll-up, hides on scroll-down) -->
+    <MobileBottomNav />
 
     <!-- Global Toast / Modal Portal -->
     <div id="modal-portal"></div>

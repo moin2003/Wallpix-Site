@@ -1,0 +1,169 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WallpaperCard from '../../components/WallpaperCard.astro';
+import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
+import AdSenseSlot from '../../components/AdSenseSlot.astro';
+import { blogPosts } from '../../data/blogPosts';
+import { wallpapers } from '../../data/wallpapers';
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+// Related wallpapers
+const relatedWallpapers = wallpapers.filter((w) =>
+  post.relatedWallpaperSlugs.includes(w.slug) ||
+  w.category.toLowerCase().includes(post.category.toLowerCase())
+).slice(0, 3);
+
+// JSON-LD Schema
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.excerpt,
+  image: post.coverImage,
+  datePublished: post.publishDate,
+  author: {
+    '@type': 'Person',
+    name: post.author.name,
+    jobTitle: post.author.role,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'WALPIX 4K',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://walpix.site/logo.png',
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `https://walpix.site/blog/${post.slug}`,
+  },
+};
+---
+
+<Layout
+  title={post.title}
+  description={post.excerpt}
+  image={post.coverImage}
+  type="article"
+  schema={articleSchema}
+>
+  <Header currentCategory="blog" />
+
+  <main class="min-h-screen pb-16">
+    <!-- Breadcrumbs -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 pt-6 max-w-4xl mx-auto">
+      <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/blog" class="hover:text-white transition-colors">Blog</a>
+        <span>/</span>
+        <span class="text-walpix-lime font-bold line-clamp-1">{post.title}</span>
+      </nav>
+    </div>
+
+    <!-- Article Header -->
+    <header class="article-header relative w-full px-4 sm:px-8 lg:px-12 pt-6 sm:pt-8 pb-6 max-w-4xl mx-auto space-y-4 sm:space-y-5">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/25 text-xs font-mono font-bold text-walpix-lime uppercase">
+        <span>{post.category}</span>
+        <span>•</span>
+        <span>{post.readTime}</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        {post.title}
+      </h1>
+
+      <div class="flex items-center gap-3 sm:gap-4 pt-2 border-y border-white/[0.08] py-3.5 sm:py-4 text-xs text-[#8E949E]">
+        <img
+          src={post.author.avatar}
+          alt={post.author.name}
+          class="w-10 h-10 rounded-full object-cover border border-walpix-lime/40 shrink-0"
+        />
+        <div class="min-w-0">
+          <span class="text-white font-bold block truncate">{post.author.name}</span>
+          <span class="truncate block sm:inline">{post.author.role} • Published on {post.publishDate}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Cover Image -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto mb-8">
+      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+        <img
+          src={post.coverImage}
+          alt={post.title}
+          class="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+
+    <!-- Top In-Article AdSense Banner -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 mb-8">
+      <AdSenseLeaderboard variant="top" />
+    </div>
+
+    <!-- Article Body -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 max-w-3xl mx-auto">
+      <div class="prose prose-invert prose-lime max-w-none text-gray-300 text-base leading-relaxed space-y-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-8 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-walpix-lime [&>h3]:mt-6 [&>ul]:list-disc [&>ul]:pl-5 [&>ul>li]:mt-2">
+        <Fragment set:html={post.content} />
+      </div>
+
+      <!-- Tags -->
+      <div class="pt-8 mt-8 border-t border-white/[0.08] flex flex-wrap items-center gap-2">
+        <span class="text-xs font-mono text-gray-400">Tags:</span>
+        {post.tags.map((tag) => (
+          <span class="px-3 py-1 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-walpix-lime font-mono">
+            #{tag}
+          </span>
+        ))}
+      </div>
+
+      <!-- Author Card -->
+      <div class="mt-10 p-6 rounded-2xl bg-[#05070a] border border-white/[0.08] flex items-center gap-4">
+        <img
+          src={post.author.avatar}
+          alt={post.author.name}
+          class="w-14 h-14 rounded-full object-cover border-2 border-walpix-lime shrink-0"
+        />
+        <div>
+          <h3 class="text-sm font-bold text-white">{post.author.name}</h3>
+          <p class="text-xs text-walpix-lime font-mono">{post.author.role}</p>
+          <p class="text-xs text-gray-400 mt-1">Curating and evaluating uncompressed digital assets for high-DPI displays.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Wallpapers Section -->
+    {relatedWallpapers.length > 0 && (
+      <section class="w-full px-4 sm:px-8 lg:px-12 pt-16 max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Related 4K Wallpapers</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Featured in this article</p>
+          </div>
+          <a href="/wallpapers" class="text-xs text-walpix-lime font-bold hover:underline">
+            View All →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {relatedWallpapers.map((wallpaper, idx) => (
+            <WallpaperCard wallpaper={wallpaper} index={idx} />
+          ))}
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+</Layout>

@@ -10,53 +10,85 @@ const { wallpaper, priority = false } = Astro.props;
 
 // Generate realistic like counts from views/downloads
 const likesCount = ((wallpaper.downloads || 450) * 1.8 / 100).toFixed(1) + 'K';
+
+// High-Speed Thumbnail Optimizer
+function getThumbUrl(rawUrl: string, isPriority: boolean): string {
+  if (!rawUrl) return '/images/mockup_cards/card-1-mountain.webp';
+  
+  if (rawUrl.startsWith('/images/mockup_cards/') && rawUrl.endsWith('.jpg')) {
+    return rawUrl.replace('.jpg', '.webp');
+  }
+
+  if (rawUrl.includes('images.unsplash.com')) {
+    try {
+      const u = new URL(rawUrl);
+      u.searchParams.set('w', isPriority ? '720' : '520');
+      u.searchParams.set('q', '75');
+      u.searchParams.set('auto', 'format');
+      u.searchParams.set('fit', 'crop');
+      u.searchParams.set('fm', 'webp');
+      return u.toString();
+    } catch {
+      return rawUrl;
+    }
+  }
+
+  return rawUrl;
+}
+
+const thumbSrc = getThumbUrl(wallpaper.sourceCdn, priority);
 ---
 
 <div
-  class="group relative aspect-[16/10] w-full wallpaper-card cursor-pointer flex flex-col justify-between"
+  class="group relative aspect-[16/10] w-full wallpaper-card cursor-pointer flex flex-col justify-between rounded-[15px] overflow-hidden border border-white/[0.08] bg-[#070A0D] transition-[aspect-ratio,transform,border-color,box-shadow,border-radius] duration-300 ease-out hover:-translate-y-1 hover:border-walpix-lime/40 hover:shadow-card-hover select-none"
   data-title={wallpaper.title.toLowerCase()}
   data-category={wallpaper.category?.toLowerCase() || ''}
-  data-tags={(wallpaper.tags || []).join(' ').toLowerCase()}
+  data-screen-types={(wallpaper.screenTypes || ['desktop-4k', 'phone-iphone', 'dual-monitor']).join(' ')}
+  data-aspect={wallpaper.aspectRatio || '16:9'}
 >
   <a
     href={`/wallpapers/${wallpaper.slug}`}
-    class="absolute inset-0 w-full h-full block overflow-hidden"
+    class="absolute inset-0 w-full h-full block overflow-hidden z-10"
   >
     <!-- Wallpaper Image -->
     <img
-      src={wallpaper.sourceCdn}
+      src={thumbSrc}
       alt={wallpaper.title}
       loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'low'}
       decoding="async"
       referrerpolicy="no-referrer"
-      class="w-full h-full object-cover select-none"
-      onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80'"
+      class="w-full h-full object-cover select-none transition-transform duration-300 ease-out group-hover:scale-105"
+      onerror="this.src='/images/mockup_cards/card-1-mountain.webp'"
     />
 
-    <!-- Top Left: 4K Glass Badge -->
-    <div class="absolute top-3 left-3 z-20 pointer-events-none">
-      <span class="px-2.5 py-1 rounded-lg bg-[#050607]/80 backdrop-blur-md border border-white/10 text-[11px] font-bold text-white tracking-wide shadow-sm">
-        4K
+    <!-- Top Badges Overlay (Res + Aspect - Solid Dark Capsule, No Heavy Backdrop Blur) -->
+    <div class="absolute top-2.5 inset-x-2.5 sm:inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+      <span class="card-badge-res px-2 sm:px-2.5 py-0.5 rounded-full bg-black/75 border border-white/15 text-white/90 text-[10px] sm:text-[11px] font-medium shadow-sm">
+        4K UHD
+      </span>
+      <span class="card-badge-aspect inline-flex items-center justify-center min-w-[32px] h-[22px] px-1.5 rounded-full bg-black/75 border border-white/15 text-white/80 text-[9px] sm:text-[10px] font-mono font-medium shadow-sm">
+        16:9
       </span>
     </div>
 
     <!-- Bottom Cinematic Gradient Overlay -->
-    <div class="absolute inset-0 wallpaper-overlay pointer-events-none z-10"></div>
+    <div class="absolute inset-x-0 bottom-0 h-32 sm:h-28 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10"></div>
 
     <!-- Bottom Metadata (Title, Category, Likes) -->
-    <div class="absolute bottom-0 inset-x-0 p-3 sm:p-3.5 z-20 flex items-end justify-between gap-2 pointer-events-none">
+    <div class="absolute bottom-0 inset-x-0 p-2.5 sm:p-3 z-20 flex items-end justify-between gap-1.5 pointer-events-none card-meta-box">
       <div class="min-w-0">
-        <h3 class="text-[13px] sm:text-sm font-semibold text-white truncate leading-tight group-hover:text-lumina-lime transition-colors">
+        <h3 class="text-xs sm:text-[13px] font-semibold text-white truncate leading-tight group-hover:text-walpix-lime transition-colors">
           {wallpaper.title}
         </h3>
-        <p class="text-[11px] text-[#A6ABB1] truncate mt-0.5 font-normal">
+        <p class="text-[10px] sm:text-[11px] text-[#A6ABB1] truncate mt-0.5 font-normal">
           {wallpaper.category || '4K UHD'}
         </p>
       </div>
 
       <!-- Likes Counter with Heart -->
-      <div class="flex items-center gap-1 text-[11px] sm:text-xs text-[#E0E2E5] font-medium shrink-0 pb-0.5">
-        <svg class="w-3.5 h-3.5 text-lumina-pink group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center gap-1 text-[10px] sm:text-xs text-[#E0E2E5] font-medium shrink-0 pb-0.5 card-likes-box">
+        <svg class="w-3.5 h-3.5 text-walpix-pink group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </svg>
         <span>{likesCount}</span>

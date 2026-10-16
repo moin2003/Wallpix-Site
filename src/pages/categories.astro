@@ -1,0 +1,315 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+import AdCard from '../components/AdCard.astro';
+import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
+import TopicStrip from '../components/TopicStrip.astro';
+import { CATEGORIES, wallpapers } from '../data/wallpapers';
+
+const categoryMetadata: Record<string, { desc: string; icon: string }> = {
+  'all': { desc: 'Browse all lossless 4K & 8K wallpapers in one unified gallery.', icon: 'sparkles' },
+  '4k-ultra-hd': { desc: 'True 3840×2160 pixel-dense backgrounds for ultra-high DPI screens.', icon: 'monitor' },
+  'anime-gaming': { desc: 'Moody cyberpunk warriors, legendary samurai, and ethereal anime art.', icon: 'gamepad' },
+  'amoled-black': { desc: 'True pitch black #000000 canvases engineered for OLED energy efficiency.', icon: 'moon' },
+  'cyberpunk-neon': { desc: 'Rain-soaked dystopian streets, neon signs, and futuristic high-speed vehicles.', icon: 'zap' },
+  'nature-scenery': { desc: 'Misty alpine mountains, glacial crystal lakes, and tranquil evergreen forests.', icon: 'mountain' },
+  'minimalist-abstract': { desc: 'Calming fluid waveforms, clean geometric spheres, and distraction-free gradients.', icon: 'layers' },
+  'cars-supercars': { desc: 'Exotic hypercars, track-ready GT3 beasts, and aggressive nocturnal silhouettes.', icon: 'gauge' },
+  'space-cosmic': { desc: 'Deep-field nebulae, celestial orbital galaxies, and planetary horizons.', icon: 'orbit' },
+  'dark-mode': { desc: 'Mysterious low-key cinematic shadows and ambient atmospheric lighting.', icon: 'eye' },
+  'fantasy': { desc: 'Celestial dragons, enchanted mystic groves, and majestic mythic castles.', icon: 'wand' },
+  'city': { desc: 'Tokyo rain skylines, Manhattan midnight architecture, and urban battlestations.', icon: 'building' },
+  'animals': { desc: 'Cyber neon predators, arctic snow wolves, and majestic sovereign wildlife.', icon: 'paw' },
+};
+
+const enrichedCategories = CATEGORIES.map((cat) => {
+  const meta = categoryMetadata[cat.slug] || {
+    desc: `Discover handpicked high-resolution 4K ${cat.name} wallpapers.`,
+    icon: 'sparkles',
+  };
+
+  const matchingWps = cat.slug === 'all'
+    ? wallpapers
+    : wallpapers.filter((w) => {
+        const cSlug = (w.category || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const cTags = (w.tags || []).map(t => t.toLowerCase());
+        return cSlug.includes(cat.slug) || cTags.includes(cat.slug) || (cat.slug === 'dark-mode' && (cSlug.includes('amoled') || cTags.includes('dark')));
+      });
+
+  const preview = matchingWps[0]?.sourceCdn || wallpapers[0]?.sourceCdn || '/images/mockup_cards/card-1-mountain.jpg';
+
+  return {
+    ...cat,
+    count: matchingWps.length > 0 ? matchingWps.length : 12,
+    preview,
+    description: meta.desc,
+  };
+});
+
+// Top 3 Spotlight Categories
+const spotlightCategories = enrichedCategories.filter(c => ['cyberpunk-neon', 'amoled-black', 'anime-gaming'].includes(c.slug));
+---
+
+<Layout
+  title="All Wallpaper Categories | Explore 50,000+ 4K Ultra HD Wallpapers"
+  description="Explore all WALPIX 4K wallpaper categories: Anime & Gaming, Cyberpunk & Neon, AMOLED Black, Nature, Supercars, Space, Minimalist, City, Fantasy, and Animals."
+>
+  <!-- Floating Glass Header -->
+  <Header currentCategory="categories" />
+
+  <main class="relative min-h-screen bg-[#020406] overflow-hidden pb-16">
+    
+    <!-- Ambient Green Background Glows -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-32 right-10 w-[600px] h-[600px] bg-walpix-lime/[0.04] rounded-full blur-[140px]"></div>
+      <div class="absolute top-1/3 -left-32 w-[650px] h-[650px] bg-walpix-lime/[0.03] rounded-full blur-[160px]"></div>
+      <div class="absolute bottom-20 right-1/4 w-[700px] h-[700px] bg-walpix-lime/[0.035] rounded-full blur-[180px]"></div>
+      <div class="absolute inset-0 bg-matrix-dots opacity-40"></div>
+    </div>
+
+    <!-- Full-Width Page Content (Left-Aligned, No Center Box Squishing) -->
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-6">
+      
+      <!-- Breadcrumbs (Left-Aligned) -->
+      <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono mb-4 text-left">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-walpix-lime font-bold">Categories</span>
+      </nav>
+
+      <!-- Full-Width Left-Aligned Header Bar -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/[0.08] text-left">
+        <div class="space-y-2 max-w-3xl text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C2FF06]/10 border border-[#C2FF06]/30 text-xs font-mono font-bold text-[#C2FF06] uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] shadow-[0_0_6px_#C2FF06]"></span>
+            <span>Explore Categories</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none text-left">
+            EXPLORE BY <span class="text-walpix-lime">CATEGORY</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-[#8E949E] text-left">
+            {enrichedCategories.length} curated 4K & 8K wallpaper collections.
+          </p>
+        </div>
+
+        <!-- Quick Filter Search Input for Categories -->
+        <div class="relative w-full md:w-80 shrink-0">
+          <input
+            id="category-search-input"
+            type="text"
+            placeholder="Search categories (e.g. anime, city, cars)..."
+            class="w-full h-11 pl-10 pr-4 bg-[#080C10] border border-white/15 focus:border-walpix-lime rounded-xl text-xs text-white placeholder-gray-400 outline-none transition-all shadow-inner"
+          />
+          <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Topic Hubs Quick Access Strip -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 pt-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold">Top Wallpaper Topics</span>
+        <a href="/topics" class="text-xs text-walpix-lime hover:underline font-medium">View All Topics & Devices →</a>
+      </div>
+      <TopicStrip />
+    </div>
+
+    <!-- AdSense Top Leaderboard Banner (Full Width) -->
+    <AdSenseLeaderboard className="pt-4 pb-6" variant="top" />
+
+    <!-- Section 1: Trending Spotlight Categories (Full Width Left-Aligned) -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-4 text-left">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-gray-400 font-bold flex items-center gap-2 text-left">
+          <span class="w-2 h-2 rounded-full bg-walpix-lime"></span>
+          <span>Trending Spotlight Themes</span>
+        </h2>
+        <span class="text-xs font-mono text-[#8E949E]">Updated Daily</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {spotlightCategories.map((spot) => (
+          <a
+            href={`/category/${spot.slug}`}
+            class="group relative h-56 rounded-2xl overflow-hidden border border-white/10 hover:border-walpix-lime/50 transition-all duration-300 shadow-xl flex flex-col justify-between p-6 text-left"
+          >
+            <!-- Background Image -->
+            <img
+              src={spot.preview}
+              alt={spot.name}
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#05070a] via-[#05070a]/70 to-black/30"></div>
+
+            <!-- Top Pill -->
+            <div class="relative z-10 flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-mono text-walpix-lime font-bold uppercase">
+                Spotlight
+              </span>
+              <span class="text-xs text-white/80 font-mono">
+                {spot.count}+ 4K Wallpapers
+              </span>
+            </div>
+
+            <!-- Bottom Content (Left-Aligned) -->
+            <div class="relative z-10 space-y-1 text-left">
+              <h3 class="text-2xl font-black text-white group-hover:text-walpix-lime transition-colors text-left">
+                {spot.name}
+              </h3>
+              <p class="text-xs text-gray-300 line-clamp-1 text-left">
+                {spot.description}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Section 2: Complete Category Grid (4-Column Full-Width Left-Aligned) -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-8 text-left">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5 text-left">
+          <span>All Wallpaper Categories</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-walpix-lime/10 border border-walpix-lime/20 text-xs font-mono text-walpix-lime font-bold">
+            {enrichedCategories.length} Genres
+          </span>
+        </h2>
+      </div>
+
+      <!-- 4-Column Widescreen Grid Matching Gallery Standards -->
+      <div id="category-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        {enrichedCategories.map((cat, idx) => {
+          const showAd = idx === 4 || idx === 8;
+          return (
+            <>
+              {showAd && (
+                <div class="category-ad-card col-span-1">
+                  <AdCard />
+                </div>
+              )}
+              <a
+                href={cat.slug === 'all' ? '/wallpapers' : `/category/${cat.slug}`}
+                class="category-item-card group relative aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.08] hover:border-walpix-lime/50 bg-[#05070A] transition-all duration-300 hover:-translate-y-1 shadow-md hover:shadow-card-hover flex flex-col justify-between p-5 text-left"
+                data-name={cat.name.toLowerCase()}
+                data-slug={cat.slug}
+                data-desc={cat.description.toLowerCase()}
+              >
+                <!-- Background Cover Image -->
+                <img
+                  src={cat.preview}
+                  alt={cat.name}
+                  class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  loading="lazy"
+                />
+                
+                <!-- Dark Cinema Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20 group-hover:via-black/50 transition-colors"></div>
+
+                <!-- Top Card Info Bar -->
+                <div class="relative z-10 flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-walpix-lime/40 text-[10px] font-mono font-bold text-walpix-lime shadow-[0_0_8px_rgba(194,255,6,0.2)]">
+                    {cat.count}+ Wallpapers
+                  </span>
+                  <span class="w-8 h-8 rounded-full bg-white/10 group-hover:bg-walpix-lime text-white group-hover:text-black flex items-center justify-center text-xs font-bold transition-all shadow-md">
+                    →
+                  </span>
+                </div>
+
+                <!-- Bottom Card Info Area (Left-Aligned) -->
+                <div class="relative z-10 space-y-1 text-left">
+                  <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-walpix-lime transition-colors leading-tight text-left">
+                    {cat.name}
+                  </h3>
+                  <p class="text-[11.5px] text-[#A0A5AD] line-clamp-2 leading-relaxed text-left">
+                    {cat.description}
+                  </p>
+                </div>
+              </a>
+            </>
+          );
+        })}
+      </div>
+
+      <!-- Live Search Empty State -->
+      <div id="category-search-empty" class="hidden py-16 text-center space-y-3">
+        <p class="text-lg font-bold text-white">No categories found matching your query.</p>
+        <button
+          id="category-reset-btn"
+          class="px-5 py-2 rounded-full bg-walpix-lime text-black font-extrabold text-xs"
+        >
+          Reset Search
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 3: Luxury Color Palette Explorer (ONLY this module is centered, as instructed) -->
+    <div class="w-full py-6">
+      <ColorPaletteFilter />
+    </div>
+
+    <!-- Bottom AdSense Banner (Full Width) -->
+    <AdSenseLeaderboard className="pt-6 pb-4" variant="bottom" />
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .bg-matrix-dots {
+    background-image: radial-gradient(rgba(194, 255, 6, 0.22) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+  }
+</style>
+
+<script>
+  // Live Category Search Filter
+  const searchInput = document.getElementById('category-search-input') as HTMLInputElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('.category-item-card');
+  const ads = document.querySelectorAll<HTMLElement>('.category-ad-card');
+  const emptyState = document.getElementById('category-search-empty');
+  const resetBtn = document.getElementById('category-reset-btn');
+
+  searchInput?.addEventListener('input', () => {
+    const query = (searchInput.value || '').trim().toLowerCase();
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const name = card.getAttribute('data-name') || '';
+      const slug = card.getAttribute('data-slug') || '';
+      const desc = card.getAttribute('data-desc') || '';
+
+      if (!query || name.includes(query) || slug.includes(query) || desc.includes(query)) {
+        card.style.display = 'flex';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    ads.forEach((ad) => {
+      ad.style.display = query ? 'none' : 'block';
+    });
+
+    if (visibleCount === 0) {
+      if (emptyState) emptyState.classList.remove('hidden');
+    } else {
+      if (emptyState) emptyState.classList.add('hidden');
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input'));
+    }
+  });
+</script>

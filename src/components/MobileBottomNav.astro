@@ -1,0 +1,185 @@
+---
+/**
+ * WALPIX 4K - Mobile Ultra-Luxury Frosted Glass Bottom Navigation Dock
+ * 
+ * Logic (Option 1):
+ * - On Homepage: Stays hidden at the top (scrollY <= 90px) so Hero and 'Browse by Category' are 100% uncovered!
+ * - As soon as user scrolls down into the wallpaper gallery (scrollY > 90px), it smoothly slides up into view!
+ * - Scrolling back to top smoothly slides it back down.
+ * - On other pages: Remains visible for seamless one-thumb navigation.
+ * - Strict Mobile Only (hidden on tablet/desktop sm:hidden)
+ */
+
+const pathname = Astro.url.pathname;
+const isHomePage = pathname === '/' || pathname === '';
+const isWallpaperDetailPage = pathname.startsWith('/wallpapers/') && pathname !== '/wallpapers';
+const shouldHideAtTop = isHomePage || isWallpaperDetailPage;
+
+const navItems = [
+  {
+    name: 'Home',
+    href: '/',
+    id: 'home',
+    isActive: pathname === '/' || pathname === '',
+    iconD: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+  },
+  {
+    name: 'Wallpapers',
+    href: '/wallpapers',
+    id: 'wallpapers',
+    isActive: pathname.startsWith('/wallpapers') || pathname.startsWith('/wallpaper/'),
+    iconD: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+  },
+  {
+    name: 'Studio Tools',
+    href: '/tools',
+    id: 'tools',
+    isActive: pathname.startsWith('/tools') || pathname.startsWith('/tool/'),
+    iconD: 'M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z',
+  },
+  {
+    name: 'Categories',
+    href: '/categories',
+    id: 'categories',
+    isActive: pathname.startsWith('/categories') || pathname.startsWith('/category/'),
+    iconD: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+  },
+  {
+    name: 'Community',
+    href: '/community',
+    id: 'community',
+    isActive: pathname.startsWith('/community'),
+    iconD: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
+  },
+];
+---
+
+<nav
+  id="mobile-bottom-nav"
+  data-is-home={shouldHideAtTop ? 'true' : 'false'}
+  aria-label="Mobile Navigation"
+  class={`sm:hidden fixed bottom-0 inset-x-0 z-50 transition-all duration-300 ease-out will-change-transform ${
+    shouldHideAtTop
+      ? 'translate-y-full opacity-0 pointer-events-none'
+      : 'translate-y-0 opacity-100 pointer-events-auto'
+  }`}
+>
+  <!-- Ultra-Luxury Frosted Blurry Glass Capsule Dock -->
+  <div class="frosted-glass-dock w-full px-2 pt-2 pb-[max(10px,env(safe-area-inset-bottom))]">
+    <div class="flex items-center justify-around max-w-md mx-auto">
+      {navItems.map((item) => {
+        return (
+          <a
+            href={item.href}
+            class={`relative flex flex-col items-center justify-center py-1 px-2 rounded-2xl transition-all duration-200 select-none group min-w-[58px] ${
+              item.isActive ? 'active' : ''
+            }`}
+          >
+            <!-- Glowing Icon Wrapper -->
+            <div class="relative w-7 h-7 flex items-center justify-center transition-transform duration-200 group-active:scale-90">
+              <!-- Radial Lime Aura Glow behind Active Icon -->
+              {item.isActive && (
+                <div class="active-aura-glow absolute inset-0 bg-[#C2FF06]/25 rounded-full blur-[8px] pointer-events-none"></div>
+              )}
+
+              <svg
+                class={`w-5 h-5 relative z-10 transition-colors duration-200 ${
+                  item.isActive
+                    ? 'text-[#C2FF06] drop-shadow-[0_0_8px_rgba(194,255,6,0.85)]'
+                    : 'text-[#94A3B8] group-hover:text-white'
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width={item.isActive ? '2.4' : '2'}
+                  d={item.iconD}
+                />
+              </svg>
+            </div>
+
+            <!-- Micro Typography Label -->
+            <span
+              class={`text-[10px] mt-0.5 tracking-tight whitespace-nowrap transition-colors duration-200 ${
+                item.isActive
+                  ? 'font-bold text-[#C2FF06] drop-shadow-[0_0_6px_rgba(194,255,6,0.4)]'
+                  : 'font-medium text-[#94A3B8] group-hover:text-white'
+              }`}
+            >
+              {item.name}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* ---------------------------------------------------------------------------
+     ULTRA-LUXURY FROSTED BLURRY GLASSMORPHISM DOCK
+     --------------------------------------------------------------------------- */
+  .frosted-glass-dock {
+    /* Translucent deep obsidian tint allowing background wallpapers to show through */
+    background: rgba(8, 12, 18, 0.65) !important;
+    
+    /* Heavy iOS-grade frosted glass blur */
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+
+    /* Soft curved top corners */
+    border-top-left-radius: 26px !important;
+    border-top-right-radius: 26px !important;
+
+    /* Delicate frosted specular top border */
+    border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+
+    /* Specular glass reflection & ambient drop shadow */
+    box-shadow: 
+      0 -8px 32px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  }
+</style>
+
+<script>
+  // Option 1 Logic: Show on scroll down, hide at top of homepage
+  (function initMobileBottomNavOption1() {
+    const nav = document.getElementById('mobile-bottom-nav');
+    if (!nav) return;
+
+    const isHome = nav.getAttribute('data-is-home') === 'true' || window.location.pathname === '/' || window.location.pathname === '';
+
+    let ticking = false;
+
+    function updateNav() {
+      const scrollY = window.scrollY;
+
+      if (isHome) {
+        // Option 1: On Homepage, keep hidden at top (scrollY <= 90px)
+        // so Hero & 'Browse by Category' are completely clear!
+        // When user scrolls down into the wallpaper gallery (> 90px), smoothly reveal!
+        if (scrollY > 90) {
+          nav.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+          nav.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        } else {
+          nav.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+          nav.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+        }
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNav);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Initial check on load
+    updateNav();
+  })();
+</script>

@@ -1,0 +1,145 @@
+---
+interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+const popularSearches = [
+  { label: 'Cyberpunk Neon 4K', query: 'cyberpunk-neon', count: '14.2k' },
+  { label: 'AMOLED Pure Black', query: 'amoled-black', count: '28.5k' },
+  { label: 'Space Cosmic Nebula', query: 'space-cosmic', count: '9.8k' },
+  { label: 'Hypercars & Supercars 8K', query: 'cars-supercars', count: '18.4k' },
+  { label: 'Anime Samurai & Fantasy', query: 'anime-gaming', count: '32.1k' },
+  { label: 'Misty Alpine Forest', query: 'nature-scenery', count: '11.6k' },
+  { label: 'Minimalist 3D Abstract', query: 'minimalist-abstract', count: '7.4k' },
+  { label: 'Sci-Fi Futuristic Cities', query: 'cyberpunk-neon', count: '15.9k' },
+  { label: 'Dark Mode Masterpieces', query: 'amoled-black', count: '21.0k' },
+  { label: 'Deep Ocean Aurora', query: 'nature-scenery', count: '8.3k' },
+];
+---
+
+<div class={`w-full px-4 sm:px-8 lg:px-12 ${className}`}>
+  <!-- Outer Discovery Container: Clean, Transparent, Spacious -->
+  <div class="relative flex flex-col md:flex-row items-start md:items-center gap-4 sm:gap-6 py-4 px-0 bg-transparent border-none shadow-none backdrop-blur-none overflow-hidden search-widget-container">
+    
+    <!-- Pinned Left Title Badge (Hidden on mobile per user request) -->
+    <div class="hidden md:flex items-center gap-3 shrink-0 pr-4 border-b md:border-b-0 md:border-r border-white/10 pb-2 md:pb-0">
+      <div class="w-9 h-9 rounded-xl bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center shadow-[0_0_12px_rgba(194,255,6,0.25)] shrink-0">
+        <svg class="w-4.5 h-4.5 text-[#C2FF06]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L9.5 8.5 3 11l6.5 2.5L12 20l2.5-6.5L21 11l-6.5-2.5z" />
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white whitespace-nowrap">
+            Popular Searches
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] shadow-[0_0_6px_#C2FF06]"></span>
+        </div>
+        <p class="text-[10px] text-[#8E949E] font-medium hidden sm:block">
+          Live Trending Tags
+        </p>
+      </div>
+    </div>
+
+    <!-- Infinite Auto-Scrolling Marquee Track with Smooth Edge Fades -->
+    <div class="relative flex-1 w-full min-w-0 overflow-hidden marquee-mask py-1.5">
+      <!-- Subtle Left Fade Shade -->
+      <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-r from-[#030405] via-[#030405]/80 to-transparent z-10"></div>
+      
+      <!-- Subtle Right Fade Shade -->
+      <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-l from-[#030405] via-[#030405]/80 to-transparent z-10"></div>
+
+      <div class="marquee-track flex items-center gap-2.5 sm:gap-3">
+        
+        <!-- Primary List (Smooth Rounded-Full Capsule Pills) -->
+        {popularSearches.map((topic) => (
+          <a
+            href={`/category/${topic.query}`}
+            class="group shrink-0 inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#080b0f] hover:bg-[#C2FF06] border border-white/[0.08] hover:border-[#C2FF06] text-xs sm:text-sm font-semibold text-[#CBD5E1] hover:text-[#050608] transition-all duration-200 hover:scale-[1.03] shadow-none hover:shadow-[0_0_18px_rgba(194,255,6,0.35)] cursor-pointer"
+          >
+            <span class="text-[#C2FF06] group-hover:text-[#050608] font-mono text-xs font-black transition-colors duration-200">#</span>
+            <span class="whitespace-nowrap font-bold group-hover:text-[#050608] transition-colors duration-200">{topic.label}</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-white/[0.06] group-hover:bg-black/15 text-[10px] sm:text-[11px] text-gray-400 group-hover:text-[#050608] font-mono font-bold transition-colors duration-200">
+              {topic.count}
+            </span>
+          </a>
+        ))}
+
+        <!-- Duplicated List for Seamless Infinite Loop -->
+        {popularSearches.map((topic) => (
+          <a
+            href={`/category/${topic.query}`}
+            class="group shrink-0 inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#080b0f] hover:bg-[#C2FF06] border border-white/[0.08] hover:border-[#C2FF06] text-xs sm:text-sm font-semibold text-[#CBD5E1] hover:text-[#050608] transition-all duration-200 hover:scale-[1.03] shadow-none hover:shadow-[0_0_18px_rgba(194,255,6,0.35)] cursor-pointer"
+            aria-hidden="true"
+            tabindex="-1"
+          >
+            <span class="text-[#C2FF06] group-hover:text-[#050608] font-mono text-xs font-black transition-colors duration-200">#</span>
+            <span class="whitespace-nowrap font-bold group-hover:text-[#050608] transition-colors duration-200">{topic.label}</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-white/[0.06] group-hover:bg-black/15 text-[10px] sm:text-[11px] text-gray-400 group-hover:text-[#050608] font-mono font-bold transition-colors duration-200">
+              {topic.count}
+            </span>
+          </a>
+        ))}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* Applied Container Specifics */
+  .search-widget-container {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    padding: 6px 0 !important;
+  }
+  @media (min-width: 640px) {
+    .search-widget-container {
+      padding: 16px 0 !important;
+    }
+  }
+
+  /* Hardware-Accelerated Marquee Mask without heavy CPU mask-image */
+  .marquee-mask {
+    position: relative;
+    overflow: hidden;
+    contain: paint;
+  }
+
+  /* Ultra-Smooth 60FPS Hardware-Accelerated Marquee Animation */
+  .marquee-track {
+    width: max-content;
+    animation: smoothMarquee 38s linear infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Pause auto-scroll on hover for easy clicking */
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes smoothMarquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+      overflow-x: auto;
+    }
+  }
+</style>

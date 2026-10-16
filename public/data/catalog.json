@@ -4,7 +4,7 @@
     "title": "Mountain Serenity",
     "slug": "mountain-serenity-4k",
     "category": "Nature",
-    "sourceCdn": "/images/mockup_cards/card-1-mountain.jpg",
+    "sourceCdn": "/images/wallpapers/mountain-serenity-4k.webp",
     "isHotlink": false,
     "views": 124000,
     "downloads": 6888,
@@ -19,6 +19,12 @@
       "4k",
       "serenity",
       "alpine"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
     ]
   },
   {
@@ -26,7 +32,7 @@
     "title": "Neon Drive",
     "slug": "neon-drive-cyberpunk-4k",
     "category": "Cyberpunk",
-    "sourceCdn": "/images/mockup_cards/card-2-neondrive.jpg",
+    "sourceCdn": "/images/wallpapers/neon-drive-cyberpunk-4k.webp",
     "isHotlink": false,
     "views": 281000,
     "downloads": 15611,
@@ -41,6 +47,12 @@
       "city",
       "night",
       "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
     ]
   },
   {
@@ -48,7 +60,7 @@
     "title": "Shadow Realm",
     "slug": "shadow-realm-anime-4k",
     "category": "Anime",
-    "sourceCdn": "/images/mockup_cards/card-3-shadowrealm.jpg",
+    "sourceCdn": "/images/wallpapers/shadow-realm-anime-4k.webp",
     "isHotlink": false,
     "views": 317000,
     "downloads": 17611,
@@ -63,6 +75,11 @@
       "shadow",
       "fantasy",
       "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
     ]
   },
   {
@@ -70,7 +87,7 @@
     "title": "Cosmic Horizon",
     "slug": "cosmic-horizon-space-4k",
     "category": "Space",
-    "sourceCdn": "/images/mockup_cards/card-4-cosmichorizon.jpg",
+    "sourceCdn": "/images/wallpapers/cosmic-horizon-space-4k.webp",
     "isHotlink": false,
     "views": 193000,
     "downloads": 10722,
@@ -85,6 +102,12 @@
       "nebula",
       "galaxy",
       "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
     ]
   },
   {
@@ -92,7 +115,7 @@
     "title": "Forest Calm",
     "slug": "forest-calm-waterfall-4k",
     "category": "Nature",
-    "sourceCdn": "/images/mockup_cards/card-5-forestcalm.jpg",
+    "sourceCdn": "/images/wallpapers/forest-calm-waterfall-4k.webp",
     "isHotlink": false,
     "views": 149000,
     "downloads": 8277,
@@ -107,6 +130,12 @@
       "green",
       "calm",
       "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
     ]
   },
   {
@@ -114,7 +143,7 @@
     "title": "Night Beast",
     "slug": "night-beast-supercar-4k",
     "category": "Cars",
-    "sourceCdn": "/images/mockup_cards/card-6-nightbeast.jpg",
+    "sourceCdn": "/images/wallpapers/night-beast-supercar-4k.webp",
     "isHotlink": false,
     "views": 226000,
     "downloads": 12555,
@@ -129,13 +158,18 @@
       "night",
       "beast",
       "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
     ]
   },
   {
     "title": "Cyberpunk Shinjuku Rain",
     "slug": "cyberpunk-shinjuku-rain-4k",
     "category": "Cyberpunk & Neon",
-    "sourceCdn": "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/cyberpunk-shinjuku-rain-4k.webp",
     "views": 89200,
     "downloads": 21400,
     "aspectRatio": "16:9",
@@ -148,13 +182,19 @@
     ],
     "id": "lumina-curated-101",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "AMOLED Dark Minimal Waves",
     "slug": "amoled-dark-minimal-waves-4k",
     "category": "AMOLED Black",
-    "sourceCdn": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/amoled-dark-minimal-waves-4k.webp",
     "views": 142000,
     "downloads": 43100,
     "aspectRatio": "16:9",
@@ -167,13 +207,18 @@
     ],
     "id": "lumina-curated-102",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
   },
   {
     "title": "Deep Space Pillars of Creation",
     "slug": "deep-space-pillars-creation-4k",
     "category": "Space & Cosmic",
-    "sourceCdn": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/deep-space-pillars-creation-4k.webp",
     "views": 95300,
     "downloads": 28700,
     "aspectRatio": "16:9",
@@ -186,13 +231,19 @@
     ],
     "id": "lumina-curated-103",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Nordic Alpine Sunset Glow",
     "slug": "nordic-alpine-sunset-glow-4k",
     "category": "Nature & Scenery",
-    "sourceCdn": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/nordic-alpine-sunset-glow-4k.webp",
     "views": 112000,
     "downloads": 34200,
     "aspectRatio": "16:9",
@@ -205,13 +256,19 @@
     ],
     "id": "lumina-curated-104",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Supercar Silhouette Night Glow",
     "slug": "supercar-silhouette-night-glow-4k",
     "category": "Cars & Supercars",
-    "sourceCdn": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/supercar-silhouette-night-glow-4k.webp",
     "views": 165000,
     "downloads": 51200,
     "aspectRatio": "16:9",
@@ -224,13 +281,17 @@
     ],
     "id": "lumina-curated-105",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
   },
   {
     "title": "Anime Blade Samurai in Mist",
     "slug": "anime-blade-samurai-mist-4k",
-    "category": "Anime & Gaming",
-    "sourceCdn": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
+    "category": "Anime",
+    "sourceCdn": "/images/wallpapers/anime-blade-samurai-mist-4k.webp",
     "views": 188000,
     "downloads": 62400,
     "aspectRatio": "16:9",
@@ -243,13 +304,17 @@
     ],
     "id": "lumina-curated-106",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
   },
   {
     "title": "Futuristic Synthwave Highway",
     "slug": "futuristic-synthwave-highway-4k",
     "category": "Cyberpunk & Neon",
-    "sourceCdn": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/futuristic-synthwave-highway-4k.webp",
     "views": 76400,
     "downloads": 19800,
     "aspectRatio": "16:9",
@@ -262,13 +327,19 @@
     ],
     "id": "lumina-curated-107",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Emerald Canyon Mist River",
     "slug": "emerald-canyon-mist-river-4k",
     "category": "Nature & Scenery",
-    "sourceCdn": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/emerald-canyon-mist-river-4k.webp",
     "views": 82100,
     "downloads": 24500,
     "aspectRatio": "16:9",
@@ -281,13 +352,19 @@
     ],
     "id": "lumina-curated-108",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Obsidian Dark Geometric Sphere",
     "slug": "obsidian-dark-geometric-sphere-4k",
     "category": "AMOLED Black",
-    "sourceCdn": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/obsidian-dark-geometric-sphere-4k.webp",
     "views": 99400,
     "downloads": 31200,
     "aspectRatio": "16:9",
@@ -300,13 +377,18 @@
     ],
     "id": "lumina-curated-109",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
   },
   {
     "title": "Cyberpunk Tokyo Alley Rain",
     "slug": "cyberpunk-tokyo-alley-rain-4k",
     "category": "Cyberpunk & Neon",
-    "sourceCdn": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/cyberpunk-tokyo-alley-rain-4k.webp",
     "views": 123000,
     "downloads": 38900,
     "aspectRatio": "16:9",
@@ -319,13 +401,19 @@
     ],
     "id": "lumina-curated-110",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Lofoten Islands Northern Lights",
     "slug": "lofoten-islands-northern-lights-4k",
     "category": "Nature & Scenery",
-    "sourceCdn": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/lofoten-islands-northern-lights-4k.webp",
     "views": 145000,
     "downloads": 47800,
     "aspectRatio": "16:9",
@@ -338,13 +426,19 @@
     ],
     "id": "lumina-curated-111",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Hypercar Racing Neon Reflections",
     "slug": "hypercar-racing-neon-reflections-4k",
     "category": "Cars & Supercars",
-    "sourceCdn": "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
+    "sourceCdn": "/images/wallpapers/hypercar-racing-neon-reflections-4k.webp",
     "views": 138000,
     "downloads": 44200,
     "aspectRatio": "16:9",
@@ -357,13 +451,17 @@
     ],
     "id": "lumina-curated-112",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
   },
   {
     "title": "Neon Horizon Cyber Sunset",
     "slug": "neon-horizon-cyber-sunset-4k",
     "category": "Cyberpunk & Neon",
-    "sourceCdn": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/neon-horizon-cyber-sunset-4k.webp",
     "views": 94000,
     "downloads": 31000,
     "aspectRatio": "16:9",
@@ -376,13 +474,19 @@
     ],
     "id": "lumina-catalog-201",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Minimal Dark Waveform Fluid",
     "slug": "minimal-dark-waveform-fluid-4k",
     "category": "Minimalist & Abstract",
-    "sourceCdn": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/minimal-dark-waveform-fluid-4k.webp",
     "views": 78000,
     "downloads": 26000,
     "aspectRatio": "16:9",
@@ -395,13 +499,18 @@
     ],
     "id": "lumina-catalog-202",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
   },
   {
     "title": "Orion Nebula Star Cluster",
     "slug": "orion-nebula-star-cluster-4k",
     "category": "Space & Cosmic",
-    "sourceCdn": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/orion-nebula-star-cluster-4k.webp",
     "views": 121000,
     "downloads": 39000,
     "aspectRatio": "16:9",
@@ -414,13 +523,19 @@
     ],
     "id": "lumina-catalog-203",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Misty Pine Forest Autumn Morning",
     "slug": "misty-pine-forest-autumn-morning-4k",
     "category": "Nature & Scenery",
-    "sourceCdn": "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/misty-pine-forest-autumn-morning-4k.webp",
     "views": 86000,
     "downloads": 27500,
     "aspectRatio": "16:9",
@@ -433,13 +548,19 @@
     ],
     "id": "lumina-catalog-204",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Matte Black GT3 Supercar",
     "slug": "matte-black-gt3-supercar-4k",
     "category": "Cars & Supercars",
-    "sourceCdn": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/matte-black-gt3-supercar-4k.webp",
     "views": 156000,
     "downloads": 49000,
     "aspectRatio": "16:9",
@@ -452,13 +573,18 @@
     ],
     "id": "lumina-catalog-205",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
   },
   {
     "title": "Anime Cyber City Neon Umbrella",
     "slug": "anime-cyber-city-neon-umbrella-4k",
-    "category": "Anime & Gaming",
-    "sourceCdn": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1000&q=80",
+    "category": "Anime",
+    "sourceCdn": "/images/wallpapers/anime-cyber-city-neon-umbrella-4k.webp",
     "views": 168000,
     "downloads": 54000,
     "aspectRatio": "16:9",
@@ -471,13 +597,17 @@
     ],
     "id": "lumina-catalog-206",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
   },
   {
     "title": "AMOLED Golden Particle Wave",
     "slug": "amoled-golden-particle-wave-4k",
     "category": "AMOLED Black",
-    "sourceCdn": "https://images.unsplash.com/photo-1507499739999-097706ad8914?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/amoled-golden-particle-wave-4k.webp",
     "views": 114000,
     "downloads": 38000,
     "aspectRatio": "16:9",
@@ -490,13 +620,18 @@
     ],
     "id": "lumina-catalog-207",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
   },
   {
     "title": "Bavarian Alps Crystal Lake Reflection",
     "slug": "bavarian-alps-crystal-lake-reflection-4k",
     "category": "Nature & Scenery",
-    "sourceCdn": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/bavarian-alps-crystal-lake-reflection-4k.webp",
     "views": 132000,
     "downloads": 41000,
     "aspectRatio": "16:9",
@@ -509,13 +644,19 @@
     ],
     "id": "lumina-catalog-208",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Retro 80s Grid Synthwave Sun",
     "slug": "retro-80s-grid-synthwave-sun-4k",
     "category": "Cyberpunk & Neon",
-    "sourceCdn": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/retro-80s-grid-synthwave-sun-4k.webp",
     "views": 105000,
     "downloads": 33000,
     "aspectRatio": "16:9",
@@ -528,13 +669,19 @@
     ],
     "id": "lumina-catalog-209",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
   },
   {
     "title": "Minimal Monolith In Dark Dunes",
     "slug": "minimal-monolith-dark-dunes-4k",
     "category": "Minimalist & Abstract",
-    "sourceCdn": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1000&q=80",
+    "sourceCdn": "/images/wallpapers/minimal-monolith-dark-dunes-4k.webp",
     "views": 89000,
     "downloads": 29000,
     "aspectRatio": "16:9",
@@ -547,6 +694,1000 @@
     ],
     "id": "lumina-catalog-210",
     "isHotlink": false,
-    "resolution": "3840\u00d72160"
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "title": "Cyber Jaguar Neon Predator",
+    "slug": "cyber-jaguar-neon-predator-4k",
+    "category": "Animals & Wildlife",
+    "sourceCdn": "/images/wallpapers/cyber-jaguar-neon-predator-4k.webp",
+    "views": 178000,
+    "downloads": 64200,
+    "aspectRatio": "16:9",
+    "colorHex": "#C2FF06",
+    "tags": [
+      "animals",
+      "wildlife",
+      "jaguar",
+      "cyber",
+      "neon",
+      "predator",
+      "4k"
+    ],
+    "id": "lumina-catalog-211",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "title": "Arctic Snow Wolf Moonlight",
+    "slug": "arctic-snow-wolf-moonlight-4k",
+    "category": "Animals & Wildlife",
+    "sourceCdn": "/images/wallpapers/arctic-snow-wolf-moonlight-4k.webp",
+    "views": 154000,
+    "downloads": 52900,
+    "aspectRatio": "16:9",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "animals",
+      "wolf",
+      "arctic",
+      "wildlife",
+      "winter",
+      "snow",
+      "4k"
+    ],
+    "id": "lumina-catalog-212",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "title": "Tokyo Rain Shibuya Skyline",
+    "slug": "tokyo-rain-shibuya-skyline-4k",
+    "category": "City & Urban",
+    "sourceCdn": "/images/wallpapers/tokyo-rain-shibuya-skyline-4k.webp",
+    "views": 210000,
+    "downloads": 81000,
+    "aspectRatio": "16:9",
+    "colorHex": "#F91ACF",
+    "tags": [
+      "city",
+      "urban",
+      "tokyo",
+      "skyline",
+      "architecture",
+      "night",
+      "rain",
+      "4k"
+    ],
+    "id": "lumina-catalog-213",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
+  },
+  {
+    "title": "Manhattan Midnight Skyscrapers",
+    "slug": "manhattan-midnight-skyscrapers-4k",
+    "category": "City & Urban",
+    "sourceCdn": "/images/wallpapers/manhattan-midnight-skyscrapers-4k.webp",
+    "views": 195000,
+    "downloads": 73400,
+    "aspectRatio": "16:9",
+    "colorHex": "#F4B400",
+    "tags": [
+      "city",
+      "urban",
+      "new york",
+      "manhattan",
+      "skyscrapers",
+      "architecture",
+      "4k"
+    ],
+    "id": "lumina-catalog-214",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "ultrawide"
+    ]
+  },
+  {
+    "title": "Celestial Dragon Mystic Citadel",
+    "slug": "celestial-dragon-mystic-citadel-4k",
+    "category": "Fantasy & Mythical",
+    "sourceCdn": "/images/wallpapers/celestial-dragon-mystic-citadel-4k.webp",
+    "views": 235000,
+    "downloads": 92100,
+    "aspectRatio": "16:9",
+    "colorHex": "#9D4EDD",
+    "tags": [
+      "fantasy",
+      "mythical",
+      "dragon",
+      "citadel",
+      "castle",
+      "magic",
+      "4k"
+    ],
+    "id": "lumina-catalog-215",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "title": "Luminescent Enchanted Grove",
+    "slug": "luminescent-enchanted-grove-4k",
+    "category": "Fantasy & Mythical",
+    "sourceCdn": "/images/wallpapers/luminescent-enchanted-grove-4k.webp",
+    "views": 162000,
+    "downloads": 58300,
+    "aspectRatio": "16:9",
+    "colorHex": "#2A9D8F",
+    "tags": [
+      "fantasy",
+      "enchanted",
+      "forest",
+      "magic",
+      "glow",
+      "fairy",
+      "4k"
+    ],
+    "id": "lumina-catalog-216",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "title": "Liquid Chrome Mercury Wave",
+    "slug": "liquid-chrome-mercury-wave-4k",
+    "category": "Minimalist & Abstract",
+    "sourceCdn": "/images/wallpapers/liquid-chrome-mercury-wave-4k.webp",
+    "views": 184000,
+    "downloads": 67100,
+    "aspectRatio": "16:9",
+    "colorHex": "#00C2CB",
+    "tags": [
+      "abstract",
+      "3d",
+      "chrome",
+      "mercury",
+      "liquid",
+      "minimalist",
+      "4k"
+    ],
+    "id": "lumina-catalog-217",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "title": "Iridescent Glass Prism Curves",
+    "slug": "iridescent-glass-prism-curves-4k",
+    "category": "Minimalist & Abstract",
+    "sourceCdn": "/images/wallpapers/iridescent-glass-prism-curves-4k.webp",
+    "views": 147000,
+    "downloads": 49800,
+    "aspectRatio": "16:9",
+    "colorHex": "#FF3FAE",
+    "tags": [
+      "abstract",
+      "glass",
+      "prism",
+      "iridescent",
+      "minimalist",
+      "geometry",
+      "4k"
+    ],
+    "id": "lumina-catalog-218",
+    "isHotlink": false,
+    "resolution": "3840\u00d72160",
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone"
+    ]
+  },
+  {
+    "id": "lumina-entity-1",
+    "title": "Spider-Man Across the Neon Spider-Verse",
+    "slug": "spider-man-across-neon-spider-verse-4k",
+    "category": "Superheroes",
+    "sourceCdn": "/images/wallpapers/spider-man-across-neon-spider-verse-4k.webp",
+    "isHotlink": false,
+    "views": 342000,
+    "downloads": 89400,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#E63946",
+    "tags": [
+      "spider-man",
+      "marvel",
+      "superhero",
+      "neon",
+      "cyberpunk",
+      "dark-aesthetic",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "dual-monitor",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-entity-2",
+    "title": "Porsche 911 GT3 RS Midnight Run",
+    "slug": "porsche-911-gt3-rs-midnight-run-4k",
+    "category": "Cars & Supercars",
+    "sourceCdn": "/images/wallpapers/porsche-911-gt3-rs-midnight-run-4k.webp",
+    "isHotlink": false,
+    "views": 412000,
+    "downloads": 112000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00C2CB",
+    "tags": [
+      "porsche-911",
+      "porsche",
+      "supercar",
+      "racing",
+      "cars",
+      "dark-aesthetic",
+      "speed",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-entity-3",
+    "title": "Studio Ghibli Lush Countryside Dream",
+    "slug": "studio-ghibli-lush-countryside-dream-4k",
+    "category": "Anime",
+    "sourceCdn": "/images/wallpapers/studio-ghibli-lush-countryside-dream-4k.webp",
+    "isHotlink": false,
+    "views": 298000,
+    "downloads": 76500,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#2A9D8F",
+    "tags": [
+      "studio-ghibli",
+      "anime",
+      "nature",
+      "landscape",
+      "calm",
+      "fantasy",
+      "art",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide"
+    ]
+  },
+  {
+    "id": "lumina-entity-4",
+    "title": "Naruto Sage Mode Shinobi Moon",
+    "slug": "naruto-sage-mode-shinobi-moon-4k",
+    "category": "Anime",
+    "sourceCdn": "/images/wallpapers/naruto-sage-mode-shinobi-moon-4k.webp",
+    "isHotlink": false,
+    "views": 385000,
+    "downloads": 98200,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#FF8C00",
+    "tags": [
+      "naruto",
+      "anime",
+      "ninja",
+      "moon",
+      "dark-aesthetic",
+      "action",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-entity-5",
+    "title": "Thomas Shelby Birmingham Vintage Noir",
+    "slug": "thomas-shelby-birmingham-vintage-noir-4k",
+    "category": "Dark Mode & Mystery",
+    "sourceCdn": "/images/wallpapers/thomas-shelby-birmingham-vintage-noir-4k.webp",
+    "isHotlink": false,
+    "views": 265000,
+    "downloads": 64200,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#1C1C1C",
+    "tags": [
+      "thomas-shelby",
+      "peaky-blinders",
+      "noir",
+      "vintage",
+      "dark-aesthetic",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-entity-6",
+    "title": "Interstellar Gargantua Event Horizon",
+    "slug": "interstellar-gargantua-event-horizon-4k",
+    "category": "Space & Cosmic",
+    "sourceCdn": "/images/wallpapers/interstellar-gargantua-event-horizon-4k.webp",
+    "isHotlink": false,
+    "views": 520000,
+    "downloads": 145000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#F4B400",
+    "tags": [
+      "interstellar",
+      "black-hole",
+      "space",
+      "cosmic",
+      "galaxy",
+      "sci-fi",
+      "ultrawide",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "ultrawide",
+      "dual-monitor",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-entity-7",
+    "title": "Cyberpunk City Neon Metropolis Rain",
+    "slug": "cyberpunk-city-neon-metropolis-rain-4k",
+    "category": "Cyberpunk & Neon",
+    "sourceCdn": "/images/wallpapers/cyberpunk-city-neon-metropolis-rain-4k.webp",
+    "isHotlink": false,
+    "views": 480000,
+    "downloads": 138000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "cyberpunk-city",
+      "cyberpunk",
+      "neon",
+      "city",
+      "rain",
+      "tokyo",
+      "night",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-entity-8",
+    "title": "The Dark Knight Gotham Rain Sentinel",
+    "slug": "dark-knight-gotham-rain-sentinel-4k",
+    "category": "Dark Mode & Mystery",
+    "sourceCdn": "/images/wallpapers/dark-knight-gotham-rain-sentinel-4k.webp",
+    "isHotlink": false,
+    "views": 390000,
+    "downloads": 104000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#1B263B",
+    "tags": [
+      "batman",
+      "superhero",
+      "gotham",
+      "dark-aesthetic",
+      "rain",
+      "night",
+      "amoled-black",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-110",
+    "title": "Ghost of Tsushima Moonlight Ronin",
+    "slug": "ghost-of-tsushima-moonlight-ronin-4k",
+    "category": "Anime & Gaming",
+    "sourceCdn": "/images/wallpapers/ghost-of-tsushima-moonlight-ronin-4k.webp",
+    "isHotlink": false,
+    "views": 412000,
+    "downloads": 89000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#E63946",
+    "tags": [
+      "samurai",
+      "ghost-of-tsushima",
+      "ronin",
+      "anime",
+      "gaming",
+      "katana",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-111",
+    "title": "Elden Ring Erdtree Golden Horizon",
+    "slug": "elden-ring-erdtree-golden-horizon-4k",
+    "category": "Anime & Gaming",
+    "sourceCdn": "/images/wallpapers/elden-ring-erdtree-golden-horizon-4k.webp",
+    "isHotlink": false,
+    "views": 650000,
+    "downloads": 182000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#F4B400",
+    "tags": [
+      "elden-ring",
+      "erdtree",
+      "fantasy",
+      "gaming",
+      "gold",
+      "rpg",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-112",
+    "title": "Gears of War E-Day Emergence Storm",
+    "slug": "gears-of-war-e-day-emergence-storm-4k",
+    "category": "Anime & Gaming",
+    "sourceCdn": "/images/wallpapers/gears-of-war-e-day-emergence-storm-4k.webp",
+    "isHotlink": false,
+    "views": 380000,
+    "downloads": 94000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#C2FF06",
+    "tags": [
+      "gears-of-war",
+      "e-day",
+      "marcus-fenix",
+      "xbox",
+      "gaming",
+      "locust",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide"
+    ]
+  },
+  {
+    "id": "lumina-curated-113",
+    "title": "Phantom Blade Zero Rainblade Duel",
+    "slug": "phantom-blade-zero-rainblade-duel-4k",
+    "category": "Anime & Gaming",
+    "sourceCdn": "/images/wallpapers/phantom-blade-zero-rainblade-duel-4k.webp",
+    "isHotlink": false,
+    "views": 290000,
+    "downloads": 72000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#0D1B2A",
+    "tags": [
+      "phantom-blade",
+      "kungfu-punk",
+      "samurai",
+      "gaming",
+      "rain",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-114",
+    "title": "Neon Cyberpunk Akira Neo Tokyo",
+    "slug": "neon-cyberpunk-akira-neo-tokyo-4k",
+    "category": "Cyberpunk & Neon",
+    "sourceCdn": "/images/wallpapers/neon-cyberpunk-akira-neo-tokyo-4k.webp",
+    "isHotlink": false,
+    "views": 520000,
+    "downloads": 135000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "cyberpunk",
+      "akira",
+      "neo-tokyo",
+      "synthwave",
+      "neon",
+      "anime",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-115",
+    "title": "Porsche 911 GT3 RS Neon Cyber Drift",
+    "slug": "porsche-911-gt3-rs-neon-cyber-drift-4k",
+    "category": "Cars & Bikes",
+    "sourceCdn": "/images/wallpapers/porsche-911-gt3-rs-neon-cyber-drift-4k.webp",
+    "isHotlink": false,
+    "views": 480000,
+    "downloads": 124000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#C2FF06",
+    "tags": [
+      "porsche",
+      "porsche-911",
+      "supercar",
+      "cars",
+      "drift",
+      "speed",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-116",
+    "title": "Lamborghini Revuelto Stealth Matte Black",
+    "slug": "lamborghini-revuelto-stealth-matte-black-4k",
+    "category": "Cars & Bikes",
+    "sourceCdn": "/images/wallpapers/lamborghini-revuelto-stealth-matte-black-4k.webp",
+    "isHotlink": false,
+    "views": 560000,
+    "downloads": 147000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#1C1C1C",
+    "tags": [
+      "lamborghini",
+      "revuelto",
+      "supercar",
+      "hypercar",
+      "matte-black",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-117",
+    "title": "BMW M1000RR Cyber Superbike Night",
+    "slug": "bmw-m1000rr-cyber-superbike-night-4k",
+    "category": "Cars & Bikes",
+    "sourceCdn": "/images/wallpapers/bmw-m1000rr-cyber-superbike-night-4k.webp",
+    "isHotlink": false,
+    "views": 310000,
+    "downloads": 82000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "bmw",
+      "superbike",
+      "motorcycle",
+      "bike",
+      "racing",
+      "speed",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-118",
+    "title": "AMOLED Pure Void OLED Waves",
+    "slug": "amoled-pure-void-oled-waves-4k",
+    "category": "AMOLED Black",
+    "sourceCdn": "/images/wallpapers/amoled-pure-void-oled-waves-4k.webp",
+    "isHotlink": false,
+    "views": 740000,
+    "downloads": 215000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#000000",
+    "tags": [
+      "amoled",
+      "pure-black",
+      "oled",
+      "minimal",
+      "abstract",
+      "dark",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-119",
+    "title": "AMOLED Luminous Neon Ring Geometry",
+    "slug": "amoled-luminous-neon-ring-geometry-4k",
+    "category": "AMOLED Black",
+    "sourceCdn": "/images/wallpapers/amoled-luminous-neon-ring-geometry-4k.webp",
+    "isHotlink": false,
+    "views": 490000,
+    "downloads": 138000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#C2FF06",
+    "tags": [
+      "amoled",
+      "neon",
+      "geometry",
+      "ring",
+      "pure-black",
+      "dark-mode",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-120",
+    "title": "James Webb Deep Space Carina Nebula",
+    "slug": "james-webb-deep-space-carina-nebula-4k",
+    "category": "Space & Cosmic",
+    "sourceCdn": "/images/wallpapers/james-webb-deep-space-carina-nebula-4k.webp",
+    "isHotlink": false,
+    "views": 890000,
+    "downloads": 280000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#9D4EDD",
+    "tags": [
+      "jwst",
+      "nebula",
+      "space",
+      "carina",
+      "galaxy",
+      "nasa",
+      "cosmic",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-121",
+    "title": "Aurora Borealis Nordic Frozen Fjord",
+    "slug": "aurora-borealis-nordic-frozen-fjord-4k",
+    "category": "Nature & Scenery",
+    "sourceCdn": "/images/wallpapers/aurora-borealis-nordic-frozen-fjord-4k.webp",
+    "isHotlink": false,
+    "views": 620000,
+    "downloads": 195000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#2A9D8F",
+    "tags": [
+      "aurora",
+      "northern-lights",
+      "fjord",
+      "norway",
+      "winter",
+      "nature",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-122",
+    "title": "Mount Fuji Cherry Blossom Sunset Peak",
+    "slug": "mount-fuji-cherry-blossom-sunset-peak-4k",
+    "category": "Nature & Scenery",
+    "sourceCdn": "/images/wallpapers/mount-fuji-cherry-blossom-sunset-peak-4k.webp",
+    "isHotlink": false,
+    "views": 580000,
+    "downloads": 172000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#FF6B6B",
+    "tags": [
+      "mount-fuji",
+      "japan",
+      "cherry-blossom",
+      "sakura",
+      "sunset",
+      "mountain",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-123",
+    "title": "Minimalist Desert Dunes Golden Hour",
+    "slug": "minimalist-desert-dunes-golden-hour-4k",
+    "category": "Minimalist & Abstract",
+    "sourceCdn": "/images/wallpapers/minimalist-desert-dunes-golden-hour-4k.webp",
+    "isHotlink": false,
+    "views": 340000,
+    "downloads": 98000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#E3B505",
+    "tags": [
+      "desert",
+      "minimalist",
+      "dunes",
+      "sand",
+      "golden-hour",
+      "clean",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide"
+    ]
+  },
+  {
+    "id": "lumina-curated-124",
+    "title": "Abstract 3D Liquid Chrome Waves",
+    "slug": "abstract-3d-liquid-chrome-waves-4k",
+    "category": "Minimalist & Abstract",
+    "sourceCdn": "/images/wallpapers/abstract-3d-liquid-chrome-waves-4k.webp",
+    "isHotlink": false,
+    "views": 420000,
+    "downloads": 118000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "abstract",
+      "chrome",
+      "liquid",
+      "3d",
+      "render",
+      "fluid",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-125",
+    "title": "Castlevania Belmont Gothic Blood Moon",
+    "slug": "castlevania-belmont-gothic-blood-moon-4k",
+    "category": "Dark Mode & Mystery",
+    "sourceCdn": "/images/wallpapers/castlevania-belmont-gothic-blood-moon-4k.webp",
+    "isHotlink": false,
+    "views": 390000,
+    "downloads": 106000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#800020",
+    "tags": [
+      "castlevania",
+      "belmont",
+      "dracula",
+      "gothic",
+      "blood-moon",
+      "vampire",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-126",
+    "title": "Cyberpunk Tokyo Rain Neon Alley Shinjuku",
+    "slug": "cyberpunk-tokyo-rain-neon-alley-shinjuku-4k",
+    "category": "Cyberpunk & Neon",
+    "sourceCdn": "/images/wallpapers/cyberpunk-tokyo-rain-neon-alley-shinjuku-4k.webp",
+    "isHotlink": false,
+    "views": 670000,
+    "downloads": 210000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#00F0FF",
+    "tags": [
+      "cyberpunk",
+      "tokyo",
+      "shinjuku",
+      "rain",
+      "neon",
+      "night",
+      "city",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor"
+    ]
+  },
+  {
+    "id": "lumina-curated-127",
+    "title": "Misty Pine Forest Alpine Sunlight",
+    "slug": "misty-pine-forest-alpine-sunlight-4k",
+    "category": "Nature & Scenery",
+    "sourceCdn": "/images/wallpapers/misty-pine-forest-alpine-sunlight-4k.webp",
+    "isHotlink": false,
+    "views": 450000,
+    "downloads": 132000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#1B4332",
+    "tags": [
+      "forest",
+      "trees",
+      "mist",
+      "sunlight",
+      "pine",
+      "nature",
+      "alpine",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide"
+    ]
+  },
+  {
+    "id": "lumina-curated-128",
+    "title": "Interstellar Black Hole Accretion Disk",
+    "slug": "interstellar-black-hole-accretion-disk-4k",
+    "category": "Space & Cosmic",
+    "sourceCdn": "/images/wallpapers/interstellar-black-hole-accretion-disk-4k.webp",
+    "isHotlink": false,
+    "views": 780000,
+    "downloads": 245000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#F4B400",
+    "tags": [
+      "interstellar",
+      "black-hole",
+      "space",
+      "gargantua",
+      "physics",
+      "cosmos",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide",
+      "dual-monitor",
+      "amoled-black"
+    ]
+  },
+  {
+    "id": "lumina-curated-129",
+    "title": "Ferrari Daytona SP3 Rosso Corsa Speed",
+    "slug": "ferrari-daytona-sp3-rosso-corsa-speed-4k",
+    "category": "Cars & Bikes",
+    "sourceCdn": "/images/wallpapers/ferrari-daytona-sp3-rosso-corsa-speed-4k.webp",
+    "isHotlink": false,
+    "views": 510000,
+    "downloads": 142000,
+    "aspectRatio": "16:9",
+    "resolution": "3840\u00d72160",
+    "colorHex": "#E63946",
+    "tags": [
+      "ferrari",
+      "daytona",
+      "rosso-corsa",
+      "supercar",
+      "hypercar",
+      "speed",
+      "4k"
+    ],
+    "screenTypes": [
+      "desktop-4k",
+      "phone-iphone",
+      "ultrawide"
+    ]
   }
 ]

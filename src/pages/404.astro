@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="404 — Signal Lost | WALPIX 4K"
+  description="The wallpaper or page you are looking for does not exist or has been moved."
+>
+  <Header />
+
+  <main class="min-h-[70vh] flex items-center justify-center px-4 sm:px-8 py-16">
+    <div class="max-w-xl text-center space-y-6">
+      <div class="relative inline-block">
+        <span class="text-8xl sm:text-9xl font-black font-mono tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-walpix-lime via-walpix-lime/60 to-transparent drop-shadow-[0_0_35px_rgba(194,255,6,0.3)]">
+          404
+        </span>
+        <div class="absolute -bottom-2 inset-x-0 h-1 bg-walpix-lime/80 blur-sm"></div>
+      </div>
+
+      <div class="space-y-2">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white">
+          Signal Lost in the Void
+        </h1>
+        <p class="text-sm text-[#8E949E] max-w-md mx-auto">
+          The 4K wallpaper or asset you're searching for might have drifted into deep space or moved to another coordinates.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+        <a
+          href="/"
+          class="px-6 py-3 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-black font-extrabold text-xs transition-all shadow-lg hover:shadow-[0_0_20px_rgba(194,255,6,0.35)]"
+        >
+          Return to 4K Gallery
+        </a>
+        <a
+          href="/categories"
+          class="px-6 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/15 text-white font-bold text-xs transition-all"
+        >
+          Browse Categories
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

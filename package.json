@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev --host",
-    "start": "astro dev --host",
-    "build": "astro build",
-    "preview": "astro preview"
+    "dev": "node --max-old-space-size=8192 ./node_modules/astro/astro.js dev --host",
+    "start": "node --max-old-space-size=8192 ./node_modules/astro/astro.js dev --host",
+    "build": "node --max-old-space-size=8192 ./node_modules/astro/astro.js build",
+    "preview": "node --max-old-space-size=8192 ./node_modules/astro/astro.js preview"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",

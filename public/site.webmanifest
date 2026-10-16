@@ -1,0 +1,28 @@
+{
+  "name": "WALPIX 4K Wallpapers",
+  "short_name": "WALPIX",
+  "description": "Download free ultra HD 4K, 2K and AMOLED wallpapers for desktop and mobile.",
+  "icons": [
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "theme_color": "#030405",
+  "background_color": "#030405",
+  "display": "standalone"
+}

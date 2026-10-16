@@ -1,0 +1,250 @@
+---
+import { MAIN_CATEGORIES } from '../data/taxonomy';
+import { CATEGORY_SUBFOLDERS, type SubFolderItem } from './CategorySubFolderStrip.astro';
+import AdCard from './AdCard.astro';
+import { ADSENSE_CONFIG } from '../config/adsense';
+
+interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Curated high quality themed fallback covers for subtopics
+const fallbackThemedCovers: Record<string, string[]> = {
+  'anime': [
+    '/images/mockup_cards/card-3-shadowrealm.jpg',
+    'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+    'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+    '/images/mockup_cards/card-5-forestcalm.jpg',
+    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+    '/images/mockup_cards/card-3-shadowrealm.webp',
+  ],
+  'gaming': [
+    '/images/mockup_cards/card-2-neondrive.jpg',
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80',
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+    'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80',
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80',
+    '/images/mockup_cards/card-1-mountain.jpg',
+    'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&q=80',
+    '/images/mockup_cards/card-6-nightbeast.jpg',
+  ],
+  'cars': [
+    '/images/mockup_cards/card-1-mountain.jpg',
+    '/images/mockup_cards/card-6-nightbeast.jpg',
+    'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
+    '/images/mockup_cards/card-2-neondrive.jpg',
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80',
+    'https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&q=80',
+  ],
+  'amoled': [
+    '/images/mockup_cards/card-6-nightbeast.jpg',
+    '/images/mockup_cards/card-3-shadowrealm.jpg',
+    '/images/mockup_cards/card-2-neondrive.jpg',
+    '/images/mockup_cards/card-5-forestcalm.jpg',
+    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+  ],
+  'cyberpunk': [
+    '/images/mockup_cards/card-2-neondrive.jpg',
+    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    '/images/mockup_cards/card-3-shadowrealm.jpg',
+    '/images/mockup_cards/card-6-nightbeast.jpg',
+  ],
+  'space': [
+    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+    'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800&q=80',
+  ],
+  'nature': [
+    '/images/mockup_cards/card-1-mountain.jpg',
+    '/images/mockup_cards/card-5-forestcalm.jpg',
+    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+  ],
+  'superheroes': [
+    'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&q=80',
+    '/images/mockup_cards/card-6-nightbeast.jpg',
+    '/images/mockup_cards/card-2-neondrive.jpg',
+    '/images/mockup_cards/card-3-shadowrealm.jpg',
+  ],
+};
+
+const defaultFallbacks = [
+  '/images/mockup_cards/card-1-mountain.jpg',
+  '/images/mockup_cards/card-2-neondrive.jpg',
+  '/images/mockup_cards/card-3-shadowrealm.jpg',
+  '/images/mockup_cards/card-4-cosmichorizon.jpg',
+  '/images/mockup_cards/card-5-forestcalm.jpg',
+  '/images/mockup_cards/card-6-nightbeast.jpg',
+];
+
+const ALL_CATEGORY_KEYS = [
+  '4k', 'hd', 'cartoon', 'anime', 'gaming', 'music', 'amoled', 'cyberpunk',
+  'cars', 'nature', 'space', 'superheroes', 'movies', 'tv-shows',
+  'minimalist', 'abstract', 'dark', 'fantasy', 'city', 'animals', 'celebrities', 'sports'
+];
+
+function findTaxonomyCategory(k: string) {
+  if (k === '4k') return MAIN_CATEGORIES.find(c => c.id === '4k-ultra-hd') || { name: '4K Ultra HD', slug: '4k-ultra-hd', count: '50,000+ Wallpapers', description: 'Browse ultra high definition 3840×2160 UHD wallpapers.', subTopics: [] };
+  if (k === 'hd') return MAIN_CATEGORIES.find(c => c.id === 'hd-wallpapers') || { name: 'HD Wallpapers', slug: 'hd-wallpapers', count: '30,000+ Wallpapers', description: 'Crystal clear Full HD 1080p and 2K wallpapers.', subTopics: [] };
+  if (k === 'minimalist' || k === 'abstract') return MAIN_CATEGORIES.find(c => c.slug?.includes('minimalist') || c.id === 'minimalist-abstract') || { name: 'Minimalist & 3D Abstract', slug: 'minimalist-abstract', count: '10,000+ Wallpapers', description: 'Clean geometry, liquid chrome, prism reflections and minimal design.', subTopics: [] };
+  if (k === 'dark') return MAIN_CATEGORIES.find(c => c.slug?.includes('dark') || c.id === 'dark-mode') || { name: 'Dark Mode & Void', slug: 'dark-mode', count: '12,000+ Wallpapers', description: 'Pure obsidian void, dark gothic aesthetics, and minimal black backgrounds.', subTopics: [] };
+  if (k === 'fantasy') return { name: 'Fantasy & Mythical', slug: 'fantasy', count: '8,500+ Wallpapers', description: 'Celestial dragons, enchanted realms, and magical citadel worlds.', subTopics: [{ name: 'Celestial Dragons', slug: 'dragons', count: '640+' }, { name: 'Enchanted Forest', slug: 'enchanted-forest', count: '520+' }, { name: 'Dark Citadel', slug: 'dark-citadel', count: '480+' }, { name: 'Magic Runes', slug: 'magic-runes', count: '310+' }] };
+  if (k === 'city') return { name: 'City & Architecture', slug: 'city', count: '9,200+ Wallpapers', description: 'Neo Tokyo rain, Manhattan skylines, and futuristic cyberpunk megacities.', subTopics: [{ name: 'Tokyo Neon Alley', slug: 'tokyo-neon', count: '1,240+' }, { name: 'Manhattan Midnight Skyline', slug: 'manhattan-skyline', count: '980+' }, { name: 'Futuristic Megacity', slug: 'futuristic-city', count: '750+' }] };
+  return MAIN_CATEGORIES.find(c => c.id === k || c.slug === k || c.slug?.includes(k));
+}
+
+// Build exhaustive folder catalog for EVERY category in the toolbar
+const categoryFolderCatalog = ALL_CATEGORY_KEYS.map((catKey) => {
+  const baseData = CATEGORY_SUBFOLDERS[catKey];
+  const tax = findTaxonomyCategory(catKey);
+  const taxSubtopics = tax?.subTopics || [];
+
+  const existingSlugs = new Set<string>();
+  const mergedFolders: SubFolderItem[] = [];
+
+  // 1. Add base curated folders first if defined
+  if (baseData && baseData.subFolders) {
+    baseData.subFolders.forEach(folder => {
+      existingSlugs.add(folder.slug);
+      mergedFolders.push(folder);
+    });
+  }
+
+  // 2. Add all subTopics from taxonomy up to 36 cards per category
+  const fallbackList = fallbackThemedCovers[catKey] || defaultFallbacks;
+  const catName = baseData?.name || tax?.name || catKey.toUpperCase();
+  
+  for (let i = 0; i < taxSubtopics.length && mergedFolders.length < 36; i++) {
+    const sub = taxSubtopics[i];
+    if (!existingSlugs.has(sub.slug)) {
+      existingSlugs.add(sub.slug);
+      mergedFolders.push({
+        name: sub.name,
+        slug: sub.slug,
+        count: sub.count.includes('Wallpapers') ? sub.count : `${sub.count} Wallpapers`,
+        badge: `${catName} Hub`,
+        thumb: fallbackList[i % fallbackList.length],
+        tagQuery: sub.slug
+      });
+    }
+  }
+
+  return {
+    catKey,
+    name: catName,
+    slug: baseData?.slug || tax?.slug || catKey,
+    totalCount: baseData?.totalCount || tax?.count || '10,000+ Wallpapers',
+    description: baseData?.description || tax?.description || `Explore ultra HD 4K wallpapers in ${catName}.`,
+    hubUrl: baseData?.hubUrl || `/category/${catKey}`,
+    folders: mergedFolders
+  };
+});
+
+// High-Speed Thumbnail Optimizer
+function getFolderThumb(rawUrl: string): string {
+  if (!rawUrl) return '/images/mockup_cards/card-1-mountain.webp';
+  if (rawUrl.startsWith('/images/mockup_cards/') && rawUrl.endsWith('.jpg')) {
+    return rawUrl.replace('.jpg', '.webp');
+  }
+  if (rawUrl.includes('images.unsplash.com')) {
+    try {
+      const u = new URL(rawUrl);
+      u.searchParams.set('w', '440');
+      u.searchParams.set('q', '70');
+      u.searchParams.set('auto', 'format');
+      u.searchParams.set('fit', 'crop');
+      u.searchParams.set('fm', 'webp');
+      return u.toString();
+    } catch {
+      return rawUrl;
+    }
+  }
+  return rawUrl;
+}
+---
+
+<div id="category-folder-views-container" class={`w-full ${className}`}>
+  {categoryFolderCatalog.map((catGroup) => (
+    <div
+      id={`category-folders-${catGroup.catKey}`}
+      class="category-folders-view hidden w-full px-4 sm:px-6 lg:px-10 pt-2 pb-12 transition-opacity duration-300"
+    >
+      <!-- 3-Column Large Visual Franchise / Sub-Folder Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        {catGroup.folders.map((folder, index) => {
+          const showAd = ADSENSE_CONFIG.isLive && (index === 5 || index === 17 || index === 29);
+          const thumbSrc = getFolderThumb(folder.thumb);
+          return (
+            <>
+              <a
+                href={`/tag/${folder.slug}`}
+                class="group relative block aspect-[16/9] w-full rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/70 shadow-xl hover:shadow-[0_10px_35px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
+              >
+                <!-- Full-Bleed 16:9 Thumbnail -->
+                <img
+                  src={thumbSrc}
+                  alt={`${folder.name} 4K Wallpapers Collection`}
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                  onerror="this.src='/images/mockup_cards/card-1-mountain.webp'"
+                />
+
+                <!-- Cinematic Dark Vignette Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20 group-hover:via-black/30 transition-colors"></div>
+
+                <!-- Top Left Badge -->
+                {folder.badge && (
+                  <div class="absolute top-3 left-3 z-10">
+                    <span class="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono text-walpix-lime font-bold shadow-md">
+                      {folder.badge}
+                    </span>
+                  </div>
+                )}
+
+                <!-- Top Right Folder Icon -->
+                <div class="absolute top-3 right-3 z-10 w-8 h-8 rounded-xl bg-black/60 backdrop-blur-md border border-white/15 flex items-center justify-center text-walpix-lime group-hover:bg-walpix-lime group-hover:text-black transition-all shadow-md">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                </div>
+
+                <!-- Bottom Card Content Area (Title + Count + Explore Arrow) -->
+                <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 z-10 space-y-1.5">
+                  <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-md">
+                    {folder.name}
+                  </h3>
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono text-zinc-300 font-medium group-hover:text-white transition-colors">
+                      {folder.count}
+                    </span>
+                    <span class="text-xs font-bold text-walpix-lime flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span>Open Folder</span>
+                      <span>→</span>
+                    </span>
+                  </div>
+                </div>
+              </a>
+
+              {showAd && (
+                <div class="col-span-1 aspect-[16/9] w-full">
+                  <AdCard />
+                </div>
+              )}
+            </>
+          );
+        })}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .category-folders-view {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px 500px;
+  }
+</style>

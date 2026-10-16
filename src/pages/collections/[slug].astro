@@ -1,0 +1,108 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WallpaperCard from '../../components/WallpaperCard.astro';
+import OrientationToggle from '../../components/OrientationToggle.astro';
+import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
+import { collections } from '../../data/collections';
+import { wallpapers } from '../../data/wallpapers';
+
+export function getStaticPaths() {
+  return collections.map((col) => ({
+    params: { slug: col.slug },
+    props: { collection: col },
+  }));
+}
+
+const { collection } = Astro.props;
+
+// Get wallpapers in this collection
+const packWallpapers = wallpapers.filter((w) =>
+  collection.wallpaperSlugs.includes(w.slug) ||
+  w.category.toLowerCase().includes(collection.featuredCategory.toLowerCase())
+).slice(0, 12);
+---
+
+<Layout
+  title={`${collection.title} Wallpaper Collection`}
+  description={collection.description}
+  image={collection.coverImage}
+>
+  <Header currentCategory="collections" />
+
+  <main class="min-h-screen pb-16 bg-[#020406]">
+    <!-- Breadcrumbs -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 pt-6 text-left">
+      <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/collections" class="hover:text-white transition-colors">Collections</a>
+        <span>/</span>
+        <span class="text-walpix-lime font-bold">{collection.title}</span>
+      </nav>
+    </div>
+
+    <!-- Collection Header Banner -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-8 text-left">
+      <div class="relative rounded-3xl overflow-hidden border border-white/10 bg-[#05070a] p-5 sm:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 shadow-2xl text-left">
+        <!-- Ambient Backdrop -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/60 z-10"></div>
+        <img
+          src={collection.coverImage}
+          alt={collection.title}
+          class="absolute inset-0 w-full h-full object-cover opacity-35"
+        />
+
+        <div class="relative z-20 space-y-3 sm:space-y-4 max-w-3xl text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-walpix-lime/15 border border-walpix-lime/30 text-xs font-mono font-bold text-walpix-lime uppercase">
+            <span>{collection.featuredCategory} Collection</span>
+            <span>•</span>
+            <span>{packWallpapers.length} Wallpapers</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight text-left">
+            {collection.title}
+          </h1>
+          <p class="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed text-left">
+            {collection.description}
+          </p>
+          <div class="flex flex-wrap gap-2 pt-1 text-left">
+            {collection.tags.map((tag) => (
+              <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs text-gray-300 font-mono">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense Top Banner -->
+    <AdSenseLeaderboard className="pb-4" variant="top" />
+
+    <!-- Wallpapers Grid -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-4 sm:py-6 text-left">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+          <span>Pack Wallpapers</span>
+          <span class="text-xs font-mono text-walpix-lime px-2 py-0.5 rounded bg-walpix-lime/10 border border-walpix-lime/25">
+            4K UHD Lossless
+          </span>
+        </h2>
+      </div>
+
+      <!-- In-Collection Device Switcher Bar -->
+      <div class="pb-6">
+        <OrientationToggle />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        {packWallpapers.map((wallpaper, index) => (
+          <WallpaperCard wallpaper={wallpaper} index={index} />
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

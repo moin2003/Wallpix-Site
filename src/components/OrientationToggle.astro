@@ -1,0 +1,456 @@
+---
+interface Props {
+  className?: string;
+  activeFormat?: string; // 'all' | 'desktop' | 'phone' | 'dual'
+}
+
+const { className = '', activeFormat = 'all' } = Astro.props;
+
+const formats = [
+  {
+    key: 'all',
+    label: 'All Formats',
+    shortLabel: 'All',
+    iconSvg: 'grid',
+    href: '/wallpapers',
+    badge: 'Universal'
+  },
+  {
+    key: 'desktop',
+    label: 'Desktop 4K (16:9)',
+    shortLabel: 'Desktop',
+    iconSvg: 'monitor',
+    href: '/screen/desktop-wallpapers',
+    badge: '3840×2160'
+  },
+  {
+    key: 'phone',
+    label: 'Mobile Phone (9:16)',
+    shortLabel: 'Mobile',
+    iconSvg: 'smartphone',
+    href: '/screen/phone-wallpapers',
+    badge: '1080×2400'
+  },
+  {
+    key: 'dual',
+    label: 'Dual Screen (32:9)',
+    shortLabel: 'Dual',
+    iconSvg: 'dual',
+    href: '/screen/dual-screen-wallpapers',
+    badge: '7680×2160'
+  }
+];
+---
+
+<div class={`w-full my-2.5 sm:my-5 px-3 sm:px-6 walpix-device-switcher-container flex justify-center items-center ${className}`}>
+  <!-- Ultra-Luxury Glassmorphic Device Switcher Capsule (100% Mobile Optimized) -->
+  <div
+    class="walpix-device-switcher w-full max-w-[420px] sm:max-w-none sm:w-auto flex sm:inline-flex p-1 sm:p-1.5 rounded-full bg-[#06080d]/90 border border-white/[0.12] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] mx-auto items-center justify-between"
+    data-active-format={activeFormat}
+  >
+    {formats.map((item) => {
+      const isSelected = item.key === activeFormat;
+      return (
+        <button
+          type="button"
+          data-format={item.key}
+          class={`device-switcher-btn flex-1 sm:flex-initial h-9 sm:h-10 px-2 sm:px-5 rounded-full text-[11.5px] sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2.5 cursor-pointer select-none border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none transition-all ${
+            isSelected ? 'active' : ''
+          }`}
+          title={`Filter wallpapers by ${item.label}`}
+        >
+          <!-- Vector SVG Icons (Pixel-Perfect, Zero Emojis) -->
+          {item.iconSvg === 'grid' && (
+            <svg class="switcher-icon w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          )}
+
+          {item.iconSvg === 'monitor' && (
+            <svg class="switcher-icon w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          )}
+
+          {item.iconSvg === 'smartphone' && (
+            <svg class="switcher-icon w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          )}
+
+          {item.iconSvg === 'dual' && (
+            <svg class="switcher-icon w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="2" y="6" width="9" height="10" rx="1.5" stroke-width="2" />
+              <rect x="13" y="6" width="9" height="10" rx="1.5" stroke-width="2" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 19h12" />
+            </svg>
+          )}
+
+          <span class="switcher-label whitespace-nowrap tracking-tight hidden sm:inline">{item.label}</span>
+          <span class="switcher-label whitespace-nowrap tracking-tight sm:hidden">{item.shortLabel}</span>
+          <span class="format-badge hidden md:inline-block text-[10px] font-mono px-2 py-0.5 rounded-md">
+            {item.badge}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  /* Container Flex Alignment for Mobile Smooth Touch Slide */
+  .walpix-device-switcher-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Device Switcher Touch Scroll */
+  .walpix-device-switcher {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .walpix-device-switcher::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 639px) {
+    .walpix-device-switcher {
+      width: 100% !important;
+      max-width: 420px !important;
+      display: flex !important;
+      padding: 3.5px !important;
+      gap: 3px !important;
+      border-radius: 9999px !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      background: rgba(6, 8, 13, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      margin: 0 auto !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    }
+    .device-switcher-btn {
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+      height: 36px !important;
+      padding: 0 4px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      font-size: 11.5px !important;
+      gap: 3.5px !important;
+      border-radius: 9999px !important;
+      justify-content: center !important;
+      text-align: center !important;
+      touch-action: manipulation;
+    }
+    .device-switcher-btn .switcher-icon {
+      width: 13.5px !important;
+      height: 13.5px !important;
+      flex-shrink: 0 !important;
+    }
+    .device-switcher-btn .switcher-label {
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.01em !important;
+    }
+  }
+
+  /* Base / Inactive State - Constant font-weight: 700 to prevent text width shifts/shaking */
+  .device-switcher-btn,
+  .device-switcher-btn:focus,
+  .device-switcher-btn:focus-visible,
+  .device-switcher-btn:focus-within,
+  .device-switcher-btn:active {
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-offset: 0 !important;
+    border: none !important;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  .device-switcher-btn {
+    background: transparent;
+    color: #9EA4AD !important;
+    font-weight: 700 !important;
+    border: none !important;
+    box-sizing: border-box;
+    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .device-switcher-btn .switcher-icon {
+    color: #9EA4AD !important;
+    stroke: #9EA4AD !important;
+    transition: color 0.2s ease, stroke 0.2s ease;
+  }
+  .device-switcher-btn .switcher-label {
+    color: #9EA4AD !important;
+    font-weight: 700 !important;
+    transition: color 0.2s ease;
+  }
+  .device-switcher-btn .format-badge {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 700 !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Inactive Hover */
+  .device-switcher-btn:not(.active):hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF !important;
+  }
+  .device-switcher-btn:not(.active):hover .switcher-icon {
+    color: #C2FF06 !important;
+    stroke: #C2FF06 !important;
+  }
+  .device-switcher-btn:not(.active):hover .switcher-label {
+    color: #FFFFFF !important;
+  }
+  .device-switcher-btn:not(.active):hover .format-badge {
+    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  /* ACTIVE STATE: Solid Lime Pill with Deep Obsidian Text - ZERO Outline */
+  .device-switcher-btn.active,
+  .device-switcher-btn.active:focus,
+  .device-switcher-btn.active:focus-visible,
+  .device-switcher-btn.active:focus-within,
+  .device-switcher-btn.active:active {
+    background-color: #C2FF06 !important;
+    color: #050608 !important;
+    font-weight: 700 !important;
+    border: none !important;
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-offset: 0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+  }
+  .device-switcher-btn.active .switcher-icon {
+    color: #050608 !important;
+    stroke: #050608 !important;
+  }
+  .device-switcher-btn.active .switcher-label {
+    color: #050608 !important;
+    font-weight: 700 !important;
+  }
+  .device-switcher-btn.active .format-badge {
+    background-color: rgba(0, 0, 0, 0.22) !important;
+    color: #050608 !important;
+    font-weight: 700 !important;
+  }
+
+  /* ACTIVE HOVER STATE: Stays Solid Lime & Obsidian Text - ZERO Outline */
+  .device-switcher-btn.active:hover {
+    background-color: #C2FF06 !important;
+    color: #050608 !important;
+    border: none !important;
+    outline: none !important;
+    outline-width: 0 !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45) !important;
+  }
+  .device-switcher-btn.active:hover .switcher-icon {
+    color: #050608 !important;
+    stroke: #050608 !important;
+  }
+  .device-switcher-btn.active:hover .switcher-label {
+    color: #050608 !important;
+  }
+  .device-switcher-btn.active:hover .format-badge {
+    background-color: rgba(0, 0, 0, 0.26) !important;
+    color: #050608 !important;
+  }
+</style>
+
+<script is:inline>
+  // Immediate pre-render check: if mobile viewport (<640px) without explicit format query, set phone active
+  (function() {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.has('format')) {
+        var switcher = document.querySelector('.walpix-device-switcher');
+        if (switcher && switcher.getAttribute('data-active-format') === 'all') {
+          switcher.setAttribute('data-active-format', 'phone');
+          var allBtn = switcher.querySelector('[data-format="all"]');
+          var phoneBtn = switcher.querySelector('[data-format="phone"]');
+          if (allBtn) allBtn.classList.remove('active');
+          if (phoneBtn) phoneBtn.classList.add('active');
+        }
+        var grid = document.querySelector('#wallpapers-grid-container, #wallpaper-grid-container');
+        if (grid) {
+          grid.classList.remove('grid-mode-all', 'grid-mode-desktop', 'grid-mode-dual');
+          grid.classList.add('grid-mode-phone');
+        }
+      }
+    }
+  })();
+</script>
+
+<script>
+  function initDeviceSwitcher() {
+    const switchers = document.querySelectorAll('.walpix-device-switcher');
+    if (!switchers.length) return;
+
+    switchers.forEach((switcher) => {
+      const buttons = switcher.querySelectorAll<HTMLButtonElement>('.device-switcher-btn');
+      if (!buttons.length) return;
+
+      const isMobileScreen = window.innerWidth < 640;
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryFormat = urlParams.get('format');
+
+      // Smart Mobile Auto-Selection:
+      // If no explicit ?format query in URL:
+      // On mobile screens (<640px), auto-default to 'phone' (9:16 portrait preview).
+      // On desktop (>=640px), default to data-active-format or 'all'.
+      let effectiveFormat = queryFormat;
+      if (!effectiveFormat) {
+        if (isMobileScreen) {
+          effectiveFormat = 'phone';
+        } else {
+          effectiveFormat = switcher.getAttribute('data-active-format') || 'all';
+        }
+      }
+
+      function setFilter(formatKey: string, updateUrl = false) {
+        // 1. Toggle .active state instantly
+        buttons.forEach((btn) => {
+          btn.classList.toggle('active', btn.getAttribute('data-format') === formatKey);
+        });
+
+        // 2. Update URL query param if requested
+        if (updateUrl && history.replaceState) {
+          const currentUrl = new URL(window.location.href);
+          if (formatKey === 'all') {
+            currentUrl.searchParams.delete('format');
+          } else {
+            currentUrl.searchParams.set('format', formatKey);
+          }
+          history.replaceState(null, '', currentUrl.toString());
+        }
+
+        // 3. Fast Hardware-Accelerated Card Filtering & Grid Morphing
+        requestAnimationFrame(() => {
+          const gridContainers = document.querySelectorAll<HTMLElement>('#wallpaper-grid-container, #wallpapers-grid-container');
+          const cards = document.querySelectorAll<HTMLElement>('.walpix-gallery-card-item, .wallpaper-card');
+          const emptyState = document.getElementById('gallery-empty-state') || document.getElementById('no-results-state');
+
+          // Hide any open category folder views and show the wallpaper grid
+          const allFolderViews = document.querySelectorAll<HTMLElement>('.category-folders-view');
+          allFolderViews.forEach(v => {
+            v.classList.add('hidden');
+            v.classList.remove('block');
+          });
+          gridContainers.forEach(g => {
+            g.classList.remove('hidden');
+          });
+
+          // Sync category pills back to All Wallpapers if a format is selected
+          const filterPills = document.querySelectorAll<HTMLButtonElement>('.gallery-filter-pill');
+          const allPill = document.querySelector<HTMLButtonElement>('[data-category-filter="all"]');
+          if (allPill && !allPill.classList.contains('active')) {
+            filterPills.forEach(p => p.classList.remove('active'));
+            allPill.classList.add('active');
+          }
+
+          const loadMoreWrapper = document.getElementById('load-more-wrapper');
+          if (loadMoreWrapper) {
+            loadMoreWrapper.style.display = (formatKey === 'all' || formatKey === 'phone') ? 'flex' : 'none';
+          }
+
+          gridContainers.forEach((grid) => {
+            grid.className = grid.className.replace(/grid-mode-[a-z]+/g, '').trim() + ` grid-mode-${formatKey}`;
+          });
+
+          // Fast Aspect & Resolution Badges Update
+          const aspectBadges = document.querySelectorAll<HTMLElement>('.card-badge-aspect');
+          const resBadges = document.querySelectorAll<HTMLElement>('.card-badge-res');
+          const aspectText = formatKey === 'phone' ? '9:16' : (formatKey === 'dual' ? '32:9' : '16:9');
+          const resText = formatKey === 'phone' ? '1080×2400' : (formatKey === 'dual' ? '7680×2160' : '4K UHD');
+
+          aspectBadges.forEach(b => { if (b.textContent !== aspectText) b.textContent = aspectText; });
+          resBadges.forEach(b => { if (b.textContent !== resText) b.textContent = resText; });
+
+          let visibleCount = 0;
+
+          for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const container = (card.closest('.wallpaper-grid-item') as HTMLElement) || card;
+
+            if (card.classList.contains('gallery-ad-item') || card.querySelector('.ad-card-wrapper')) {
+              container.style.display = formatKey === 'all' ? '' : 'none';
+              continue;
+            }
+
+            const screens = card.getAttribute('data-screen-types') || '';
+            const aspect = card.getAttribute('data-aspect') || '';
+            const tags = card.getAttribute('data-tags') || '';
+            const cat = card.getAttribute('data-category') || '';
+
+            let match = false;
+            if (formatKey === 'all') {
+              match = true;
+            } else if (formatKey === 'desktop') {
+              match = screens.includes('desktop') || aspect.includes('16:9') || tags.includes('desktop') || tags.includes('pc') || cat.includes('4k') || (!aspect.includes('9:16') && !aspect.includes('vertical'));
+            } else if (formatKey === 'phone') {
+              match = screens.includes('phone') || screens.includes('mobile') || aspect.includes('9:16') || tags.includes('phone') || tags.includes('iphone') || tags.includes('amoled') || cat.includes('amoled') || !screens.includes('desktop-only');
+            } else if (formatKey === 'dual') {
+              match = screens.includes('dual') || screens.includes('ultrawide') || aspect.includes('32:9') || tags.includes('dual') || tags.includes('ultrawide') || cat.includes('space');
+            }
+
+            if (match) {
+              const isHiddenByLoadMore = formatKey === 'all' && container.classList.contains('load-more-hidden');
+              container.style.display = isHiddenByLoadMore ? 'none' : '';
+              visibleCount++;
+            } else {
+              container.style.display = 'none';
+            }
+          }
+
+          if (emptyState) {
+            const hasNoItems = visibleCount === 0;
+            emptyState.classList.toggle('hidden', !hasNoItems);
+            emptyState.style.display = hasNoItems ? 'block' : 'none';
+            gridContainers.forEach(g => g.classList.toggle('hidden', hasNoItems));
+          }
+        });
+      }
+
+      // Add click listeners to switcher buttons
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const formatKey = btn.getAttribute('data-format') || 'all';
+          setFilter(formatKey, true);
+        });
+      });
+
+      // Apply effective format immediately on load
+      setFilter(effectiveFormat, false);
+
+      // Listen for window resize without explicit format query
+      let resizeTimer: number;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          const currentParams = new URLSearchParams(window.location.search);
+          if (!currentParams.has('format')) {
+            const nowMobile = window.innerWidth < 640;
+            const newFormat = nowMobile ? 'phone' : (switcher.getAttribute('data-active-format') || 'all');
+            setFilter(newFormat, false);
+          }
+        }, 150);
+      });
+    });
+  }
+
+  // Initialize on page load and view transitions
+  initDeviceSwitcher();
+  document.addEventListener('astro:page-load', initDeviceSwitcher);
+</script>

@@ -1,58 +1,219 @@
 ---
 import CategoryStrip from './CategoryStrip.astro';
+
+// Mobile Exclusive Slideshow Data
+const mobileSlides = [
+  {
+    id: 0,
+    slideId: 'hero-slide-astronaut',
+    slideKey: 'slide-astronaut',
+    image: '/images/hero-astronaut-master.webp',
+    alt: 'WALPIX 4K Cosmic Astronaut Master Hero',
+    eyebrow: '4K ULTRA HD WALLPAPERS',
+    titleLine1: 'Unleash Pure',
+    titleHighlight: 'Visual Power',
+    titleLine3: 'On Your Screen',
+    subtitle: 'Optimized for iPhone, Android, PC & Mac',
+    highlightColor: '#C2FF06',
+    highlightGlow: 'rgba(194, 255, 6, 0.45)',
+    ctaLabel: 'Explore 50K+ Wallpapers',
+    ctaHref: '#trending-gallery',
+  },
+  {
+    id: 1,
+    slideId: 'hero-slide-supercar',
+    slideKey: 'slide-supercar',
+    image: '/images/slideshow/image_20261012_202353.jpg',
+    alt: 'Midnight Stealth Supercar 8K',
+    eyebrow: 'HYPERCARS & SPEED 8K',
+    titleLine1: 'Pure Adrenaline',
+    titleHighlight: 'Midnight Hypercar',
+    titleLine3: 'Built For Velocity',
+    subtitle: 'Dark aerodynamic beast on rain-slicked midnight asphalt',
+    highlightColor: '#FF2E54', // Electric Crimson Red matching supercar taillights
+    highlightGlow: 'rgba(255, 46, 84, 0.55)',
+    ctaLabel: 'Explore Supercars 8K',
+    ctaHref: '/category/cars-supercars',
+  },
+  {
+    id: 2,
+    slideId: 'hero-slide-nature',
+    slideKey: 'slide-nature',
+    image: '/images/slideshow/image_20261012_202530.jpg',
+    alt: 'Dark Nordic Mountain Wilderness 4K',
+    eyebrow: 'DARK NATURE & LANDSCAPES 4K',
+    titleLine1: 'Majestic Peaks',
+    titleHighlight: 'Nordic Wilderness',
+    titleLine3: 'Untamed & Serene',
+    subtitle: 'Atmospheric mountain fog and dramatic obsidian landscapes',
+    highlightColor: '#00FF88', // Vibrant Emerald Nature Green
+    highlightGlow: 'rgba(0, 255, 136, 0.55)',
+    ctaLabel: 'Explore Nature 4K',
+    ctaHref: '/category/nature-scenery',
+  },
+  {
+    id: 3,
+    slideId: 'hero-slide-scifi',
+    slideKey: 'slide-scifi',
+    image: '/images/slideshow/image_20261012_202652.jpg',
+    alt: 'Sci-Fi Cyberpunk Megacity 4K',
+    eyebrow: 'SCI-FI & CYBERPUNK 4K',
+    titleLine1: 'Future Horizons',
+    titleHighlight: 'Sci-Fi Metropolis',
+    titleLine3: 'Beyond The Sky',
+    subtitle: 'Monolithic futuristic towers shrouded in atmospheric mist',
+    highlightColor: '#00E5FF', // Cyber Neon Blue/Cyan matching skyscrapers
+    highlightGlow: 'rgba(0, 229, 255, 0.55)',
+    ctaLabel: 'Explore Sci-Fi 4K',
+    ctaHref: '/category/cyberpunk-neon',
+  },
+  {
+    id: 4,
+    slideId: 'hero-slide-amoled',
+    slideKey: 'slide-amoled',
+    image: '/images/slideshow/image_20261012_202750.jpg',
+    alt: 'Cosmic Singularity AMOLED Black Hole 8K',
+    eyebrow: 'MINIMALIST AMOLED & COSMOS 8K',
+    titleLine1: 'Infinite Abyss',
+    titleHighlight: 'Cosmic Singularity',
+    titleLine3: 'True Pure Black',
+    subtitle: 'Pure obsidian AMOLED depth with vibrant glowing accretion ring',
+    highlightColor: '#FFB800', // Radiant Solar Amber / Gold matching black hole
+    highlightGlow: 'rgba(255, 184, 0, 0.60)',
+    ctaLabel: 'Explore AMOLED 8K',
+    ctaHref: '/category/amoled-black',
+  },
+];
 ---
 
-<section class="relative w-full overflow-hidden pt-24 lg:pt-28 pb-4 min-h-[640px] lg:min-h-[680px] flex flex-col justify-between bg-[#030405]">
+<section id="hero-section" class="hero-section relative w-full overflow-hidden -mt-[96px] pt-24 sm:pt-28 lg:pt-36 pb-4 min-h-[720px] sm:min-h-[760px] lg:min-h-[840px] flex flex-col justify-between bg-[#030405]">
   
-  <!-- Full-bleed Master Cosmic Astronaut Wallpaper Background -->
+  <!-- ========================================================
+       DESKTOP BACKGROUND: 100% Static Astronaut Hero Image
+       (Protected for sm/md/lg/xl - Never shifts or animates)
+       ======================================================== -->
   <img
-    src="/images/hero-astronaut-master.jpg"
-    alt="Lumina 4K Cosmic Astronaut Master Hero"
-    class="absolute inset-0 w-full h-full object-cover object-[80%_25%] select-none pointer-events-none"
+    id="hero-bg-img"
+    src="/images/hero-astronaut-master.webp"
+    alt="WALPIX 4K Cosmic Astronaut Master Hero"
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="hero-bg-img hidden sm:block absolute inset-0 w-full h-full object-cover object-[80%_25%] select-none pointer-events-none"
   />
 
-  <!-- Layer 1: Soft Left Dark Gradient Overlay for typography contrast -->
-  <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
+  <!-- ========================================================
+       MOBILE SLIDESHOW BACKGROUND: Controlled directly via mobile-480.css
+       (Each slide has its unique ID and class for 100% CSS control)
+       ======================================================== -->
+  <div id="mobile-hero-slider" class="sm:hidden absolute inset-0 w-full h-full overflow-hidden select-none pointer-events-none">
+    {mobileSlides.map((slide, idx) => (
+      <img
+        id={slide.slideId}
+        src={slide.image}
+        alt={slide.alt}
+        class={`mobile-hero-bg-slide ${slide.slideKey} ${idx === 0 ? 'hero-bg-img active' : ''} absolute inset-0 w-full h-full object-cover select-none pointer-events-none`}
+        data-slide-index={idx}
+        loading={idx === 0 ? 'eager' : 'lazy'}
+        fetchpriority={idx === 0 ? 'high' : 'auto'}
+        decoding="async"
+      />
+    ))}
+  </div>
 
-  <!-- Layer 2: Seamless Bottom Fade to #030405 -->
-  <div class="absolute inset-0 hero-bottom-fade pointer-events-none"></div>
+  <!-- Layer 1: Typography Contrast Overlay (Vertical gradient on mobile, Left-to-Right on desktop) -->
+  <div class="absolute inset-0 hidden sm:block hero-overlay pointer-events-none"></div>
+  <div class="hero-mobile-overlay absolute inset-0 sm:hidden bg-gradient-to-t from-[#030405] via-[#030405]/60 via-50% to-transparent pointer-events-none"></div>
+
+  <!-- Layer 2: Seamless Bottom Fade to #030405 (Desktop only) -->
+  <div class="absolute inset-0 hidden sm:block hero-bottom-fade pointer-events-none"></div>
+
+  <!-- Smooth Mobile Edge Blend up to Instant Access button (110px soft blend, zero hard shape) -->
+  <div class="hero-mobile-edge-dark absolute bottom-0 inset-x-0 h-28 sm:hidden pointer-events-none z-[1]"></div>
 
   <!-- Layer 3: Top Ambient Vignette behind Header -->
   <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#030405]/80 via-[#030405]/20 to-transparent pointer-events-none"></div>
 
-  <!-- Hero Main Content Container (Full Width Fluid) -->
-  <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 flex-grow flex flex-col justify-between pt-2">
+  <!-- ========================================================
+       TOP ZONE: Fixed Height Text Slot (Independent Control)
+       Changing text here will NOT shift the bottom elements!
+       ======================================================== -->
+  <div id="hero-text-block" class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-2 lg:pt-4">
     
-    <!-- Top / Center: Headline & Subtitle -->
-    <div class="max-w-3xl space-y-4 pt-4 lg:pt-6 lg:pl-2">
+    <!-- DESKTOP TEXT: 100% Intact & Untouched (sm:flex) -->
+    <div class="hero-text-inner hidden sm:flex max-w-3xl space-y-3 sm:space-y-4 lg:pl-2 min-h-[190px] sm:min-h-[220px] lg:min-h-[260px] flex-col justify-start">
       <!-- Eyebrow -->
-      <p class="text-xs sm:text-[13px] font-bold tracking-[0.18em] uppercase text-[#A0A5AD]">
-        ULTRA HD WALLPAPERS FOR EVERY SCREEN
+      <p class="hero-eyebrow text-xs sm:text-[13px] font-extrabold tracking-[0.18em] uppercase text-white/90">
+        4K ULTRA HD WALLPAPERS
       </p>
 
       <!-- Huge Headline -->
-      <h1 class="text-hero font-extrabold tracking-[-0.055em] leading-[0.92] text-white">
+      <h1 class="hero-headline text-[34px] sm:text-hero font-extrabold tracking-[-0.055em] leading-[0.95] sm:leading-[0.92] text-white">
         Unleash Pure <br />
-        <span class="lumina-gradient-text">Visual Power</span> <br />
+        <span class="text-[#C2FF06] drop-shadow-[0_0_20px_rgba(194,255,6,0.35)]">Visual Power</span> <br />
         On Your Screen
       </h1>
 
       <!-- Subtitle -->
-      <p class="text-[#C8CCD2] text-base sm:text-lg leading-relaxed max-w-[620px] font-normal pt-1">
-        Discover a world of breathtaking 4K wallpapers. From minimal elegance to epic digital worlds — all free, always.
+      <p class="hero-subtitle text-white/80 text-xs sm:text-sm font-medium leading-relaxed max-w-[520px] pt-1">
+        Optimized for iPhone, Android, PC &amp; Mac
       </p>
     </div>
 
-    <!-- Middle/Bottom Row: Stats Glass Panel & Circular Explore Button -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-6 pb-2 lg:pl-2 lg:pr-2">
+    <!-- MOBILE SLIDESHOW TEXT: Synchronized Slide-by-Slide Text (sm:hidden) -->
+    <div class="sm:hidden relative w-full h-[180px] max-w-md" id="mobile-hero-text-container">
+      {mobileSlides.map((slide, idx) => (
+        <div
+          class={`mobile-hero-text-slide absolute inset-0 flex flex-col justify-start transition-all duration-500 ease-out ${
+            idx === 0
+              ? 'active opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 translate-y-2 pointer-events-none'
+          }`}
+          data-text-slide={idx}
+        >
+          <!-- Eyebrow -->
+          <p class="hero-eyebrow text-[10px] font-extrabold tracking-[0.14em] uppercase text-white/90 mb-1">
+            {slide.eyebrow}
+          </p>
+
+          <!-- Huge Headline -->
+          <h1 class="hero-headline text-[30px] font-extrabold tracking-[-0.04em] leading-[1.12] text-white my-1">
+            <span class="hero-title-top">{slide.titleLine1}</span> <br />
+            <span
+              class={`hero-title-highlight slide-highlight-${slide.slideKey} transition-colors duration-500`}
+              style={`color: ${slide.highlightColor}; filter: drop-shadow(0 0 18px ${slide.highlightGlow});`}
+            >
+              <span class="hero-highlight-text inline-block">{slide.titleHighlight}</span>
+            </span> <br />
+            <span class="hero-title-bottom">{slide.titleLine3}</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="hero-subtitle text-white/80 text-[11px] font-medium leading-relaxed pt-1">
+            {slide.subtitle}
+          </p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       BOTTOM ZONE: Anchored Bottom Unit (Stats + CTA + Categories)
+       Firmly anchored at the bottom of the Hero section.
+       ======================================================== -->
+  <div id="hero-bottom-zone" class="relative z-10 w-full mt-auto">
+    
+    <!-- Stats Glass Panel & Circular Explore Button Row -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 lg:pl-14 lg:pr-14">
       
-      <!-- Stats Glass Panel with distinct border stroke -->
-      <div class="glass-soft rounded-[20px] p-2.5 sm:p-3 max-w-[580px] flex items-center justify-between gap-2 sm:gap-6 border border-white/20 shadow-glass">
+      <!-- Stats Glass Panel with distinct subtle border stroke -->
+      <div class="hero-stats-panel glass-container max-w-[580px] w-full">
         
-        <!-- Stat 1: 50,000+ Wallpapers -->
-        <div class="flex items-center gap-3 px-2 sm:px-3">
-          <div class="w-9 h-9 rounded-xl bg-lumina-lime/10 border border-lumina-lime/20 flex items-center justify-center shrink-0">
-            <svg class="w-4 h-4 text-lumina-lime" fill="currentColor" viewBox="0 0 24 24">
+        <!-- Stat 1: 50,000+ Wallpapers (Electric Lime) -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#C2FF06]/10 border border-[#C2FF06]/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(194,255,6,0.2)]">
+            <svg class="w-4 h-4 text-[#C2FF06]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
             </svg>
           </div>
@@ -62,12 +223,12 @@ import CategoryStrip from './CategoryStrip.astro';
           </div>
         </div>
 
-        <div class="h-8 w-[1px] bg-white/10 hidden sm:block"></div>
+        <div class="h-8 w-[1px] bg-white/[0.12] hidden sm:block"></div>
 
-        <!-- Stat 2: 100% Free Forever -->
-        <div class="flex items-center gap-3 px-2 sm:px-3">
-          <div class="w-9 h-9 rounded-xl bg-lumina-magenta/10 border border-lumina-magenta/20 flex items-center justify-center shrink-0">
-            <svg class="w-4 h-4 text-lumina-magenta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Stat 2: 100% Free Forever (Soft Magenta) -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#F91ACF]/10 border border-[#F91ACF]/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(249,26,207,0.2)]">
+            <svg class="w-4 h-4 text-[#F91ACF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V6a2 2 0 10-2 2h2zm0 0H4a2 2 0 00-2 2v3a2 2 0 002 2h16a2 2 0 002-2V10a2 2 0 00-2-2h-8z" />
             </svg>
           </div>
@@ -77,11 +238,11 @@ import CategoryStrip from './CategoryStrip.astro';
           </div>
         </div>
 
-        <div class="h-8 w-[1px] bg-white/10 hidden sm:block"></div>
+        <div class="h-8 w-[1px] bg-white/[0.12] hidden sm:block"></div>
 
-        <!-- Stat 3: 4K UHD Ultra Quality -->
-        <div class="flex items-center gap-3 px-2 sm:px-3">
-          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+        <!-- Stat 3: 4K UHD Ultra Quality (Amber Gold) -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
             <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
             </svg>
@@ -94,29 +255,185 @@ import CategoryStrip from './CategoryStrip.astro';
 
       </div>
 
-      <!-- Explore Button: 56x56px Circular Play Button with Glow -->
+      <!-- Explore Button: Luxury Glowing CTA Capsule -->
       <a
+        id="hero-explore-cta-btn"
         href="#trending-gallery"
-        class="hidden sm:flex items-center gap-3.5 group cursor-pointer mb-2 mr-2"
+        class="hero-explore-cta group relative inline-flex items-center gap-3 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full bg-[#070a0e]/95 hover:bg-[#0c1117] border border-[#C2FF06]/40 hover:border-[#C2FF06] text-white transition-all duration-300 shadow-[0_0_20px_rgba(194,255,6,0.18)] hover:shadow-[0_0_28px_rgba(194,255,6,0.4)] backdrop-blur-xl hover:scale-[1.02] cursor-pointer select-none shrink-0"
       >
-        <div class="w-14 h-14 rounded-full bg-[rgba(5,7,8,0.55)] border border-[rgba(194,255,6,0.85)] flex items-center justify-center shadow-play-glow group-hover:scale-105 transition-transform duration-300">
-          <svg class="w-5 h-5 text-lumina-lime translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
+        <div class="hero-cta-icon-badge w-8 h-8 rounded-full bg-[#C2FF06] flex items-center justify-center text-[#050608] shadow-[0_0_14px_rgba(194,255,6,0.6)] group-hover:scale-110 transition-all duration-300">
+          <svg class="w-4 h-4 text-[#050608]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
-        <div class="text-left">
-          <div class="text-xs font-semibold text-white group-hover:text-lumina-lime transition-colors">Explore</div>
-          <div class="text-[11px] text-[#92979E]">Stunning Worlds</div>
+        <div class="text-left pr-1">
+          <div class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#92979E] font-medium leading-tight hero-cta-sub">Instant Access</div>
+          <div class="text-xs sm:text-sm font-extrabold text-white group-hover:text-[#C2FF06] transition-colors leading-tight hero-cta-label">Explore 50K+ Wallpapers</div>
         </div>
+        <svg class="hero-cta-arrow w-4 h-4 text-[#C2FF06] transition-all duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
       </a>
 
     </div>
 
-  </div>
+    <!-- Category Carousel Anchored at the Bottom of Hero (Desktop only, Mobile uses dedicated Browse by Category section) -->
+    <div class="w-full pb-2 hidden sm:block">
+      <CategoryStrip activeSlug="all" />
+    </div>
 
-  <!-- Category Pills Carousel Embedded on Top of Hero Backdrop -->
-  <div class="relative z-10 w-full pt-4">
-    <CategoryStrip activeSlug="all" />
   </div>
 
 </section>
+
+<script>
+  function initMobileHeroSlideshow() {
+    const heroSection = document.getElementById('hero-section');
+    const bgSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-bg-slide');
+    const textSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-text-slide');
+    const ctaBtn = document.getElementById('hero-explore-cta-btn') as HTMLAnchorElement | null;
+    const ctaLabel = ctaBtn?.querySelector('.hero-cta-label');
+
+    if (!bgSlides.length || bgSlides.length <= 1) return;
+
+    let currentIndex = 0;
+    let timer: number | null = null;
+    const totalSlides = bgSlides.length;
+    const SLIDE_DURATION = 8000; // 8 seconds per slide for relaxed viewing & reading
+ 
+    const slideData = [
+      { ctaHref: '#trending-gallery', ctaLabel: 'Explore 50K+ Wallpapers', accentColor: '#C2FF06' },
+      { ctaHref: '/category/cars-supercars', ctaLabel: 'Explore Supercars 8K', accentColor: '#FF2E54' },
+      { ctaHref: '/category/nature-scenery', ctaLabel: 'Explore Nature 4K', accentColor: '#00FF88' },
+      { ctaHref: '/category/cyberpunk-neon', ctaLabel: 'Explore Sci-Fi 4K', accentColor: '#00E5FF' },
+      { ctaHref: '/category/amoled-black', ctaLabel: 'Explore AMOLED 8K', accentColor: '#FFB800' }
+    ];
+
+    function goToSlide(targetIndex: number) {
+      if (targetIndex === currentIndex) return;
+
+      // 1. Previous background slide
+      const prevBg = bgSlides[currentIndex];
+      if (prevBg) {
+        prevBg.classList.remove('active');
+      }
+
+      // 2. Next background slide (force reflow to restart smooth pan)
+      const nextBg = bgSlides[targetIndex];
+      if (nextBg) {
+        nextBg.classList.remove('active');
+        void nextBg.offsetWidth; // Force CSS animation restart
+        nextBg.classList.add('active');
+      }
+
+      // 3. Update text slides (force reflow to replay sequential text animations)
+      textSlides.forEach((ts, idx) => {
+        if (idx === targetIndex) {
+          ts.classList.remove('active', 'opacity-0', 'translate-y-2', 'pointer-events-none');
+          void ts.offsetWidth; // Force CSS animation restart for staggered text lines
+          ts.classList.add('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
+        } else {
+          ts.classList.remove('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
+          ts.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+        }
+      });
+
+      // 4. Update CTA button on mobile
+      if (ctaBtn && ctaLabel && slideData[targetIndex] && window.innerWidth < 640) {
+        ctaBtn.href = slideData[targetIndex].ctaHref;
+        ctaLabel.textContent = slideData[targetIndex].ctaLabel;
+        const iconBadge = ctaBtn.querySelector<HTMLElement>('.hero-cta-icon-badge');
+        if (iconBadge && slideData[targetIndex].accentColor) {
+          iconBadge.style.backgroundColor = slideData[targetIndex].accentColor;
+          iconBadge.style.boxShadow = `0 0 14px ${slideData[targetIndex].accentColor}80`;
+        }
+        const arrow = ctaBtn.querySelector<SVGElement>('.hero-cta-arrow');
+        if (arrow && slideData[targetIndex].accentColor) {
+          arrow.style.color = slideData[targetIndex].accentColor;
+        }
+      }
+
+      currentIndex = targetIndex;
+    }
+
+    function nextSlide() {
+      if (window.innerWidth >= 640) return;
+      const nextIdx = (currentIndex + 1) % totalSlides;
+      goToSlide(nextIdx);
+    }
+
+    function prevSlide() {
+      if (window.innerWidth >= 640) return;
+      const prevIdx = (currentIndex - 1 + totalSlides) % totalSlides;
+      goToSlide(prevIdx);
+    }
+
+    function startTimer() {
+      stopTimer();
+      if (window.innerWidth < 640) {
+        timer = window.setInterval(nextSlide, SLIDE_DURATION);
+      }
+    }
+
+    function stopTimer() {
+      if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    // Touch swipe gestures on mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    heroSection?.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+      stopTimer();
+    }, { passive: true });
+
+    heroSection?.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+      startTimer();
+    }, { passive: true });
+
+    // Start auto-advance if on mobile
+    startTimer();
+
+    // Pause on page hidden / resume when visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopTimer();
+      } else if (window.innerWidth < 640) {
+        startTimer();
+      }
+    });
+
+    // Handle screen resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 640) {
+        stopTimer();
+      } else if (!timer) {
+        startTimer();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileHeroSlideshow);
+  } else {
+    initMobileHeroSlideshow();
+  }
+  document.addEventListener('astro:page-load', initMobileHeroSlideshow);
+</script>

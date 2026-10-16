@@ -3,10 +3,13 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [
     tailwind({
       applyBaseStyles: true,
     }),
   ],
-  site: 'https://lumina-wallpapers.com',
+  site: 'https://walpix.site',
 });

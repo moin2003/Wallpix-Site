@@ -1,14 +1,35 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
-import Hero from '../../components/Hero.astro';
+import CategoryStrip from '../../components/CategoryStrip.astro';
+import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
+import RelatedSearchWidget from '../../components/RelatedSearchWidget.astro';
 import ColorPaletteFilter from '../../components/ColorPaletteFilter.astro';
+import OrientationToggle from '../../components/OrientationToggle.astro';
+import SubFolderGrid from '../../components/SubFolderGrid.astro';
+import TopicStrip from '../../components/TopicStrip.astro';
 import WallpaperGrid from '../../components/WallpaperGrid.astro';
 import Footer from '../../components/Footer.astro';
-import { CATEGORIES, wallpapers, type Wallpaper } from '../../data/wallpapers';
+import { CATEGORIES, wallpapers, getWallpapersByCategory, type Wallpaper } from '../../data/wallpapers';
+import { MAIN_CATEGORIES, getCategoryBySlug } from '../../data/taxonomy';
 
 export async function getStaticPaths() {
-  return CATEGORIES.map((cat) => ({
+  const map = new Map<string, { name: string; slug: string; icon: string }>();
+
+  CATEGORIES.forEach((cat) => {
+    map.set(cat.slug, { name: cat.name, slug: cat.slug, icon: cat.icon });
+  });
+
+  MAIN_CATEGORIES.forEach((cat) => {
+    if (!map.has(cat.slug)) {
+      map.set(cat.slug, { name: cat.name, slug: cat.slug, icon: cat.icon });
+    }
+    if (!map.has(cat.id)) {
+      map.set(cat.id, { name: cat.name, slug: cat.id, icon: cat.icon });
+    }
+  });
+
+  return Array.from(map.values()).map((cat) => ({
     params: { category: cat.slug },
     props: { categoryInfo: cat },
   }));
@@ -20,38 +41,223 @@ interface Props {
 
 const { categoryInfo } = Astro.props;
 
-// Filter wallpapers for this category
-const filteredWallpapers = categoryInfo.slug === 'all'
-  ? wallpapers
-  : wallpapers.filter((w) => {
-      const match = (w.category || '').toLowerCase();
-      const slugMatch = categoryInfo.slug.replace(/-/g, ' ');
-      return match.includes(slugMatch) || (w.tags || []).some(t => t.toLowerCase().includes(categoryInfo.slug));
-    });
+// Category descriptions
+const categoryDescriptions: Record<string, string> = {
+  'all': 'Explore our complete catalog of 50,000+ ultra-high definition 4K and AMOLED wallpapers for desktop and mobile.',
+  '4k-ultra-hd': 'Native 3840×2160 ultra-sharp backgrounds engineered for 4K monitors, Retina displays, and high-DPI setups.',
+  'hd-wallpapers': 'Crisp 1080p, 2K, and 4K high-definition wallpapers curated for computer monitors, laptops, and mobile screens.',
+  'movies': 'Cinematic 4K wallpapers featuring iconic movie franchises, Hollywood legends, Marvel, DC, Star Wars, and Oscar masterpieces.',
+  'tv-shows': 'Captivating 4K wallpapers from iconic TV shows, Netflix series, HBO masterpieces, anime adaptations, and beloved television characters.',
+  'anime-gaming': 'Cyberpunk warriors, legendary samurai, fantasy anime champions, and futuristic digital game aesthetics.',
+  'amoled-black': 'True pitch black #000000 wallpapers crafted for OLED displays with maximum contrast and zero battery drain.',
+  'cyberpunk-neon': 'Neon-drenched dystopian megacities, rainy asphalt reflections, and high-octane sci-fi atmospheres.',
+  'nature-scenery': 'Majestic mountain peaks, alpine lakes, tranquil autumn forests, and serene wilderness landscapes.',
+  'minimalist-abstract': 'Clean geometric waveforms, 3D fluid shapes, and distraction-free gradient aesthetics for clean desks.',
+  'cars-supercars': 'Exotic hypercars, track-ready GT3 beasts, and aggressive dark automotive silhouettes in 8K/4K.',
+  'cartoon': 'Vibrant 4K cartoon wallpapers from Disney, Pixar, Rick and Morty, SpongeBob, Spider-Verse, and beloved animated classics.',
+  'cartoons': 'Vibrant 4K cartoon wallpapers from Disney, Pixar, Rick and Morty, SpongeBob, Spider-Verse, and beloved animated classics.',
+  'music': 'Iconic rock bands, legendary pop superstars, hip-hop icons, K-Pop idols, and high-energy music concert 4K wallpapers.',
+  'music-artists': 'Iconic rock bands, legendary pop superstars, hip-hop icons, K-Pop idols, and high-energy music concert 4K wallpapers.',
+  'space-cosmic': 'Deep-field interstellar nebulae, planetary orbits, galaxy clusters, and celestial cosmic horizons.',
+  'dark-mode': 'Moody low-key cinematic shadows, mysterious silhouettes, and high-contrast ambient dark aesthetics.',
+  'fantasy': 'Celestial dragons, enchanted magical groves, and mythical ancient citadels in breathtaking detail.',
+  'city': 'Tokyo rain neon alleys, Manhattan midnight skyscrapers, and modern architectural battlestations.',
+  'animals': 'Majestic 4K wildlife, sovereign apex predators, arctic wolves, ocean life, and adorable pets in ultra-high definition.',
+  'animals-wildlife': 'Majestic 4K wildlife, sovereign apex predators, arctic wolves, ocean life, and adorable pets in ultra-high definition.',
+  'sports': 'High-octane 4K sports wallpapers featuring legendary footballers, NBA stars, Formula 1 drivers, Olympic champions, and athletic mastery.',
+  'celebrities': 'Ultra HD 4K portraits and aesthetic wallpapers of Hollywood celebrities, pop stars, supermodels, and cultural icons.',
+  'celebrities-music': 'Ultra HD 4K portraits and aesthetic wallpapers of Hollywood celebrities, pop stars, supermodels, and cultural icons.',
+  'superheroes': 'Epic 4K Marvel and DC Comics superhero wallpapers, comic art, and villain showdown backgrounds.',
+  'comics': 'Epic 4K Marvel and DC Comics superhero wallpapers, comic art, and villain showdown backgrounds.',
+  'holidays': 'Festive 4K wallpapers celebrating Christmas, Halloween, New Year, Valentine, fairy lights, and seasonal celebrations.',
+  'food': 'Delectable 4K culinary wallpapers featuring artisan coffee, gourmet meals, vibrant fruits, pastries, and decadent desserts.',
+};
 
+// Filter wallpapers for this category using smart semantic matcher
+const filteredWallpapers = getWallpapersByCategory(categoryInfo.slug);
 const displayWallpapers = filteredWallpapers.length > 0 ? filteredWallpapers : wallpapers.slice(0, 16);
+const categoryHeroImage = displayWallpapers[0]?.sourceCdn || '/images/hero-astronaut-master.png';
+const categoryDesc = categoryDescriptions[categoryInfo.slug] || `Download high quality ${categoryInfo.name} 4K Ultra HD wallpapers for desktop and mobile screens.`;
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: `${categoryInfo.name} 4K Wallpapers`,
-  description: `Download best ${categoryInfo.name} 4K Ultra HD wallpapers. Free high-resolution backgrounds.`,
-  url: `https://lumina-wallpapers.com/category/${categoryInfo.slug}`,
+  description: categoryDesc,
+  url: `https://walpix.site/category/${categoryInfo.slug}`,
 };
+
+const taxonomyCat = getCategoryBySlug(categoryInfo.slug);
+const subTopicsList = taxonomyCat?.subTopics || [];
 ---
 
 <Layout
   title={`${categoryInfo.name} 4K Wallpapers`}
-  description={`Download free high-definition ${categoryInfo.name} wallpapers in 4K UHD, 1080p, and AMOLED formats for PC, iPhone, and Android.`}
+  description={categoryDesc}
+  image={categoryHeroImage}
   schema={schema}
 >
+  <!-- Active Header Navigation -->
   <Header currentCategory={categoryInfo.slug} />
 
-  <main>
-    <Hero activeCategory={categoryInfo.slug} totalWallpapers={displayWallpapers.length} />
-    <ColorPaletteFilter />
-    <WallpaperGrid wallpapers={displayWallpapers} title={`${categoryInfo.name} Collection`} />
+  <main class="relative min-h-screen bg-[#020406] text-left overflow-hidden">
+    
+    <!-- Ambient Green Background Glows & Matrix Texture (Optimized for 60FPS) -->
+    <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden hidden sm:block">
+      <div class="absolute -top-32 right-10 w-[500px] h-[500px] bg-walpix-lime/[0.035] rounded-full blur-[100px]"></div>
+      <div class="absolute top-1/3 -left-32 w-[550px] h-[550px] bg-walpix-lime/[0.025] rounded-full blur-[120px]"></div>
+      <div class="absolute inset-0 bg-matrix-dots opacity-30"></div>
+    </div>
+
+    <!-- Dedicated Category Hero Banner (NOT generic homepage Hero) -->
+    <section class="relative z-10 w-full overflow-hidden bg-[#030508] border-b border-white/[0.08] pt-4 sm:pt-6 pb-5 sm:pb-8">
+      
+      <!-- Background Image Specific to This Category with Deep Overlay -->
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src={categoryHeroImage}
+          alt={`${categoryInfo.name} 4K Backdrop`}
+          class="w-full h-full object-cover object-center opacity-25 scale-105"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#020406] via-[#020406]/90 to-[#020406]/70"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#020406] via-transparent to-transparent"></div>
+      </div>
+
+      <!-- Left-Aligned Content Container -->
+      <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 text-left">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#8E949E] font-mono mb-2.5 sm:mb-4 text-left overflow-x-auto no-scrollbar whitespace-nowrap">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <a href="/categories" class="hover:text-white transition-colors">Categories</a>
+          <span>/</span>
+          <span class="text-walpix-lime font-bold">{categoryInfo.name}</span>
+        </nav>
+
+        <!-- Category Title & Description -->
+        <div class="max-w-4xl space-y-2 sm:space-y-3 text-left">
+          <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-[10px] sm:text-xs font-mono font-bold text-walpix-lime uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime shadow-[0_0_8px_#C2FF06]"></span>
+            <span>{categoryInfo.name} Collection • 4K UHD Lossless</span>
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight text-left">
+            {categoryInfo.name.toUpperCase()} <span class="text-walpix-lime">WALLPAPERS</span>
+          </h1>
+
+          <p class="text-xs sm:text-base text-gray-300 max-w-2xl leading-relaxed text-left line-clamp-3 sm:line-clamp-none">
+            {categoryDesc}
+          </p>
+
+          <!-- Key Stats Pills (Clean, Non-Conflicting Layout) -->
+          <div class="flex items-center gap-2 sm:gap-3 pt-1 sm:pt-2 text-left flex-wrap py-0.5">
+            <div class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-white/[0.05] border border-white/10 text-[11px] sm:text-xs font-mono text-white flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <span class="text-walpix-lime font-bold">{displayWallpapers.length}+</span>
+              <span class="text-gray-400">Available</span>
+            </div>
+            <div class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-white/[0.05] border border-white/10 text-[11px] sm:text-xs font-mono text-white flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <span class="text-walpix-lime font-bold">3840×2160</span>
+              <span class="text-gray-400">Resolution</span>
+            </div>
+            <div class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-white/[0.05] border border-white/10 text-[11px] sm:text-xs font-mono text-white flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <span class="text-walpix-lime font-bold">100%</span>
+              <span class="text-gray-400">Free</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Category Carousel Switcher Strip -->
+      <div class="relative z-10 w-full pt-4 sm:pt-8">
+        <CategoryStrip activeSlug={categoryInfo.slug} />
+      </div>
+
+      <!-- Quick Screen & Topic Switcher Strip -->
+      <div class="relative z-10 w-full pt-2 sm:pt-3 px-4 sm:px-8 lg:px-12">
+        <div class="flex items-center justify-between mb-1 sm:mb-1.5">
+          <span class="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-gray-400 font-bold">Filter By Screen / Topic</span>
+          <a href="/topics" class="text-[10px] sm:text-[11px] text-walpix-lime hover:underline font-medium">All Topics & Resolutions →</a>
+        </div>
+        <TopicStrip />
+      </div>
+
+    </section>
+
+    <!-- Sub-Folder Visual Grid & Brand/Series Explorer -->
+    <SubFolderGrid
+      categorySlug={categoryInfo.slug}
+      categoryName={categoryInfo.name}
+      subTopics={subTopicsList}
+    />
+
+    <!-- Deep Sub-Topics Pill Cloud (WallpaperCat Hierarchy) -->
+    {subTopicsList.length > 0 && (
+      <section class="w-full px-4 sm:px-8 lg:px-12 pt-2 pb-2">
+        <div class="glass rounded-2xl p-4 sm:p-5 border border-white/10">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-walpix-lime shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z" />
+            </svg>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-white font-mono">
+              Explore Popular in {categoryInfo.name} ({subTopicsList.length} Topics)
+            </h3>
+          </div>
+          <div class="flex flex-wrap gap-2 max-h-36 overflow-y-auto no-scrollbar py-1">
+            {subTopicsList.map((topic) => (
+              <a
+                href={`/tag/${topic.slug}`}
+                class="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-walpix-lime/50 hover:bg-walpix-lime/10 text-xs font-medium text-gray-300 hover:text-white transition-all flex items-center gap-1.5"
+              >
+                <span>{topic.name}</span>
+                <span class="text-[10px] text-walpix-lime font-mono">({topic.count.replace(' Wallpapers', '')})</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Top AdSense Leaderboard Banner -->
+    <AdSenseLeaderboard className="pt-4 pb-2" variant="top" />
+
+    <!-- Related Searches Intent Strip -->
+    <RelatedSearchWidget className="pt-2 pb-2" />
+
+    <!-- Aspect Ratio & Orientation Toggle -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 pt-2">
+      <OrientationToggle />
+    </div>
+
+    <!-- Category Wallpaper Grid (Filtered Wallpapers) -->
+    <WallpaperGrid
+      wallpapers={displayWallpapers}
+      title={`${categoryInfo.name} Wallpapers`}
+      subtitle={`Showing high-resolution curated ${categoryInfo.name} backgrounds in native 4K format.`}
+    />
+
+    <!-- Bottom AdSense Banner -->
+    <AdSenseLeaderboard className="py-6" variant="bottom" />
+
+    <!-- Centered Luxury Color Explorer Module -->
+    <div class="py-4">
+      <ColorPaletteFilter />
+    </div>
+
   </main>
 
   <Footer />
 </Layout>
+
+<style>
+  /* Subtle Neon Dotted Matrix Pattern */
+  .bg-matrix-dots {
+    background-image: radial-gradient(rgba(194, 255, 6, 0.22) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+  }
+</style>

@@ -2,8 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import CategoryStrip from '../components/CategoryStrip.astro';
+import MobileSponsorBanner from '../components/MobileSponsorBanner.astro';
+import BrowseByCategory from '../components/BrowseByCategory.astro';
+import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+import RelatedSearchWidget from '../components/RelatedSearchWidget.astro';
+import TopicStrip from '../components/TopicStrip.astro';
 import WallpaperGrid from '../components/WallpaperGrid.astro';
+import OrientationToggle from '../components/OrientationToggle.astro';
 import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
 import Footer from '../components/Footer.astro';
 import { wallpapers } from '../data/wallpapers';
@@ -11,20 +16,21 @@ import { wallpapers } from '../data/wallpapers';
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Lumina 4K Wallpapers',
-  url: 'https://lumina-wallpapers.com',
+  name: 'WALPIX 4K Wallpapers',
+  url: 'https://walpix.site',
   description: 'Download free ultra HD 4K, 2K and AMOLED wallpapers for desktop and mobile with instant live canvas cropper.',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://lumina-wallpapers.com/?search={search_term_string}',
+    target: 'https://walpix.site/?search={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };
 ---
 
 <Layout
-  title="Lumina 4K - Ultra HD Wallpapers For Every Screen"
+  title="WALPIX 4K - Ultra HD Wallpapers For Every Screen"
   description="Discover a world of breathtaking 4K wallpapers. From minimal elegance to epic digital worlds — all free, always."
+  preloadImage="/images/hero-astronaut-master.webp"
   schema={schema}
 >
   <!-- Floating Glass Capsule Header -->
@@ -34,16 +40,55 @@ const schema = {
     <!-- Cinematic Hero Section (includes embedded Category Strip) -->
     <Hero />
 
-    <!-- Trending 4K Wallpapers Grid (6 Columns) -->
+    <!-- Mobile Sponsor Ad Placement Banner (Under Hero for Mobile Screens) -->
+    <MobileSponsorBanner className="sm:hidden" />
+
+    <!-- Browse by Category Section (Moved up directly under Hero for Mobile Screens) -->
+    <BrowseByCategory className="sm:hidden" />
+
+    <!-- 1. Google AdSense Top Dual-Banner Showcase (Tablet & Desktop) -->
+    <AdSenseLeaderboard className="hidden sm:block pt-4 pb-3" variant="top" />
+
+    <!-- 2. Sleek Popular Searches Discovery Strip (After Browse by Category on Mobile, Under AdSense on Desktop) -->
+    <RelatedSearchWidget className="pt-2 pb-1 sm:pt-2 sm:pb-2" />
+
+    <!-- Ultra-Luxury Glass Device Switcher Bar -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 pt-1 pb-2">
+      <OrientationToggle />
+    </div>
+
+    <!-- 3. Trending 4K Wallpapers Grid (4 Columns with In-Grid Native Ad) -->
     <WallpaperGrid
       wallpapers={wallpapers}
       title="Trending Wallpapers"
       subtitle="Handpicked ultra HD wallpapers, updated daily."
     />
 
-    <!-- Luxury Color Explorer Module -->
+    <!-- High-Intent Topics & Resolution Strip (8K, 4K, 1080p, PC, Laptop, Mobile, Brands) -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 pt-4 pb-8">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-walpix-lime shadow-[0_0_8px_#C2FF06]"></span>
+          <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-white">Popular Wallpaper Topics</h2>
+        </div>
+        <a href="/topics" class="text-xs text-walpix-lime hover:underline font-semibold flex items-center gap-1">
+          All Topics & Resolutions →
+        </a>
+      </div>
+      <TopicStrip cardSize="large" />
+    </section>
+
+    <!-- 4. Google AdSense Bottom Leaderboard Banner (Minimalist Sponsor Banner) -->
+    <AdSenseLeaderboard
+      className="py-4"
+      variant="bottom"
+      adSlot="9876543210"
+    />
+
+    <!-- 5. Luxury Color Explorer Module -->
     <ColorPaletteFilter />
   </main>
 
   <Footer />
 </Layout>
+

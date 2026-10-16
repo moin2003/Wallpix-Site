@@ -6,68 +6,273 @@ interface Props {
 const { activeCategory = 'all' } = Astro.props;
 
 const categories = [
-  { id: 'all', name: 'All', icon: null, active: true },
-  { id: 'anime', name: 'Anime', icon: '🦊' },
-  { id: 'nature', name: 'Nature', icon: '🌿' },
-  { id: 'cyberpunk', name: 'Cyberpunk', icon: '⚡' },
-  { id: 'abstract', name: 'Abstract', icon: '💎' },
-  { id: 'space', name: 'Space', icon: '🪐' },
-  { id: 'minimalist', name: 'Minimalist', icon: '☯' },
-  { id: 'cars', name: 'Cars', icon: '🏎' },
-  { id: 'dark', name: 'Dark', icon: '🌙' },
-  { id: 'fantasy', name: 'Fantasy', icon: '✨' },
-  { id: 'city', name: 'City', icon: '🏙' },
-  { id: 'animals', name: 'Animals', icon: '🐾' },
+  { id: 'all', name: 'All Wallpapers', iconSvg: 'grid' },
+  { id: '4k', name: '4K Ultra HD', iconSvg: 'monitor' },
+  { id: 'hd', name: 'HD Wallpapers', iconSvg: 'monitor' },
+  { id: 'cartoon', name: 'Cartoons', iconSvg: 'anime' },
+  { id: 'anime', name: 'Anime & Manga', iconSvg: 'anime' },
+  { id: 'gaming', name: 'Gaming', iconSvg: 'gamepad' },
+  { id: 'music', name: 'Music & Bands', iconSvg: 'music' },
+  { id: 'amoled', name: 'AMOLED Black', iconSvg: 'amoled' },
+  { id: 'cyberpunk', name: 'Cyberpunk & Neon', iconSvg: 'cyberpunk' },
+  { id: 'cars', name: 'Cars & Bikes', iconSvg: 'cars' },
+  { id: 'nature', name: 'Nature & Scenery', iconSvg: 'nature' },
+  { id: 'space', name: 'Space & Cosmic', iconSvg: 'space' },
+  { id: 'superheroes', name: 'Superheroes', iconSvg: 'superheroes' },
+  { id: 'movies', name: 'Movies', iconSvg: 'movies' },
+  { id: 'tv-shows', name: 'TV Shows', iconSvg: 'movies' },
+  { id: 'minimalist', name: 'Minimalist', iconSvg: 'minimalist' },
+  { id: 'abstract', name: '3D & Abstract', iconSvg: 'abstract' },
+  { id: 'dark', name: 'Dark Mode', iconSvg: 'dark' },
+  { id: 'fantasy', name: 'Fantasy', iconSvg: 'fantasy' },
+  { id: 'city', name: 'City & Architecture', iconSvg: 'city' },
+  { id: 'animals', name: 'Animals & Wildlife', iconSvg: 'animals' },
+  { id: 'celebrities', name: 'Celebrities', iconSvg: 'celebrities' },
+  { id: 'sports', name: 'Sports & Racing', iconSvg: 'sports' },
 ];
 ---
 
-<div class="w-full px-4 sm:px-6 lg:px-10 pt-4 pb-2">
-  <div class="flex items-center justify-between gap-3">
+<div class="relative z-50 w-full px-3 sm:px-6 lg:px-10 pt-4 sm:pt-5 pb-2 sm:pb-3">
+  <div class="flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0">
     
-    <!-- Left: Scrollable Category Pills -->
-    <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-1 flex-grow">
-      {categories.map((cat) => {
+    <!-- Left Arrow Button for Category Pills Track -->
+    <button
+      id="pill-scroll-left"
+      aria-label="Scroll categories left"
+      class="hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime pr-1"
+    >
+      <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Standalone Pinned 'All Wallpapers' Button (100% pristine capsule shape, no black box, completely standalone) -->
+    <button
+      data-category-filter="all"
+      class={`gallery-filter-pill gallery-filter-pill-all shrink-0 h-[34px] sm:h-[38px] px-3 sm:px-3.5 rounded-full border text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none z-20 ${
+        activeCategory === 'all' ? 'active' : ''
+      }`}
+    >
+      <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <rect x="2" y="2" width="6" height="6" rx="1.5" />
+        <rect x="12" y="2" width="6" height="6" rx="1.5" />
+        <rect x="2" y="12" width="6" height="6" rx="1.5" />
+        <rect x="12" y="12" width="6" height="6" rx="1.5" />
+      </svg>
+      <span class="pill-label whitespace-nowrap">All Wallpapers</span>
+    </button>
+
+    <!-- Center: Scrollable Remaining Category Pills with Crisp SVG Icons & Pure Alpha Dissolve Mask -->
+    <div class="category-pills-scroll-track flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 flex-1 min-w-0 px-1 touch-pan-x select-none cursor-grab">
+      {categories.filter((cat) => cat.id !== 'all').map((cat) => {
         const isSelected = activeCategory === cat.id;
         return (
           <button
             data-category-filter={cat.id}
-            class={`lumina-filter cursor-pointer ${
-              isSelected ? 'lumina-filter-active font-semibold text-white' : ''
+            class={`gallery-filter-pill group shrink-0 h-[34px] sm:h-[38px] px-3 sm:px-3.5 rounded-full border text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none z-10 ${
+              isSelected ? 'active' : ''
             }`}
           >
-            {cat.icon && <span class="text-sm leading-none">{cat.icon}</span>}
-            <span>{cat.name}</span>
+            {cat.iconSvg === 'grid' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <rect x="2" y="2" width="6" height="6" rx="1.5" />
+                <rect x="12" y="2" width="6" height="6" rx="1.5" />
+                <rect x="2" y="12" width="6" height="6" rx="1.5" />
+                <rect x="12" y="12" width="6" height="6" rx="1.5" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'monitor' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'anime' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'gamepad' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'amoled' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" stroke-width="2" />
+                <path fill="currentColor" d="M12 3a9 9 0 000 18V3z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'nature' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'cyberpunk' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'abstract' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'space' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'superheroes' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'movies' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'minimalist' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" stroke-width="2" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a9 9 0 019 9" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'cars' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-9 4h10m-8 6h6m-9-6a3 3 0 013-3h8a3 3 0 013 3v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'music' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'dark' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'fantasy' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'city' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'animals' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'celebrities' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              </svg>
+            )}
+
+            {cat.iconSvg === 'sports' && (
+              <svg class="pill-icon w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            )}
+
+            <span class="pill-label whitespace-nowrap">{cat.name}</span>
           </button>
         );
       })}
     </div>
 
-    <!-- Right: Compact Sort Pill -->
-    <div class="relative shrink-0">
+    <!-- Right Arrow Button for Category Pills Track -->
+    <button
+      id="pill-scroll-right"
+      aria-label="Scroll categories right"
+      class="hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime pl-1"
+    >
+      <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Right: High-Z-Index Luxury Sort Pill & Dropdown (Desktop Only, Hidden on Mobile) -->
+    <div class="sort-dropdown-container relative shrink-0 z-[100] hidden sm:block">
       <button
         id="sort-dropdown-btn"
-        class="h-[39px] px-3.5 rounded-full bg-[rgba(12,16,20,0.90)] border border-white/16 hover:border-white/28 text-[#D7DCE2] hover:text-white text-xs font-medium flex items-center gap-1.5 transition"
+        class="h-[34px] sm:h-[38px] px-3 sm:px-4 rounded-full bg-[#0a0e14] hover:bg-[#121720] border border-white/20 hover:border-walpix-lime/40 text-gray-200 hover:text-white text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 transition-all duration-200 shadow-xl cursor-pointer shrink-0"
       >
-        <span>Sort: <strong class="text-white font-semibold" id="current-sort-label">Popular</strong></span>
-        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <span class="text-[#8E949E] hidden xs:inline">Sort:</span>
+        <span class="text-white font-bold" id="current-sort-label">Popular</span>
+        <svg class="w-3.5 h-3.5 text-walpix-lime transition-transform duration-200 shrink-0" id="sort-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
-      <!-- Dropdown Menu -->
+      <!-- Dropdown Menu (Fixed Z-[100], Solid Deep Glass, Zero Emojis) -->
       <div
         id="sort-dropdown-menu"
-        class="hidden absolute right-0 mt-1.5 w-40 rounded-xl lumina-glass p-1.5 shadow-2xl z-40 border border-white/16 space-y-0.5 text-xs"
+        class="hidden absolute right-0 mt-2 w-44 sm:w-48 rounded-2xl bg-[#090d13] border border-white/20 p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.95)] z-[100] space-y-1 text-xs"
       >
-        <button data-sort="popular" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-white font-medium flex items-center justify-between">
-          <span>🔥 Popular</span>
-          <span class="text-lumina-lime text-xs">✓</span>
+        <!-- Popular -->
+        <button
+          data-sort="popular"
+          class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-walpix-lime/10 text-gray-300 hover:text-white font-medium flex items-center justify-between transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-amber-400 group-hover:text-walpix-lime transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+            </svg>
+            <span class="font-semibold text-gray-200 group-hover:text-white">Popular</span>
+          </div>
+          <svg class="w-3.5 h-3.5 text-walpix-lime shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
         </button>
-        <button data-sort="recent" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-gray-300 font-medium">
-          <span>⚡ Newest</span>
+
+        <!-- Newest -->
+        <button
+          data-sort="recent"
+          class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-walpix-lime/10 text-gray-300 hover:text-white font-medium flex items-center justify-between transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-cyan-400 group-hover:text-walpix-lime transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-semibold text-gray-200 group-hover:text-white">Newest</span>
+          </div>
         </button>
-        <button data-sort="downloads" class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 text-gray-300 font-medium">
-          <span>📥 Downloads</span>
+
+        <!-- Most Downloaded -->
+        <button
+          data-sort="downloads"
+          class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-walpix-lime/10 text-gray-300 hover:text-white font-medium flex items-center justify-between transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-walpix-lime group-hover:text-walpix-lime-bright transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span class="font-semibold text-gray-200 group-hover:text-white">Most Downloaded</span>
+          </div>
         </button>
       </div>
     </div>
@@ -75,50 +280,459 @@ const categories = [
   </div>
 </div>
 
+<style>
+  /* Category Pills Scroll Track Smooth Touch */
+  .category-pills-scroll-track {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    contain: paint;
+  }
+  .category-pills-scroll-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* On mobile when scrolling: Pure alpha fade handled via container without heavy mask-image */
+  @media (max-width: 639px) {
+    .category-pills-scroll-track.has-scrolled-left {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+
+  /* Base / Inactive State - Constant font-weight: 700 to eliminate layout shifts/jitter */
+  .gallery-filter-pill {
+    background: rgba(8, 12, 16, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #A0A5AD;
+    font-weight: 700 !important;
+    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(12px);
+    box-sizing: border-box;
+  }
+  .gallery-filter-pill .pill-icon {
+    color: #C2FF06;
+    transition: color 0.2s ease;
+  }
+  .gallery-filter-pill .pill-label {
+    color: inherit;
+    font-weight: 700 !important;
+    transition: color 0.2s ease;
+  }
+
+  /* Inactive Hover */
+  .gallery-filter-pill:not(.active):hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(194, 255, 6, 0.45);
+    color: #FFFFFF;
+  }
+  .gallery-filter-pill:not(.active):hover .pill-icon {
+    color: #C2FF06;
+  }
+
+  /* ACTIVE STATE: High-Visibility Solid Lime Pill with Deep Obsidian Text - ZERO JITTER */
+  .gallery-filter-pill.active {
+    background-color: #C2FF06 !important;
+    border-color: #C2FF06 !important;
+    color: #050608 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  }
+  .gallery-filter-pill.active .pill-icon {
+    color: #050608 !important;
+    stroke: #050608 !important;
+  }
+  .gallery-filter-pill.active .pill-label {
+    color: #050608 !important;
+    font-weight: 700 !important;
+  }
+
+  /* ACTIVE HOVER STATE: NEVER Turn Dark/Black or White! Always stay solid lime, NO GLOW! */
+  .gallery-filter-pill.active:hover {
+    background-color: #C2FF06 !important;
+    border-color: #C2FF06 !important;
+    color: #050608 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45) !important;
+  }
+  .gallery-filter-pill.active:hover .pill-icon {
+    color: #050608 !important;
+    stroke: #050608 !important;
+  }
+  .gallery-filter-pill.active:hover .pill-label {
+    color: #050608 !important;
+  }
+</style>
+
 <script>
   // Sort Dropdown toggle
   const sortBtn = document.getElementById('sort-dropdown-btn');
   const sortMenu = document.getElementById('sort-dropdown-menu');
   const sortLabel = document.getElementById('current-sort-label');
+  const sortChevron = document.getElementById('sort-chevron');
+  const gridContainer = document.getElementById('wallpaper-grid-container');
+  const emptyState = document.getElementById('gallery-empty-state');
+  const resetBtn = document.getElementById('reset-filter-btn');
 
+  let currentCategory = 'all';
+  let currentSort = 'popular';
+
+  // Toggle Dropdown
   sortBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    sortMenu?.classList.toggle('hidden');
+    const isHidden = sortMenu?.classList.toggle('hidden');
+    if (sortChevron) {
+      sortChevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
   });
 
   document.addEventListener('click', () => {
     sortMenu?.classList.add('hidden');
+    if (sortChevron) sortChevron.style.transform = 'rotate(0deg)';
   });
 
+  // Re-order DOM elements based on sort criteria
+  function sortWallpapers(sortBy: string) {
+    if (!gridContainer) return;
+    const cards = Array.from(gridContainer.querySelectorAll<HTMLElement>('.walpix-gallery-card-item'));
+    
+    cards.sort((a, b) => {
+      if (sortBy === 'downloads') {
+        const dA = Number(a.getAttribute('data-downloads') || 0);
+        const dB = Number(b.getAttribute('data-downloads') || 0);
+        return dB - dA;
+      }
+      if (sortBy === 'recent') {
+        const iA = Number(a.getAttribute('data-index') || 0);
+        const iB = Number(b.getAttribute('data-index') || 0);
+        return iB - iA; // newest index first
+      }
+      // default: 'popular' by views
+      const vA = Number(a.getAttribute('data-views') || 0);
+      const vB = Number(b.getAttribute('data-views') || 0);
+      return vB - vA;
+    });
+
+    cards.forEach((card) => {
+      gridContainer.appendChild(card);
+    });
+  }
+
+  // Sort Option Click
   const sortOptions = sortMenu?.querySelectorAll('button');
   sortOptions?.forEach((opt) => {
     opt.addEventListener('click', () => {
-      const val = opt.getAttribute('data-sort');
+      const val = opt.getAttribute('data-sort') || 'popular';
+      currentSort = val;
+
       if (sortLabel) {
-        sortLabel.textContent = val === 'recent' ? 'Newest' : val === 'downloads' ? 'Downloads' : 'Popular';
+        sortLabel.textContent = val === 'recent' ? 'Newest' : val === 'downloads' ? 'Most Downloaded' : 'Popular';
       }
+
+      sortOptions.forEach((o) => {
+        const check = o.querySelector('.text-walpix-lime');
+        if (check) check.remove();
+      });
+      const checkmark = document.createElement('span');
+      checkmark.className = 'inline-flex items-center text-walpix-lime shrink-0';
+      checkmark.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+      opt.appendChild(checkmark);
+
+      sortWallpapers(currentSort);
+
       sortMenu?.classList.add('hidden');
+      if (sortChevron) sortChevron.style.transform = 'rotate(0deg)';
     });
   });
 
-  // Client category filtering
-  const filterPills = document.querySelectorAll('[data-category-filter]');
-  filterPills.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      filterPills.forEach((b) => b.classList.remove('lumina-filter-active', 'font-semibold', 'text-white'));
-      btn.classList.add('lumina-filter-active', 'font-semibold', 'text-white');
+  // Category Filter Matching with Instant Responsive Transition
+  function filterWallpapers(cat: string) {
+    currentCategory = cat;
+    const cards = document.querySelectorAll<HTMLElement>('.walpix-gallery-card-item');
+    const ads = document.querySelectorAll<HTMLElement>('.gallery-ad-item');
 
-      const cat = btn.getAttribute('data-category-filter') || 'all';
-      const cards = document.querySelectorAll('.lumina-gallery-card-item');
+    let visibleCount = 0;
 
-      cards.forEach((c) => {
-        const itemCat = (c.getAttribute('data-category') || '').toLowerCase();
-        if (cat === 'all' || itemCat.includes(cat)) {
-          (c as HTMLElement).style.display = 'block';
+    cards.forEach((c) => {
+      const itemCat = (c.getAttribute('data-category') || '').toLowerCase();
+      const itemTags = (c.getAttribute('data-tags') || '').toLowerCase();
+      const itemTitle = (c.getAttribute('data-title') || '').toLowerCase();
+
+      let isMatch = false;
+
+      if (cat === 'all') {
+        isMatch = true;
+      } else if (cat === '4k') {
+        isMatch = itemCat.includes('4k') || itemTags.includes('4k') || itemTitle.includes('4k');
+      } else if (cat === 'hd') {
+        isMatch = itemCat.includes('hd') || itemCat.includes('1080p') || itemTags.includes('hd') || itemTags.includes('1080p') || itemTags.includes('4k') || itemCat.includes('4k');
+      } else if (cat === 'gaming') {
+        isMatch = itemCat.includes('game') || itemCat.includes('gaming') || itemTags.includes('game') || itemTags.includes('gaming') || itemTags.includes('genshin') || itemTags.includes('cyberpunk') || itemTags.includes('valorant') || itemTags.includes('gta');
+      } else if (cat === 'amoled') {
+        isMatch = itemCat.includes('amoled') || itemTags.includes('amoled') || itemTags.includes('oled') || itemTags.includes('black') || itemTitle.includes('black') || itemTitle.includes('amoled');
+      } else if (cat === 'superheroes') {
+        isMatch = itemCat.includes('hero') || itemTags.includes('hero') || itemTags.includes('superhero') || itemTags.includes('marvel') || itemTags.includes('batman') || itemTags.includes('spider-man') || itemTags.includes('spider') || itemTags.includes('gotham');
+      } else if (cat === 'movies') {
+        isMatch = itemCat.includes('movie') || itemTags.includes('movie') || itemTags.includes('film') || itemTags.includes('cinema') || itemTags.includes('peaky') || itemTags.includes('shelby') || itemTags.includes('interstellar');
+      } else if (cat === 'tv-shows') {
+        isMatch = itemCat.includes('tv') || itemCat.includes('show') || itemCat.includes('series') || itemTags.includes('series') || itemTags.includes('tv') || itemTags.includes('stranger') || itemTags.includes('breaking-bad') || itemTags.includes('thrones') || itemTags.includes('peaky') || itemTags.includes('shelby');
+      } else if (cat === 'sports') {
+        isMatch = itemCat.includes('sport') || itemTags.includes('sport') || itemTags.includes('racing') || itemTags.includes('speed') || itemTags.includes('track');
+      } else if (cat === 'celebrities') {
+        isMatch = itemCat.includes('celebrity') || itemTags.includes('celebrity') || itemTags.includes('music') || itemTags.includes('singer') || itemTags.includes('shelby');
+      } else if (cat === 'dark') {
+        isMatch = itemCat.includes('amoled') || itemCat.includes('dark') || itemTags.includes('dark') || itemTags.includes('amoled') || itemTags.includes('black') || itemTags.includes('shadow') || itemTags.includes('noir');
+      } else if (cat === 'cars') {
+        isMatch = itemCat.includes('car') || itemTags.includes('car') || itemTags.includes('bike') || itemTags.includes('motorcycle') || itemTags.includes('supercar') || itemTags.includes('gt3') || itemTags.includes('porsche') || itemTags.includes('lamborghini') || itemTags.includes('nissan') || itemTags.includes('ferrari') || itemTags.includes('bmw') || itemTags.includes('ducati') || itemTags.includes('yamaha') || itemTags.includes('kawasaki') || itemTags.includes('harley');
+      } else if (cat === 'city') {
+        isMatch = itemCat.includes('city') || itemTags.includes('city') || itemTags.includes('urban') || itemTags.includes('tokyo') || itemTags.includes('manhattan') || itemTags.includes('skyline');
+      } else if (cat === 'animals') {
+        isMatch = itemCat.includes('animal') || itemTags.includes('animal') || itemTags.includes('wildlife') || itemTags.includes('wolf') || itemTags.includes('jaguar') || itemTags.includes('predator');
+      } else if (cat === 'fantasy') {
+        isMatch = itemCat.includes('fantasy') || itemTags.includes('fantasy') || itemTags.includes('dragon') || itemTags.includes('mythical') || itemTags.includes('magic') || itemTags.includes('citadel') || itemTags.includes('enchanted');
+      } else if (cat === 'abstract') {
+        isMatch = itemCat.includes('abstract') || itemCat.includes('minimal') || itemTags.includes('abstract') || itemTags.includes('geometry') || itemTags.includes('3d') || itemTags.includes('fluid') || itemTags.includes('prism') || itemTags.includes('chrome');
+      } else if (cat === 'minimalist') {
+        isMatch = itemCat.includes('minimal') || itemTags.includes('minimal') || itemTags.includes('clean') || itemTags.includes('monolith');
+      } else if (cat === 'space') {
+        isMatch = itemCat.includes('space') || itemTags.includes('space') || itemTags.includes('cosmic') || itemTags.includes('nebula') || itemTags.includes('galaxy') || itemTags.includes('planet') || itemTags.includes('astronaut');
+      } else if (cat === 'cyberpunk') {
+        isMatch = itemCat.includes('cyber') || itemTags.includes('cyber') || itemTags.includes('neon') || itemTags.includes('synthwave') || itemTitle.includes('cyber');
+      } else if (cat === 'nature') {
+        isMatch = itemCat.includes('nature') || itemTags.includes('nature') || itemTags.includes('mountain') || itemTags.includes('forest') || itemTags.includes('waterfall') || itemTags.includes('lake') || itemTags.includes('ocean');
+      } else if (cat === 'anime') {
+        isMatch = itemCat.includes('anime') || itemTags.includes('anime') || itemTags.includes('manga') || itemTags.includes('ghibli') || itemTags.includes('naruto') || itemTags.includes('samurai');
+      } else if (cat === 'cartoon') {
+        isMatch = itemCat.includes('cartoon') || itemCat.includes('animation') || itemTags.includes('cartoon') || itemTags.includes('disney') || itemTags.includes('pixar') || itemTags.includes('spongebob') || itemTags.includes('animation');
+      } else if (cat === 'music') {
+        isMatch = itemCat.includes('music') || itemCat.includes('singer') || itemCat.includes('band') || itemCat.includes('rock') || itemTags.includes('music') || itemTags.includes('singer') || itemTags.includes('band') || itemTags.includes('rock') || itemTags.includes('kpop') || itemTags.includes('metal') || itemTags.includes('guitar') || itemTags.includes('concert');
+      } else {
+        isMatch = itemCat.includes(cat) || itemTags.includes(cat) || itemTitle.includes(cat);
+      }
+
+      if (isMatch) {
+        c.style.display = 'block';
+        visibleCount++;
+      } else {
+        c.style.display = 'none';
+      }
+    });
+
+    // Handle in-feed ads
+    ads.forEach((ad) => {
+      ad.style.display = cat === 'all' ? 'block' : 'none';
+    });
+
+    // Handle Category Folder Card Views vs Single Wallpaper Grid
+    const allFolderViews = document.querySelectorAll<HTMLElement>('.category-folders-view');
+    const orientationWrapper = document.getElementById('gallery-orientation-wrapper');
+    const targetFolderView = document.getElementById(`category-folders-${cat}`);
+
+    if (cat === 'all') {
+      // ALL WALLPAPERS: Show full 4-column wallpaper grid, hide all folder views
+      allFolderViews.forEach((v) => {
+        v.classList.add('hidden');
+        v.classList.remove('block');
+      });
+      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
+      if (gridContainer) gridContainer.classList.remove('hidden');
+      if (emptyState) emptyState.classList.add('hidden');
+    } else if (targetFolderView) {
+      // CATEGORY SELECTED (e.g. Anime, Gaming, Cars, AMOLED): Show Category Franchise Folders Grid
+      allFolderViews.forEach((v) => {
+        if (v === targetFolderView) {
+          v.classList.remove('hidden');
+          v.classList.add('block');
         } else {
-          (c as HTMLElement).style.display = 'none';
+          v.classList.add('hidden');
+          v.classList.remove('block');
         }
       });
+      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
+      if (gridContainer) gridContainer.classList.add('hidden');
+      if (emptyState) emptyState.classList.add('hidden');
+    } else {
+      // Fallback if no specific folder view exists
+      allFolderViews.forEach((v) => {
+        v.classList.add('hidden');
+        v.classList.remove('block');
+      });
+      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
+      if (visibleCount === 0) {
+        if (gridContainer) gridContainer.classList.add('hidden');
+        if (emptyState) emptyState.classList.remove('hidden');
+      } else {
+        if (gridContainer) gridContainer.classList.remove('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
+      }
+    }
+
+    window.dispatchEvent(new CustomEvent('walpix-category-change', { detail: { category: cat } }));
+  }
+
+  // Filter Pills Click: Simply toggle .active!
+  const filterPills = document.querySelectorAll<HTMLButtonElement>('.gallery-filter-pill');
+  filterPills.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterPills.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cat = btn.getAttribute('data-category-filter') || 'all';
+      filterWallpapers(cat);
     });
   });
+
+  // Reset Filter Button
+  resetBtn?.addEventListener('click', () => {
+    const allBtn = document.querySelector<HTMLButtonElement>('[data-category-filter="all"]');
+    allBtn?.click();
+  });
+
+  // Arrow controls for category pills track
+  const pillsTrack = document.querySelector<HTMLElement>('.category-pills-scroll-track');
+  const pillLeftBtn = document.getElementById('pill-scroll-left');
+  const pillRightBtn = document.getElementById('pill-scroll-right');
+
+  function updatePillArrowState() {
+    if (!pillsTrack) return;
+    const scrollLeft = pillsTrack.scrollLeft;
+
+    // Toggle mobile left alpha dissolve mask when track is scrolled
+    if (scrollLeft > 4) {
+      pillsTrack.classList.add('has-scrolled-left');
+    } else {
+      pillsTrack.classList.remove('has-scrolled-left');
+    }
+
+    if (!pillLeftBtn || !pillRightBtn) return;
+    const maxScroll = pillsTrack.scrollWidth - pillsTrack.clientWidth;
+
+    if (scrollLeft <= 5) {
+      pillLeftBtn.style.opacity = '0.3';
+      pillLeftBtn.style.pointerEvents = 'none';
+    } else {
+      pillLeftBtn.style.opacity = '1';
+      pillLeftBtn.style.pointerEvents = 'auto';
+    }
+
+    if (maxScroll > 0 && scrollLeft >= maxScroll - 5) {
+      pillRightBtn.style.opacity = '0.3';
+      pillRightBtn.style.pointerEvents = 'none';
+    } else {
+      pillRightBtn.style.opacity = '1';
+      pillRightBtn.style.pointerEvents = 'auto';
+    }
+  }
+
+  updatePillArrowState();
+  pillsTrack?.addEventListener('scroll', updatePillArrowState);
+  window.addEventListener('resize', updatePillArrowState);
+
+  pillLeftBtn?.addEventListener('click', () => {
+    pillsTrack?.scrollBy({ left: -280, behavior: 'smooth' });
+  });
+
+  pillRightBtn?.addEventListener('click', () => {
+    pillsTrack?.scrollBy({ left: 280, behavior: 'smooth' });
+  });
+
+  // Mouse Wheel horizontal scroll for category pills track
+  pillsTrack?.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      pillsTrack.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+
+  // Mouse drag-to-scroll for desktop
+  if (pillsTrack) {
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let moved = false;
+
+    pillsTrack.addEventListener('mousedown', (e) => {
+      isDown = true;
+      moved = false;
+      pillsTrack.style.cursor = 'grabbing';
+      startX = e.pageX - pillsTrack.offsetLeft;
+      scrollLeft = pillsTrack.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      if (pillsTrack) pillsTrack.style.cursor = 'grab';
+    });
+
+    pillsTrack.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      moved = true;
+      const x = e.pageX - pillsTrack.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      pillsTrack.scrollLeft = scrollLeft - walk;
+    });
+
+      pillsTrack.addEventListener('click', (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    }
+
+    // Gentle Auto-Step Slide (Discrete step-by-step advance every ~3.5s as requested)
+    if (pillsTrack) {
+      let autoStepTimer: any = null;
+      let resumeTimer: any = null;
+
+      function stepPills() {
+        if (!pillsTrack) return;
+        if (document.visibilityState !== 'visible') return;
+
+        const maxScroll = pillsTrack.scrollWidth - pillsTrack.clientWidth;
+        if (maxScroll <= 15) return;
+
+        if (pillsTrack.scrollLeft >= maxScroll - 20) {
+          pillsTrack.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          pillsTrack.scrollBy({ left: 140, behavior: 'smooth' });
+        }
+      }
+
+      function startAutoStep() {
+        stopAutoStep();
+        autoStepTimer = setInterval(stepPills, 3600);
+      }
+
+      function stopAutoStep() {
+        if (autoStepTimer) {
+          clearInterval(autoStepTimer);
+          autoStepTimer = null;
+        }
+      }
+
+      function pauseAndResume() {
+        stopAutoStep();
+        if (resumeTimer) clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => {
+          startAutoStep();
+        }, 4500);
+      }
+
+      startAutoStep();
+
+      pillsTrack.addEventListener('touchstart', pauseAndResume, { passive: true });
+      pillsTrack.addEventListener('pointerdown', pauseAndResume, { passive: true });
+      pillsTrack.addEventListener('wheel', pauseAndResume, { passive: true });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          startAutoStep();
+        } else {
+          stopAutoStep();
+        }
+      });
+    }
 </script>

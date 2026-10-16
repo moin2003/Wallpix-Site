@@ -2,7 +2,58 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { wallpapers, type Wallpaper } from '../../data/wallpapers';
+import WallpaperCard from '../../components/WallpaperCard.astro';
+import CollageCollectionCard from '../../components/CollageCollectionCard.astro';
+import { wallpapers, SCREEN_TYPES, slugifyTag, type Wallpaper } from '../../data/wallpapers';
+import { ADSENSE_CONFIG } from '../../config/adsense';
+
+// Curated 4-Card Split-Collage Runway for Bottom Discovery
+const bottomRunwayCollections = [
+  {
+    title: 'Cyberpunk & Night City',
+    category: 'Cyberpunk',
+    count: 142,
+    href: '/collections/cyberpunk-night-city-pack',
+    images: [
+      '/images/mockup_cards/card-2-neondrive.jpg',
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+      'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?w=800&q=80'
+    ]
+  },
+  {
+    title: 'Anime Legends & Neo-Tokyo',
+    category: 'Anime',
+    count: 215,
+    href: '/tag/naruto',
+    images: [
+      '/images/mockup_cards/card-3-shadowrealm.jpg',
+      'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
+    ]
+  },
+  {
+    title: 'Exotic Supercars & Hyper GT',
+    category: 'Cars',
+    count: 185,
+    href: '/tag/porsche-911',
+    images: [
+      '/images/mockup_cards/card-6-nightbeast.jpg',
+      'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800&q=80',
+      '/images/mockup_cards/card-2-neondrive.jpg'
+    ]
+  },
+  {
+    title: 'Pitch Black & OLED Void',
+    category: 'AMOLED',
+    count: 280,
+    href: '/collections/amoled-dark-void-pack',
+    images: [
+      '/images/mockup_cards/card-6-nightbeast.jpg',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+      '/images/mockup_cards/card-3-shadowrealm.jpg'
+    ]
+  }
+];
 
 export async function getStaticPaths() {
   return wallpapers.map((wp) => ({
@@ -17,24 +68,108 @@ interface Props {
 
 const { wallpaper } = Astro.props;
 
-// Dominant colors from the mockup
-const dominantPalette = [
-  { hex: '#FF0055', label: '#FF0055' },
-  { hex: '#8A2BE2', label: '#8A2BE2' },
-  { hex: '#00E5FF', label: '#00E5FF' },
-  { hex: '#1A1A2E', label: '#1A1A2E' },
-  { hex: '#FF77AA', label: '#FF77AA' },
+// Calculate Previous and Next Wallpaper Slugs for navigation
+const currentIndex = wallpapers.findIndex((w) => w.slug === wallpaper.slug);
+const prevWallpaper = wallpapers[(currentIndex - 1 + wallpapers.length) % wallpapers.length];
+const nextWallpaper = wallpapers[(currentIndex + 1) % wallpapers.length];
+
+// Harmonic Dominant Palette Generator based on true wallpaper aesthetics
+function getHarmonicPalette(baseHex: string, category: string): { hex: string; label: string; name: string }[] {
+  const catLower = (category || '').toLowerCase();
+  if (catLower.includes('cyberpunk') || catLower.includes('neon')) {
+    return [
+      { hex: baseHex || '#00F0FF', label: baseHex || '#00F0FF', name: 'Cyan Neon' },
+      { hex: '#FF0055', label: '#FF0055', name: 'Magenta Pink' },
+      { hex: '#8A2BE2', label: '#8A2BE2', name: 'Electric Purple' },
+      { hex: '#1A1A2E', label: '#1A1A2E', name: 'Obsidian Night' },
+      { hex: '#C2FF06', label: '#C2FF06', name: 'Acid Lime' },
+    ];
+  } else if (catLower.includes('nature')) {
+    return [
+      { hex: baseHex || '#2A9D8F', label: baseHex || '#2A9D8F', name: 'Alpine Forest' },
+      { hex: '#E76F51', label: '#E76F51', name: 'Sunset Amber' },
+      { hex: '#457B9D', label: '#457B9D', name: 'Glacial Blue' },
+      { hex: '#1D3557', label: '#1D3557', name: 'Deep Lake' },
+      { hex: '#E9C46A', label: '#E9C46A', name: 'Golden Hour' },
+    ];
+  } else if (catLower.includes('amoled') || catLower.includes('dark')) {
+    return [
+      { hex: '#000000', label: '#000000', name: 'Pitch OLED Void' },
+      { hex: baseHex || '#E71D36', label: baseHex || '#E71D36', name: 'Vibrant Accent' },
+      { hex: '#16191E', label: '#16191E', name: 'Dark Slate' },
+      { hex: '#00F0FF', label: '#00F0FF', name: 'Luminous Cyan' },
+      { hex: '#C2FF06', label: '#C2FF06', name: 'HDR Lime' },
+    ];
+  } else if (catLower.includes('cars') || catLower.includes('supercar')) {
+    return [
+      { hex: baseHex || '#E71D36', label: baseHex || '#E71D36', name: 'Racing Rosso' },
+      { hex: '#12151A', label: '#12151A', name: 'Matte Carbon' },
+      { hex: '#FFB703', label: '#FFB703', name: 'GT Amber' },
+      { hex: '#00F0FF', label: '#00F0FF', name: 'Xenon Blue' },
+      { hex: '#8E949E', label: '#8E949E', name: 'Titanium Grey' },
+    ];
+  } else if (catLower.includes('space') || catLower.includes('cosmic')) {
+    return [
+      { hex: baseHex || '#4B0082', label: baseHex || '#4B0082', name: 'Cosmic Violet' },
+      { hex: '#0B0D17', label: '#0B0D17', name: 'Interstellar Void' },
+      { hex: '#00E5FF', label: '#00E5FF', name: 'Nebula Cyan' },
+      { hex: '#FF2E88', label: '#FF2E88', name: 'Stellar Pink' },
+      { hex: '#FFD166', label: '#FFD166', name: 'Supernova Gold' },
+    ];
+  }
+  return [
+    { hex: baseHex || '#C2FF06', label: baseHex || '#C2FF06', name: 'Primary Glow' },
+    { hex: '#00F0FF', label: '#00F0FF', name: 'Secondary Cyan' },
+    { hex: '#8A2BE2', label: '#8A2BE2', name: 'Deep Purple' },
+    { hex: '#0E1117', label: '#0E1117', name: 'Obsidian' },
+    { hex: '#FF385C', label: '#FF385C', name: 'Vibrant Coral' },
+  ];
+}
+
+const dominantPalette = getHarmonicPalette(wallpaper.colorHex || '#FF0055', wallpaper.category || '');
+
+const tagsList = wallpaper.tags && wallpaper.tags.length > 0 
+  ? wallpaper.tags 
+  : [
+      wallpaper.category || 'Cyberpunk',
+      'City',
+      'Neon',
+      'Night',
+      '4K UHD',
+      'Futuristic',
+      'AMOLED',
+    ];
+
+const currentScreenTypes = wallpaper.screenTypes || ['desktop-4k', 'phone-iphone'];
+const supportedScreens = SCREEN_TYPES.filter((s) => currentScreenTypes.includes(s.key));
+
+// Query highly relevant Similar Wallpapers (Strictly deduplicated by slug and image)
+const similarWallpapers = wallpapers
+  .filter((w) => w.slug !== wallpaper.slug)
+  .filter((w) => {
+    const sameCategory = (w.category || '').toLowerCase() === (wallpaper.category || '').toLowerCase();
+    const sharedTags = (w.tags || []).some((t) => (wallpaper.tags || []).includes(t));
+    return sameCategory || sharedTags;
+  });
+
+const uniquePool = [
+  ...similarWallpapers,
+  ...wallpapers.filter((w) => w.slug !== wallpaper.slug)
 ];
 
-const tagsList = [
-  'Cyberpunk',
-  'City',
-  'Neon',
-  'Night',
-  '4K',
-  'Anime Style',
-  'Futuristic',
-];
+const seenSlugs = new Set<string>();
+const seenImages = new Set<string>();
+const displaySimilar: Wallpaper[] = [];
+
+for (const wp of uniquePool) {
+  if (displaySimilar.length >= 8) break;
+  if (!seenSlugs.has(wp.slug) && !seenImages.has(wp.sourceCdn)) {
+    seenSlugs.add(wp.slug);
+    seenImages.add(wp.sourceCdn);
+    displaySimilar.push(wp);
+  }
+}
+
 
 const schema = {
   '@context': 'https://schema.org',
@@ -46,11 +181,11 @@ const schema = {
   encodingFormat: 'image/jpeg',
   width: '3840',
   height: '2160',
-  license: 'https://lumina-wallpapers.com/terms',
-  acquireLicensePage: 'https://lumina-wallpapers.com/terms',
+  license: 'https://walpix.site/terms',
+  acquireLicensePage: 'https://walpix.site/terms',
   author: {
     '@type': 'Organization',
-    name: 'Lumina Studio',
+    name: 'Walpix Studio',
   },
 };
 ---
@@ -59,330 +194,1232 @@ const schema = {
   title={`${wallpaper.title} (4K UHD Wallpaper)`}
   description={`Download ${wallpaper.title} 4K Ultra HD wallpaper. High-resolution background for desktop, iPhone, Android, and ultrawide monitors.`}
   image={wallpaper.sourceCdn}
+  preloadImage={wallpaper.sourceCdn}
   schema={schema}
 >
-  <!-- Floating Header -->
-  <Header currentCategory="wallpapers" />
+  <!-- Global Header (Desktop Only on Detail Page) -->
+  <div class="hidden lg:block">
+    <Header currentCategory="wallpapers" />
+  </div>
 
-  <main class="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-[38px] pt-3 pb-12 min-h-screen">
+  <!-- Isolated Wallpaper Detail Page Wrapper -->
+  <main class="wallpaper-detail-page min-h-screen bg-[#020406] text-[#F8FAFC] relative overflow-hidden">
     
-    <!-- 2-Column Media-Detail Workspace -->
-    <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,2.15fr)_480px] gap-7 items-start">
+    <!-- Ambient Animated Floating Lime/Green Glow Drifting in Background -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="ambient-drift-1 absolute -top-28 right-[8%] w-[680px] h-[680px] bg-walpix-lime/[0.045] rounded-full blur-[160px]"></div>
+      <div class="ambient-drift-2 absolute top-1/3 -left-20 w-[720px] h-[720px] bg-walpix-lime/[0.038] rounded-full blur-[180px]"></div>
+      <div class="ambient-drift-3 absolute bottom-20 right-[15%] w-[650px] h-[650px] bg-walpix-lime/[0.042] rounded-full blur-[160px]"></div>
+    </div>
+
+    <!-- ========================================================
+         DESKTOP-ONLY 2-COLUMN DETAIL LAYOUT (100% UNTOUCHED FOR PC)
+         ======================================================== -->
+    <div class="hidden lg:block relative z-10 w-full max-w-[1480px] xl:max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
       
-      <!-- ========================================================
-           LEFT COLUMN: Wide ~2.4:1 Hero Preview & Live Simulation
-           ======================================================== -->
-      <section class="space-y-4">
+      <!-- MAIN 2-COLUMN DETAIL LAYOUT -->
+      <div class="detail-grid-wrapper grid grid-cols-1 lg:grid-cols-[minmax(0,1.75fr)_460px] xl:grid-cols-[minmax(0,1.8fr)_480px] gap-6 lg:gap-8 items-start">
         
-        <!-- Large Wide ~2.4:1 Wallpaper Hero Preview Container -->
-        <div class="lumina-detail-hero group bg-[#05080A]">
-          <!-- Wallpaper Image (object-cover) -->
-          <img
-            id="detail-main-img"
-            src={wallpaper.sourceCdn}
-            alt={wallpaper.title}
-            referrerpolicy="no-referrer"
-            class="w-full h-full object-cover select-none transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-            onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=80'"
-          />
+        <!-- ========================================================
+             LEFT COLUMN: MAIN VIEWER & DIRECTLY UNDERNEATH LIVE SIMULATION
+             ======================================================== -->
+        <section class="space-y-5 sm:space-y-6 detail-left-column">
+          
+          <!-- 1. Main Wallpaper Viewer Container -->
+          <div id="detail-viewer-container" class="detail-viewer group relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-[16/10] bg-[#05080a] shadow-2xl rounded-2xl overflow-hidden border border-white/[0.08] transition-all duration-500">
+            <!-- Hero Wallpaper Image -->
+            <img
+              id="detail-main-img"
+              src={wallpaper.sourceCdn}
+              alt={wallpaper.title}
+              referrerpolicy="no-referrer"
+              class="w-full h-full object-cover select-none transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=80'"
+            />
 
-          <!-- Top-Left: 4K UHD Pill Badge -->
-          <div class="absolute top-4 left-4 z-20 pointer-events-none">
-            <span class="lumina-4k-pill">
-              4K UHD
-            </span>
-          </div>
+            <!-- Top Left: 4K UHD Badge (Minimal Frosted Glass) -->
+            <div class="absolute top-2.5 sm:top-4 left-2.5 sm:left-4 z-20 pointer-events-none">
+              <span class="viewer-badge inline-flex items-center justify-center font-mono font-bold text-xs uppercase tracking-wider">
+                4K UHD
+              </span>
+            </div>
 
-          <!-- Top-Right: Favorite Pill Counter -->
-          <div class="absolute top-4 right-4 z-20">
-            <button
-              id="fav-btn"
-              class="h-9 px-3.5 rounded-full bg-[#05080A]/70 hover:bg-[#05080A]/90 border border-white/15 text-white text-xs font-semibold flex items-center gap-1.5 backdrop-blur-md transition-all shadow-sm"
+            <!-- Mobile Aspect Ratio Toggle (Phone 9:16 vs Wide 16:9) - Mobile only -->
+            <div class="mobile-aspect-switcher lg:hidden absolute top-2.5 left-1/2 -translate-x-1/2 z-20 flex items-center bg-black/65 backdrop-blur-md border border-white/20 rounded-full p-0.5 shadow-xl">
+              <button
+                id="aspect-phone-btn"
+                type="button"
+                class="aspect-toggle-btn px-2.5 py-1 rounded-full text-[11px] font-semibold text-white/70 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
+                title="View in 9:16 Phone Ratio"
+              >
+                <svg class="w-3 h-3 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>9:16 Phone</span>
+              </button>
+              <button
+                id="aspect-wide-btn"
+                type="button"
+                class="aspect-toggle-btn is-active px-2.5 py-1 rounded-full text-[11px] font-semibold text-white transition-all flex items-center gap-1 bg-white/20 cursor-pointer"
+                title="View in 16:9 Landscape Ratio"
+              >
+                <svg class="w-3 h-3 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>16:9 Wide</span>
+              </button>
+            </div>
+
+            <!-- Top Right: Desktop Aspect Badge -->
+            <div class="hidden lg:block absolute top-3 sm:top-4 right-16 sm:right-20 z-20 pointer-events-none">
+              <span class="viewer-badge-aspect inline-flex items-center justify-center font-mono font-semibold text-xs px-2.5 py-1 rounded-full bg-black/45 border border-white/20 text-white/90 backdrop-blur-md">
+                16:9
+              </span>
+            </div>
+
+            <!-- Favorite Counter Pill (Top-Right) -->
+            <div class="absolute top-2.5 sm:top-4 right-2.5 sm:right-4 z-20">
+              <button
+                id="detail-fav-btn"
+                class="favorite-pill h-8 sm:h-9 px-3 sm:px-4 rounded-full flex items-center gap-1.5 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"
+                aria-label="Add to favorites"
+              >
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span class="text-xs font-semibold text-white">12.4K</span>
+              </button>
+            </div>
+
+            <!-- Image Navigation Arrows (Left & Right) - Sleek & compact on mobile -->
+            <a
+              href={`/wallpapers/${prevWallpaper.slug}`}
+              class="viewer-control absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white z-20 transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
+              aria-label="Previous wallpaper"
             >
-              <svg class="w-4 h-4 text-lumina-pink" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
               </svg>
-              <span>12.4K</span>
+            </a>
+
+            <a
+              href={`/wallpapers/${nextWallpaper.slug}`}
+              class="viewer-control absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-white z-20 transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
+              aria-label="Next wallpaper"
+            >
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+
+            <!-- Fullscreen / Expand Button on Viewer (Dual Diagonal Arrows) -->
+            <button
+              id="open-fullscreen-preview-btn"
+              type="button"
+              class="absolute bottom-2.5 sm:bottom-3 right-2.5 sm:right-3 z-20 h-7 sm:h-8 px-2.5 sm:px-3 rounded-full bg-black/65 backdrop-blur-md border border-white/20 text-white flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold shadow-lg hover:border-walpix-lime hover:text-walpix-lime transition-all active:scale-95 cursor-pointer"
+              title="Expand Fullscreen Phone Preview"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+              <span>Expand</span>
             </button>
           </div>
 
-          <!-- Left Navigation Circle Arrow -->
-          <button
-            id="prev-wp-btn"
-            aria-label="Previous wallpaper"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#030608]/75 hover:bg-[#030608]/90 border border-white/30 hover:border-lumina-lime text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:shadow-[0_0_12px_rgba(194,255,0,0.30)] z-20"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          <!-- 2. Live Screen Simulation (Interactive Multi-Device Simulation Engine) -->
+          <div class="simulation detail-sim-container p-6 sm:p-7 rounded-[18px] space-y-6">
+            
+            <!-- Simulation Header & Device Selector Tabs -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_12px_rgba(194,255,6,0.2)]">
+                  <svg class="w-5 h-5 text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-base sm:text-lg font-display font-bold text-white leading-tight">
+                    Live Screen Simulation
+                  </h3>
+                  <p class="text-xs text-[#8E969F]">
+                    See how this wallpaper looks on different devices
+                  </p>
+                </div>
+              </div>
 
-          <!-- Right Navigation Circle Arrow -->
-          <button
-            id="next-wp-btn"
-            aria-label="Next wallpaper"
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#030608]/75 hover:bg-[#030608]/90 border border-white/30 hover:border-lumina-lime text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:shadow-[0_0_12px_rgba(194,255,0,0.30)] z-20"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+              <!-- Device Selector Buttons (All 5 Target Screen Types) -->
+              <div class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth touch-pan-x overscroll-x-contain py-1">
+                <button data-device="macbook" class="device-option is-active px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>MacBook</span>
+                </button>
+                <button data-device="iphone" class="device-option px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  <span>iPhone</span>
+                </button>
+                <button data-device="desktop" class="device-option px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>Desktop 4K</span>
+                </button>
+                <button data-device="tablet" class="device-option px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  <span>Tablet (iPad)</span>
+                </button>
+                <button data-device="dual" class="device-option px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  <span>Dual Screen</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Multi-Device Simulation Stage (Taller, Grand & Spacious) -->
+            <div class="relative w-full rounded-2xl bg-[#030609]/90 border border-white/[0.08] p-6 sm:p-10 lg:p-12 flex items-center justify-center min-h-[480px] sm:min-h-[540px] lg:min-h-[580px] overflow-hidden shadow-inner">
+              
+              <!-- 1. MacBook View (Default Active View: MacBook + iPhone Combo) -->
+              <div id="sim-view-macbook" data-device-view="macbook" class="device-sim-view w-full flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-14 transition-all duration-300 py-2">
+                <!-- MacBook Frame -->
+                <div class="w-full max-w-[380px] sm:max-w-[480px] lg:max-w-[540px] flex flex-col items-center space-y-2">
+                  <div class="w-full bg-[#16181b] rounded-t-xl p-2.5 sm:p-3 pb-1.5 border-t border-x border-white/25 shadow-2xl">
+                    <div class="relative aspect-[16/10] rounded-lg overflow-hidden bg-black shadow-inner border border-black">
+                      <img
+                        src={wallpaper.sourceCdn}
+                        alt={`${wallpaper.title} on MacBook Pro 16"`}
+                        referrerpolicy="no-referrer"
+                        class="w-full h-full object-cover object-center"
+                      />
+                      <!-- macOS Glass Dock -->
+                      <div class="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl bg-white/15 backdrop-blur-lg border border-white/20 flex items-center gap-2 sm:gap-2.5 shadow-lg">
+                        <span class="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-md bg-[#3B82F6]/90 shadow-sm"></span>
+                        <span class="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-md bg-[#8B5CF6]/90 shadow-sm"></span>
+                        <span class="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-md bg-[#10B981]/90 shadow-sm"></span>
+                        <span class="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-md bg-[#F59E0B]/90 shadow-sm"></span>
+                        <span class="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-md bg-[#EC4899]/90 shadow-sm"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-full h-3 sm:h-3.5 bg-[#24272e] rounded-b-lg border-b border-x border-white/25 flex items-center justify-center shadow-lg">
+                    <div class="w-16 sm:w-20 h-1 bg-[#121316] rounded-full"></div>
+                  </div>
+                  <span class="text-xs font-bold text-gray-300 pt-1">MacBook Pro 16" (16:10)</span>
+                </div>
+
+                <!-- Companion iPhone Frame -->
+                <div class="flex flex-col items-center space-y-2">
+                  <div class="relative w-[150px] sm:w-[170px] aspect-[9/19.5] rounded-[36px] p-2 bg-[#1a1c21] border-[3px] border-[#383b45] shadow-2xl">
+                    <div class="absolute top-3 left-1/2 -translate-x-1/2 w-11 h-3.5 bg-black rounded-full z-30 flex items-center justify-end pr-1.5 border border-white/10">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]/70"></span>
+                    </div>
+                    <div class="relative w-full h-full rounded-[28px] overflow-hidden bg-black shadow-inner">
+                      <img
+                        src={wallpaper.sourceCdn}
+                        alt={`${wallpaper.title} on iPhone 16 Pro`}
+                        referrerpolicy="no-referrer"
+                        class="w-full h-full object-cover object-center"
+                      />
+                      <div class="absolute top-8 inset-x-0 text-center text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] pointer-events-none">
+                        <span class="text-[9px] font-medium tracking-wide text-white/90 uppercase">Monday, Sep 9</span>
+                        <h4 class="text-2xl font-black font-display leading-tight tracking-tight mt-0.5">9:41</h4>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold text-gray-300 pt-1">iPhone 16 Pro (9:19.5)</span>
+                </div>
+              </div>
+
+              <!-- 2. iPhone Focused View -->
+              <div id="sim-view-iphone" data-device-view="iphone" class="device-sim-view hidden w-full flex-col items-center justify-center space-y-3 transition-all duration-300 py-2">
+                <div class="relative w-[210px] sm:w-[250px] aspect-[9/19.5] rounded-[48px] p-3 bg-[#1a1c21] border-[4px] border-[#383b45] shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+                  <div class="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-4.5 bg-black rounded-full z-30 flex items-center justify-end pr-2 border border-white/15">
+                    <span class="w-2 h-2 rounded-full bg-[#3B82F6]/70"></span>
+                  </div>
+                  <div class="relative w-full h-full rounded-[38px] overflow-hidden bg-black shadow-inner">
+                    <img
+                      src={wallpaper.sourceCdn}
+                      alt={`${wallpaper.title} on iPhone 16 Pro Max`}
+                      referrerpolicy="no-referrer"
+                      class="w-full h-full object-cover object-center"
+                    />
+                    <!-- Lockscreen Clock & Date -->
+                    <div class="absolute top-12 inset-x-0 text-center text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] pointer-events-none">
+                      <span class="text-xs font-medium tracking-wider text-white/80 uppercase">Monday, September 9</span>
+                      <h4 class="text-5xl font-black font-display leading-none tracking-tight mt-1 text-white">9:41</h4>
+                    </div>
+                    <!-- Bottom Quick Actions -->
+                    <div class="absolute bottom-5 inset-x-5 flex items-center justify-between pointer-events-none">
+                      <span class="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-sm text-white shadow-md">🔦</span>
+                      <span class="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-sm text-white shadow-md">📷</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-walpix-lime font-mono">iPhone 16 Pro Max • 1290 × 2796 (9:19.5)</span>
+              </div>
+
+              <!-- 3. Desktop 4K Monitor View -->
+              <div id="sim-view-desktop" data-device-view="desktop" class="device-sim-view hidden w-full max-w-[660px] sm:max-w-[760px] flex-col items-center justify-center space-y-3 transition-all duration-300 py-2">
+                <!-- Monitor Housing -->
+                <div class="w-full bg-[#111317] rounded-xl p-2.5 sm:p-3 border border-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+                  <!-- 16:9 Screen with Windows 11 Mockup -->
+                  <div class="relative aspect-[16/9] rounded-lg overflow-hidden bg-black shadow-inner border border-black/80">
+                    <img
+                      src={wallpaper.sourceCdn}
+                      alt={`${wallpaper.title} on 4K Desktop Monitor`}
+                      referrerpolicy="no-referrer"
+                      class="w-full h-full object-cover object-center"
+                    />
+                    <!-- Windows 11 Taskbar Mockup -->
+                    <div class="absolute bottom-0 inset-x-0 h-7 bg-[#0c1017]/85 backdrop-blur-md border-t border-white/10 flex items-center justify-between px-3.5">
+                      <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded bg-walpix-lime/80 shadow-sm"></span>
+                        <span class="w-3 h-3 rounded bg-white/20"></span>
+                        <span class="w-3 h-3 rounded bg-white/20"></span>
+                        <span class="w-3 h-3 rounded bg-white/20"></span>
+                      </div>
+                      <div class="flex items-center gap-2 text-[9px] font-mono text-white/70">
+                        <span class="text-walpix-lime font-bold">100% 4K UHD</span>
+                        <span>12:00 PM</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Monitor Stand Stem & Base -->
+                <div class="w-10 h-7 bg-gradient-to-b from-[#24272e] to-[#16181b] border-x border-white/20 shadow-md"></div>
+                <div class="w-48 sm:w-60 h-3 bg-[#24272e] rounded-full border border-white/20 shadow-xl"></div>
+                <span class="text-xs font-bold text-walpix-lime font-mono pt-1">32" 4K UHD Monitor • 3840 × 2160 (16:9)</span>
+              </div>
+
+              <!-- 4. Tablet (iPad Pro) View -->
+              <div id="sim-view-tablet" data-device-view="tablet" class="device-sim-view hidden w-full max-w-[420px] sm:max-w-[480px] flex-col items-center justify-center space-y-3 transition-all duration-300 py-2">
+                <div class="relative w-full max-w-[360px] sm:max-w-[440px] aspect-[4/3] rounded-[28px] p-3.5 bg-[#181a1f] border-[3.5px] border-[#383b45] shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+                  <!-- Front Camera Notch -->
+                  <div class="absolute top-2 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-black border border-white/20"></div>
+                  <!-- Screen -->
+                  <div class="relative w-full h-full rounded-[20px] overflow-hidden bg-black shadow-inner">
+                    <img
+                      src={wallpaper.sourceCdn}
+                      alt={`${wallpaper.title} on iPad Pro 13"`}
+                      referrerpolicy="no-referrer"
+                      class="w-full h-full object-cover object-center"
+                    />
+                    <!-- iPadOS Dock -->
+                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center gap-2.5 shadow-lg">
+                      <span class="w-4 h-4 rounded-lg bg-[#3B82F6]/90 shadow-sm"></span>
+                      <span class="w-4 h-4 rounded-lg bg-[#8B5CF6]/90 shadow-sm"></span>
+                      <span class="w-4 h-4 rounded-lg bg-[#10B981]/90 shadow-sm"></span>
+                      <span class="w-4 h-4 rounded-lg bg-[#F59E0B]/90 shadow-sm"></span>
+                      <span class="w-4 h-4 rounded-lg bg-[#EC4899]/90 shadow-sm"></span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-walpix-lime font-mono">iPad Pro 13" • 2064 × 2752 (4:3 Display)</span>
+              </div>
+
+              <!-- 5. Dual Screen (32:9 Panoramic Battlestation) View -->
+              <div id="sim-view-dual" data-device-view="dual" class="device-sim-view hidden w-full max-w-[720px] sm:max-w-[820px] flex-col items-center justify-center space-y-3 transition-all duration-300 py-2">
+                <!-- Dual Screen Setup -->
+                <div class="w-full flex items-center justify-center gap-2 bg-[#0a0d12] p-2.5 rounded-2xl border border-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.95)]">
+                  <!-- Monitor 1 (Left Half) -->
+                  <div class="flex-1 aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 relative">
+                    <img
+                      src={wallpaper.sourceCdn}
+                      alt={`${wallpaper.title} Dual Monitor Left`}
+                      referrerpolicy="no-referrer"
+                      class="w-[200%] h-full object-cover object-left max-w-none"
+                    />
+                    <div class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[9px] font-mono text-white border border-white/10">Display 1</div>
+                  </div>
+                  <!-- Ultra-Thin Bezel Divider -->
+                  <div class="w-[3px] h-32 bg-walpix-lime/50 shadow-[0_0_10px_rgba(194,255,6,0.6)] rounded-full"></div>
+                  <!-- Monitor 2 (Right Half) -->
+                  <div class="flex-1 aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 relative">
+                    <img
+                      src={wallpaper.sourceCdn}
+                      alt={`${wallpaper.title} Dual Monitor Right`}
+                      referrerpolicy="no-referrer"
+                      class="w-[200%] h-full object-cover object-right max-w-none -translate-x-1/2"
+                    />
+                    <div class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[9px] font-mono text-white border border-white/10">Display 2</div>
+                  </div>
+                </div>
+                <!-- Dual Stand Base -->
+                <div class="w-64 sm:w-72 h-2.5 bg-[#24272e] rounded-full border border-white/20 shadow-md"></div>
+                <span class="text-xs font-bold text-walpix-lime font-mono">Dual Monitor Battlestation • 7680 × 2160 (32:9 Panoramic)</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- 3. Screen Formats & Programmatic Tags Interlinking Mesh -->
+          <div class="simulation detail-formats-container p-6 sm:p-7 rounded-[18px] space-y-5">
+            <!-- Screen & Device Formats -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-walpix-lime font-bold flex items-center gap-2">
+                  <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>Supported Display Formats</span>
+                </h4>
+                <span class="text-[10px] font-mono text-white/50">100% Native Resolution</span>
+              </div>
+              <div class="flex flex-wrap gap-2.5">
+                {supportedScreens.map((s) => (
+                  <a
+                    href={`/screen/${s.slug}`}
+                    class="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-walpix-lime/10 border border-white/[0.08] hover:border-walpix-lime/40 text-xs font-medium text-gray-200 hover:text-walpix-lime transition-all flex items-center gap-2 group"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime group-hover:scale-125 transition-transform"></span>
+                    <span>{s.name}</span>
+                    <span class="text-[10px] font-mono text-[#8E969F] bg-white/[0.04] px-1.5 py-0.5 rounded">
+                      {s.targetRes}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Programmatic Long-Tail Tags -->
+            <div class="pt-4 border-t border-white/[0.06]">
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-[#8E969F] font-bold flex items-center gap-2">
+                  <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <span>Popular Tags & Topics</span>
+                </h4>
+                <span class="text-[10px] font-mono text-[#8E969F]">Click tag to browse hub</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                {tagsList.map((tag) => (
+                  <a
+                    href={`/tag/${slugifyTag(tag)}`}
+                    class="px-3 py-1.5 rounded-xl bg-white/[0.03] hover:bg-walpix-lime/10 border border-white/[0.06] hover:border-walpix-lime/30 text-xs font-mono text-gray-300 hover:text-walpix-lime transition-all"
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+
+        </section>
 
         <!-- ========================================================
-             Live Screen Simulation (MacBook Pro 16" & iPhone 16 Pro)
+             RIGHT COLUMN: INFORMATION & DOWNLOAD CONTROL PANEL
              ======================================================== -->
-        <div class="lumina-simulation p-5 sm:p-6 border border-white/16 space-y-6">
+        <aside class="info-panel p-4 sm:p-6 lg:p-7 rounded-[18px] space-y-4 sm:space-y-6">
           
-          <!-- Simulation Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-lumina-lime/10 border border-lumina-lime/30 flex items-center justify-center text-lumina-lime">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <!-- Breadcrumb -->
+          <nav class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-medium" aria-label="Breadcrumb">
+            <a href="/" class="text-[#747C86] hover:text-white transition-colors">Home</a>
+            <span class="text-[#747C86]">›</span>
+            <a href={`/category/${wallpaper.category ? wallpaper.category.toLowerCase().replace(/\s+/g, '-') : 'all'}`} class="text-[#A1A8B0] hover:text-white transition-colors">
+              {wallpaper.category || 'Cyberpunk'}
+            </a>
+            <span class="text-[#747C86]">›</span>
+            <span class="text-[#D7DCE2] font-semibold truncate max-w-[160px] sm:max-w-[200px]">{wallpaper.title}</span>
+          </nav>
+
+          <!-- Wallpaper Title -->
+          <h1 class="text-xl sm:text-[26px] lg:text-[30px] font-display font-bold text-[#F8FAFC] leading-tight tracking-[-0.025em]">
+            {wallpaper.title}
+          </h1>
+
+          <!-- Creator Metadata & Top Share Action -->
+          <div class="flex items-center justify-between gap-2 text-xs text-[#8C949E] flex-wrap">
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5 text-[#D7DCE2] font-semibold">
+                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-walpix-lime/20 border border-walpix-lime/50 flex items-center justify-center text-[9px] sm:text-[10px] text-walpix-lime font-bold">
+                  W
+                </div>
+                <span class="text-[11px] sm:text-xs">By Walpix Studio</span>
+                <!-- Verified Badge SVG -->
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#3B82F6]" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
               </div>
+              <span class="text-white/30">•</span>
+              <span class="text-[11px] sm:text-xs">{wallpaper.views?.toLocaleString() || '248.7K'} views</span>
+            </div>
+
+            <!-- Quick Share Action Button -->
+            <button
+              id="detail-share-btn-top"
+              type="button"
+              class="h-7 px-2.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-white/80 hover:text-white flex items-center gap-1.5 text-[11px] font-medium transition-colors cursor-pointer"
+              title="Share Wallpaper"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs sm:text-[13px] leading-[1.55] text-[#B7BEC7]">
+            A breathtaking ultra-HD wallpaper crafted with premium detail, luminous highlights, and vibrant clarity. Perfect for your 4K desktop or mobile screen.
+          </p>
+
+          <!-- Quick Format Target Chips (Mobile & Desktop 1-tap select) -->
+          <div class="space-y-1.5 pt-1">
+            <span class="text-[10px] font-mono uppercase tracking-wider text-[#8E969F] font-bold block">Quick Target Preset:</span>
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              <button
+                type="button"
+                class="quick-format-chip is-active px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                data-w="3840"
+                data-h="2160"
+                data-name="4K Original"
+                data-badge="4K"
+                data-suffix="4k"
+                data-sub="3840 × 2160 • Native UHD Master"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime"></span>
+                <span>4K UHD (Master)</span>
+              </button>
+              <button
+                type="button"
+                class="quick-format-chip px-3 py-1.5 rounded-xl text-xs font-semibold text-white/70 hover:text-white bg-white/[0.04] border border-white/10 hover:border-walpix-lime/30 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                data-w="1170"
+                data-h="2532"
+                data-name="Phone 9:16"
+                data-badge="iOS"
+                data-suffix="iphone"
+                data-sub="1170 × 2532 • Vertical Mobile Fit"
+              >
+                <svg class="w-3 h-3 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>Phone 9:16</span>
+              </button>
+              <button
+                type="button"
+                class="quick-format-chip px-3 py-1.5 rounded-xl text-xs font-semibold text-white/70 hover:text-white bg-white/[0.04] border border-white/10 hover:border-walpix-lime/30 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                data-w="1920"
+                data-h="1080"
+                data-name="1080p FHD"
+                data-badge="FHD"
+                data-suffix="1080p"
+                data-sub="1920 × 1080 • Standard Full HD"
+              >
+                <span>1080p FHD</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Resolution Download Box & Actions -->
+          <div class="space-y-3 pt-1">
+            
+            <!-- Selected Resolution Badge -->
+            <div class="resolution-badge p-2.5 sm:p-3.5 rounded-2xl flex items-center justify-between">
+              <span id="active-res-label" class="font-mono font-bold text-xs sm:text-sm text-white tracking-wide">
+                3840 × 2160 (4K UHD)
+              </span>
+              <span class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase flex items-center gap-1 bg-[#C2F600]/10 border border-[#C2F600] text-[#C2F600] shadow-[0_0_8px_rgba(194,246,0,0.18)]">
+                <span>Original Res.</span>
+                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#C2F600]" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </span>
+            </div>
+
+            <!-- Primary Split-Button: Instant Download + Resolution Dropdown Trigger -->
+            <div class="relative w-full z-40">
+              <div class="flex items-stretch w-full rounded-[15px] overflow-hidden shadow-lg border border-walpix-lime/40">
+                <!-- Left Main Download CTA -->
+                <button
+                  id="main-download-btn"
+                  data-url={wallpaper.sourceCdn}
+                  data-filename={`${wallpaper.slug}-4k.jpg`}
+                  data-width="3840"
+                  data-height="2160"
+                  class="primary-download flex-1 h-[50px] sm:h-[58px] px-3.5 sm:px-5 flex items-center justify-between gap-2.5 sm:gap-3 group cursor-pointer transition-all duration-300 hover:scale-[1.005] active:scale-[0.99]"
+                >
+                  <div class="flex items-center gap-2 sm:gap-3 text-left">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#050605] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <div>
+                      <div id="btn-download-title" class="text-[13px] sm:text-[15px] font-bold text-[#050605] leading-tight font-display">
+                        Download Original 4K
+                      </div>
+                      <div id="btn-download-subtitle" class="text-[9px] sm:text-[10px] font-semibold text-[#050605]/75 tracking-tight truncate max-w-[190px] sm:max-w-none">
+                        3840 × 2160 • Native UHD • Instant Canvas
+                      </div>
+                    </div>
+                  </div>
+                  <span id="btn-download-badge" class="text-[11px] sm:text-xs font-mono font-bold text-[#050605] bg-black/10 px-2 py-0.5 rounded">
+                    4K
+                  </span>
+                </button>
+
+                <!-- Right Split Trigger Chevron Button -->
+                <button
+                  id="res-dropdown-trigger"
+                  type="button"
+                  class="w-[44px] sm:w-[52px] bg-[#B0DF00] hover:bg-[#9EC800] border-l border-black/15 flex items-center justify-center text-[#050605] transition-colors cursor-pointer select-none"
+                  aria-label="Select device resolution"
+                  title="Choose Resolution & Device Size"
+                >
+                  <svg id="res-dropdown-chevron" class="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Resolution Preset Selector Dropdown Menu -->
+              <div
+                id="res-dropdown-menu"
+                class="hidden absolute left-0 right-0 top-[56px] sm:top-[64px] z-50 rounded-2xl bg-[#080c10]/95 backdrop-blur-xl border border-white/20 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.95)] space-y-1 text-xs"
+              >
+                <div class="px-3 py-1.5 text-[10px] font-mono text-[#8E969F] uppercase tracking-wider border-b border-white/[0.06] flex items-center justify-between">
+                  <span>Choose Target Resolution</span>
+                  <span class="text-walpix-lime font-bold">100% Client-Side</span>
+                </div>
+
+                <!-- 1. 4K UHD -->
+                <button
+                  type="button"
+                  class="res-select-btn w-full text-left p-2.5 rounded-xl hover:bg-walpix-lime/10 border border-transparent hover:border-walpix-lime/30 transition-all flex items-center justify-between group cursor-pointer"
+                  data-name="4K Ultra HD"
+                  data-sub="3840 × 2160 • Native UHD • Windows 11 & Mac 4K"
+                  data-w="3840"
+                  data-h="2160"
+                  data-badge="4K"
+                  data-suffix="4k"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-walpix-lime group-hover:bg-walpix-lime/10 transition-colors shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white group-hover:text-walpix-lime">3840 × 2160 (4K UHD)</div>
+                      <div class="text-[10px] text-[#8E969F]">Native Master • 4K PC Monitors & iMac</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-walpix-lime font-bold">16:9</span>
+                </button>
+
+                <!-- 2. 2K QHD -->
+                <button
+                  type="button"
+                  class="res-select-btn w-full text-left p-2.5 rounded-xl hover:bg-walpix-lime/10 border border-transparent hover:border-walpix-lime/30 transition-all flex items-center justify-between group cursor-pointer"
+                  data-name="2K Quad HD"
+                  data-sub="2560 × 1440 • 2K QHD • 144Hz Gaming Displays"
+                  data-w="2560"
+                  data-h="1440"
+                  data-badge="2K"
+                  data-suffix="2k"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-walpix-lime group-hover:bg-walpix-lime/10 transition-colors shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white group-hover:text-walpix-lime">2560 × 1440 (2K QHD)</div>
+                      <div class="text-[10px] text-[#8E969F]">High-Refresh Gaming Monitors</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-gray-300">16:9</span>
+                </button>
+
+                <!-- 3. 1080p FHD -->
+                <button
+                  type="button"
+                  class="res-select-btn w-full text-left p-2.5 rounded-xl hover:bg-walpix-lime/10 border border-transparent hover:border-walpix-lime/30 transition-all flex items-center justify-between group cursor-pointer"
+                  data-name="1080p Full HD"
+                  data-sub="1920 × 1080 • FHD • Standard Laptops & Desktops"
+                  data-w="1920"
+                  data-h="1080"
+                  data-badge="FHD"
+                  data-suffix="1080p"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-walpix-lime group-hover:bg-walpix-lime/10 transition-colors shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white group-hover:text-walpix-lime">1920 × 1080 (Full HD)</div>
+                      <div class="text-[10px] text-[#8E969F]">Standard Laptops & Workspaces</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-gray-300">16:9</span>
+                </button>
+
+                <!-- 4. iPhone 14/15/16 Pro -->
+                <button
+                  type="button"
+                  class="res-select-btn w-full text-left p-2.5 rounded-xl hover:bg-walpix-lime/10 border border-transparent hover:border-walpix-lime/30 transition-all flex items-center justify-between group cursor-pointer"
+                  data-name="iPhone 16 / 15 Pro"
+                  data-sub="1170 × 2532 • Vertical Crop • Dynamic Island"
+                  data-w="1170"
+                  data-h="2532"
+                  data-badge="iOS"
+                  data-suffix="iphone"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-walpix-lime group-hover:bg-walpix-lime/10 transition-colors shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white group-hover:text-walpix-lime">1170 × 2532 (iPhone Pro)</div>
+                      <div class="text-[10px] text-[#8E969F]">Vertical Crop • iOS Dynamic Island</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-amber-400 font-bold">9:19.5</span>
+                </button>
+
+                <!-- 5. Samsung S24 / Pixel -->
+                <button
+                  type="button"
+                  class="res-select-btn w-full text-left p-2.5 rounded-xl hover:bg-walpix-lime/10 border border-transparent hover:border-walpix-lime/30 transition-all flex items-center justify-between group cursor-pointer"
+                  data-name="Samsung S24 / Pixel"
+                  data-sub="1080 × 2340 • Vertical Crop • AMOLED FHD+"
+                  data-w="1080"
+                  data-h="2340"
+                  data-badge="Android"
+                  data-suffix="samsung"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-300 group-hover:text-walpix-lime group-hover:bg-walpix-lime/10 transition-colors shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white group-hover:text-walpix-lime">1080 × 2340 (Samsung S24)</div>
+                      <div class="text-[10px] text-[#8E969F]">Vertical FHD+ • AMOLED Vibrant</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-amber-400 font-bold">9:20</span>
+                </button>
+
+                <!-- 6. Launch Canvas Cropper Option -->
+                <a
+                  href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+                  class="w-full text-left p-2.5 rounded-xl hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/20 transition-all flex items-center justify-between group cursor-pointer block"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-[#C2FF06]/10 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shrink-0 shadow-[0_0_8px_rgba(194,255,6,0.15)]">
+                      <svg class="w-4 h-4 text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-bold text-walpix-lime group-hover:text-white">Custom Live Canvas Cropper</div>
+                      <div class="text-[10px] text-[#8E969F]">Drag to crop exact custom dimensions</div>
+                    </div>
+                  </div>
+                  <span class="text-walpix-lime group-hover:translate-x-1 transition-transform">→</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Mobile Quick Actions Grid: Crop & Fullscreen Preview -->
+            <div class="grid grid-cols-2 gap-2 sm:gap-2.5">
+              <a
+                href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+                class="h-[42px] sm:h-[48px] px-3 rounded-xl bg-[#0c1016] hover:bg-[#141b24] border border-white/10 hover:border-walpix-lime/50 text-white flex items-center justify-center gap-2 transition-all text-xs font-semibold group shadow-sm"
+              >
+                <svg class="w-3.5 h-3.5 text-walpix-lime group-hover:rotate-12 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z" />
+                </svg>
+                <span class="truncate">Crop for Phone</span>
+              </a>
+
+              <button
+                id="preview-fullscreen-quick-btn"
+                type="button"
+                class="h-[42px] sm:h-[48px] px-3 rounded-xl bg-[#0c1016] hover:bg-[#141b24] border border-white/10 hover:border-walpix-lime/50 text-white flex items-center justify-center gap-2 transition-all text-xs font-semibold group shadow-sm cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 text-walpix-lime group-hover:scale-110 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span class="truncate">Phone Preview</span>
+              </button>
+            </div>
+
+            <!-- Studio Creative Actions (3 Interconnected Tools) -->
+            <div class="pt-1">
+              <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#8E969F] block mb-1.5">Open in Creative Studio:</span>
+              <div class="grid grid-cols-3 gap-1.5 sm:gap-2">
+                <a
+                  href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+                  class="p-2 sm:p-2.5 rounded-xl bg-[#0d121c] hover:bg-[#141b29] border border-white/10 hover:border-walpix-lime/40 transition-all flex flex-col items-center text-center gap-1 group"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime"></span>
+                  <span class="text-[11px] sm:text-xs font-semibold text-gray-200 group-hover:text-white">4K Cropper</span>
+                  <span class="text-[9px] text-[#8E969F]">Frame / Crop</span>
+                </a>
+
+                <a
+                  href={`/tool/avatar?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+                  class="p-2 sm:p-2.5 rounded-xl bg-[#0d121c] hover:bg-[#141b29] border border-white/10 hover:border-[#FF28B8]/40 transition-all flex flex-col items-center text-center gap-1 group"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#FF28B8]"></span>
+                  <span class="text-[11px] sm:text-xs font-semibold text-gray-200 group-hover:text-white">Avatar Maker</span>
+                  <span class="text-[9px] text-[#8E969F]">PFP & Shapes</span>
+                </a>
+
+                <a
+                  href={`/tool/splitter?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+                  class="p-2 sm:p-2.5 rounded-xl bg-[#0d121c] hover:bg-[#141b29] border border-white/10 hover:border-[#00F0FF]/40 transition-all flex flex-col items-center text-center gap-1 group"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#00F0FF]"></span>
+                  <span class="text-[11px] sm:text-xs font-semibold text-gray-200 group-hover:text-white">Split Screen</span>
+                  <span class="text-[9px] text-[#8E969F]">Multi-Monitor</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Other Resolutions Selector (4 Compact Cards matching Screenshot 5) -->
+          <div class="space-y-2.5 pt-1">
+            <h4 class="text-xs font-semibold text-[#DDE0E3] tracking-wide">Target Resolutions</h4>
+            <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
+              
+              <!-- 4K UHD -->
+              <button
+                data-name="4K UHD"
+                data-res="3840 × 2160"
+                class="resolution-option is-active p-2.5 rounded-[12px] text-left flex flex-col justify-between h-[54px] transition-all cursor-pointer"
+              >
+                <span class="text-xs font-semibold text-white leading-none flex items-center gap-1">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  4K UHD
+                </span>
+                <span class="text-[10px] font-mono font-bold text-[#C2F600]">3840 × 2160</span>
+              </button>
+
+              <!-- 2K QHD -->
+              <button
+                data-name="2K QHD"
+                data-res="2560 × 1440"
+                class="resolution-option p-2.5 rounded-[12px] text-left flex flex-col justify-between h-[54px] transition-all cursor-pointer hover:border-white/30"
+              >
+                <span class="text-xs font-semibold text-[#D7DCE2] leading-none flex items-center gap-1">
+                  <svg class="w-3 h-3 text-[#A1A8B0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  2K QHD
+                </span>
+                <span class="text-[10px] font-mono text-[#9DA5AE]">2560 × 1440</span>
+              </button>
+
+              <!-- 1080p -->
+              <button
+                data-name="1080p Full HD"
+                data-res="1920 × 1080"
+                class="resolution-option p-2.5 rounded-[12px] text-left flex flex-col justify-between h-[54px] transition-all cursor-pointer hover:border-white/30"
+              >
+                <span class="text-xs font-semibold text-[#D7DCE2] leading-none flex items-center gap-1">
+                  <svg class="w-3 h-3 text-[#A1A8B0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  1080p
+                </span>
+                <span class="text-[10px] font-mono text-[#9DA5AE]">1920 × 1080</span>
+              </button>
+
+              <!-- Mobile -->
+              <button
+                data-name="Mobile Portrait"
+                data-res="1080 × 2400"
+                class="resolution-option p-2.5 rounded-[12px] text-left flex flex-col justify-between h-[54px] transition-all cursor-pointer hover:border-white/30"
+              >
+                <span class="text-xs font-semibold text-[#D7DCE2] leading-none flex items-center gap-1">
+                  <svg class="w-3 h-3 text-[#A1A8B0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  Mobile
+                </span>
+                <span class="text-[10px] font-mono text-[#9DA5AE]">1080 × 2400</span>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Dominant Colors & Copy Palette -->
+          <div class="space-y-2.5 pt-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-semibold text-[#DDE0E3] tracking-wide">Dominant Colors</h4>
+              <button
+                id="copy-palette-btn"
+                class="copy-palette-button px-2.5 py-1 rounded-lg flex items-center gap-1.5 text-[11px] font-medium text-[#8E969F] hover:text-white transition-colors cursor-pointer"
+                title="Copy Hex Palette"
+              >
+                <svg class="w-3.5 h-3.5 text-[#8E969F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span id="copy-palette-text">Copy</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-1">
+              {dominantPalette.map((c) => (
+                <div class="flex flex-col items-center gap-1.5">
+                  <span
+                    class="color-swatch w-[34px] h-[34px] rounded-full border transition-transform hover:scale-110 cursor-pointer shadow-md"
+                    style={`background-color: ${c.hex};`}
+                    title={`Click to copy ${c.hex}`}
+                  ></span>
+                  <span class="text-[10px] font-mono text-[#8E969F] uppercase">{c.hex}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="space-y-2.5 pt-1">
+            <h4 class="text-xs font-semibold text-[#DDE0E3] tracking-wide">Tags</h4>
+            <div class="flex flex-wrap gap-2">
+              {tagsList.map((tag) => (
+                <a
+                  href={`/tag/${slugifyTag(tag)}`}
+                  class="tag h-[28px] px-3 rounded-full flex items-center text-[11px] font-medium text-[#B7BEC7] hover:text-white transition-colors"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Statistics Bar & Share Button -->
+          <div class="detail-stats pt-4 flex items-center justify-between text-xs text-[#8C949E]">
+            <div class="flex flex-col sm:flex-row items-center gap-1.5 text-center sm:text-left">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
               <div>
-                <h3 class="text-base sm:text-[17px] font-display font-bold text-white leading-tight">
-                  Live Screen Simulation
-                </h3>
-                <p class="text-xs text-[#8F979F]">
-                  See how this wallpaper looks on different devices
+                <span class="font-bold text-white block sm:inline">{wallpaper.views?.toLocaleString() || '248.7K'}</span>
+                <span class="text-[10px] text-[#8C949E] block sm:inline">Views</span>
+              </div>
+            </div>
+
+            <div class="w-[1px] h-6 bg-white/10"></div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-1.5 text-center sm:text-left">
+              <svg class="w-4 h-4 text-[#FF77AA]" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <span class="font-bold text-white block sm:inline">12.4K</span>
+                <span class="text-[10px] text-[#8C949E] block sm:inline">Likes</span>
+              </div>
+            </div>
+
+            <div class="w-[1px] h-6 bg-white/10"></div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-1.5 text-center sm:text-left">
+              <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+              <div>
+                <span class="font-bold text-white block sm:inline">{wallpaper.downloads?.toLocaleString() || '3.1K'}</span>
+                <span class="text-[10px] text-[#8C949E] block sm:inline">Downloads</span>
+              </div>
+            </div>
+
+            <div class="w-[1px] h-6 bg-white/10"></div>
+
+            <!-- Share Button -->
+            <button
+              id="detail-share-btn"
+              class="share-button h-[34px] px-3.5 rounded-[14px] text-xs font-semibold text-white flex items-center gap-1.5 transition-all cursor-pointer hover:scale-105 active:scale-95"
+            >
+              <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+
+          <!-- Content-Specific Monetization Advertisement (Clean Minimalist Slot - Only shown when AdSense is approved & live) -->
+          {ADSENSE_CONFIG.isLive && (
+            <div class="detail-ad p-5 rounded-2xl bg-[#05070a] border border-white/[0.09] flex flex-col justify-between select-none mt-4 shadow-md overflow-hidden relative">
+              <!-- Corner Decorative Watermark Icon (Bottom-Left) -->
+              <div class="absolute -bottom-6 -left-6 w-24 h-24 text-walpix-lime/[0.08] pointer-events-none select-none">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-full h-full">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                </svg>
+              </div>
+
+              <div class="relative z-10 w-full flex items-center justify-between text-[10px] font-mono mb-2">
+                <span class="text-[10px] font-mono text-walpix-lime uppercase tracking-widest font-bold">
+                  FOR ADVERTISEMENT
+                </span>
+                <span class="px-2 py-0.5 rounded bg-walpix-lime/10 border border-walpix-lime/25 text-walpix-lime font-bold uppercase text-[9px]">
+                  AVAILABLE
+                </span>
+              </div>
+
+              <div class="relative z-10 my-auto py-2">
+                <h4 class="text-sm sm:text-base font-bold text-white tracking-tight">
+                  4K Page Sponsorship
+                </h4>
+                <p class="text-xs text-[#8E949E] mt-1">
+                  Direct placement viewed by 4K creators downloading this wallpaper
                 </p>
               </div>
-            </div>
 
-            <!-- Device Tabs -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              <button class="lumina-device-tab active">MacBook</button>
-              <button class="lumina-device-tab">iPhone</button>
-              <button class="lumina-device-tab">Desktop</button>
-              <button class="lumina-device-tab">Tablet</button>
-            </div>
-          </div>
-
-          <!-- Studio Simulation Stage -->
-          <div class="relative w-full rounded-2xl bg-black/40 border border-white/[0.06] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 min-h-[360px]">
-            
-            <!-- 💻 MacBook Pro 16" Frame -->
-            <div class="flex flex-col items-center space-y-2">
-              <div class="w-full max-w-[420px] bg-[#16181b] rounded-t-xl p-2 pb-1 border-t border-x border-white/20 shadow-2xl">
-                <!-- Laptop Screen -->
-                <div class="relative aspect-[16/10] rounded-lg overflow-hidden bg-black shadow-inner border border-black">
-                  <img
-                    src={wallpaper.sourceCdn}
-                    alt={`${wallpaper.title} on MacBook`}
-                    referrerpolicy="no-referrer"
-                    class="w-full h-full object-cover"
-                  />
-                  <!-- Dock Mockup -->
-                  <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded bg-blue-500/80"></span>
-                    <span class="w-2.5 h-2.5 rounded bg-purple-500/80"></span>
-                    <span class="w-2.5 h-2.5 rounded bg-emerald-500/80"></span>
-                    <span class="w-2.5 h-2.5 rounded bg-amber-500/80"></span>
-                  </div>
-                </div>
+              <div class="relative z-10 w-full pt-2.5 mt-1 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                <span>Sidebar Slot</span>
+                <a href="/contact" class="text-walpix-lime hover:underline font-bold inline-flex items-center gap-1">
+                  <span>Advertise Here</span>
+                  <span>→</span>
+                </a>
               </div>
-              <!-- Laptop Base -->
-              <div class="w-[450px] max-w-full h-2.5 bg-[#25282e] rounded-b-lg border-b border-x border-white/20 flex items-center justify-center shadow-md">
-                <div class="w-14 h-1 bg-[#121316] rounded-full"></div>
-              </div>
-              <!-- Label -->
-              <span class="text-[11px] font-medium text-gray-400 flex items-center gap-1 pt-1">
-                 MacBook Pro 16"
-              </span>
             </div>
+          )}
 
-            <!-- 📱 iPhone 16 Pro Frame -->
-            <div class="flex flex-col items-center space-y-2">
-              <div class="relative w-[150px] aspect-[9/19.5] rounded-[34px] p-2 bg-[#1b1d22] border-[3px] border-[#383b45] shadow-2xl">
-                <!-- Dynamic Island -->
-                <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-black rounded-full z-30 flex items-center justify-end pr-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-blue-500/50"></span>
-                </div>
-                <!-- Phone Screen -->
-                <div class="relative w-full h-full rounded-[26px] overflow-hidden bg-black shadow-inner">
-                  <img
-                    src={wallpaper.sourceCdn}
-                    alt={`${wallpaper.title} on iPhone`}
-                    referrerpolicy="no-referrer"
-                    class="w-full h-full object-cover"
-                  />
-                  <!-- Lockscreen Clock -->
-                  <div class="absolute top-8 inset-x-0 text-center text-white drop-shadow-md">
-                    <span class="text-[9px] font-medium tracking-wide">Monday, September 9</span>
-                    <h4 class="text-2xl font-black font-display leading-tight">9:41</h4>
-                  </div>
-                </div>
-              </div>
-              <!-- Label -->
-              <span class="text-[11px] font-medium text-gray-400 flex items-center gap-1 pt-1">
-                 iPhone 16 Pro
-              </span>
-            </div>
+        </aside>
 
-          </div>
+      </div>
+    </div>
 
-        </div>
+    <!-- ========================================================
+         MOBILE-ONLY DEDICATED WALLPAPER DETAIL EXPERIENCE (< 1024px)
+         Pixel-perfect match with ChatGPT & High-End Mobile UI
+         ======================================================== -->
+    <!-- ========================================================
+         MOBILE DEDICATED VIEW (lg:hidden) - MATCHING ULTRA-LUXURY MOCKUP
+         ======================================================== -->
+    <div class="lg:hidden mobile-detail-view w-full relative z-10">
+      
+      <!-- 1. Hero 9:16 Full-Bleed Wallpaper Container -->
+      <div class="relative w-full aspect-[9/15] overflow-hidden bg-black select-none">
+        <img
+          id="mobile-main-img"
+          src={wallpaper.sourceCdn}
+          alt={wallpaper.title}
+          referrerpolicy="no-referrer"
+          class="w-full h-full object-cover object-center"
+          onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=80'"
+        />
 
-      </section>
-
-      <!-- ========================================================
-           RIGHT COLUMN: Metadata, Download CTA, Specs & Ad
-           ======================================================== -->
-      <aside class="space-y-4">
-        
-        <!-- Breadcrumb Navigation -->
-        <nav class="flex items-center gap-2 text-[11px] text-[#737A82]" aria-label="Breadcrumb">
-          <a href="/" class="hover:text-white transition">Home</a>
-          <span>›</span>
-          <a href="/category/cyberpunk-neon" class="hover:text-white transition">Cyberpunk</a>
-          <span>›</span>
-          <span class="text-[#D8DCE0] truncate max-w-[200px]">{wallpaper.title}</span>
-        </nav>
-
-        <!-- Title -->
-        <h1 class="text-2xl sm:text-[28px] font-display font-bold text-[#F8FAFC] leading-[1.1] tracking-tight">
-          {wallpaper.title}
-        </h1>
-
-        <!-- Author Row & Stats -->
-        <div class="flex items-center gap-2 text-xs text-[#9AA1A8] flex-wrap">
-          <div class="flex items-center gap-1.5 text-[#E7E9EB] font-semibold">
-            <div class="w-5 h-5 rounded-full bg-lumina-lime/20 border border-lumina-lime/40 flex items-center justify-center text-[10px] text-lumina-lime font-bold">
-              L
-            </div>
-            <span>By Lumina Studio</span>
-            <svg class="w-3.5 h-3.5 text-[#3B82F6]" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        <!-- Top Floating In-Image Navigation Bar (All in One Unified Row) -->
+        <div class="absolute top-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto">
+          <!-- Back Button -->
+          <a
+            href="/wallpapers"
+            class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all"
+            aria-label="Back to wallpapers"
+          >
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
-          </div>
-          <span>•</span>
-          <span>{wallpaper.views?.toLocaleString() || '248.7K'} views</span>
-          <span>•</span>
-          <span class="text-[#858C94]">3 days ago</span>
-        </div>
+          </a>
 
-        <!-- Description -->
-        <p class="text-[13px] text-[#B2B7BE] leading-relaxed">
-          A breathtaking cyberpunk city skyline with neon lights, futuristic skyscrapers and a dreamy sunset atmosphere. Perfect for your desktop or mobile screen.
-        </p>
-
-        <!-- Resolution Card -->
-        <div class="p-3.5 rounded-[18px] bg-[rgba(9,13,16,0.72)] border border-white/17 flex items-center justify-between">
+          <!-- Right: 4K UHD Badge, Favorite Heart & Share Button -->
           <div class="flex items-center gap-2">
-            <span class="font-mono font-bold text-sm sm:text-base text-white tracking-wide">
-              3840 × 2160 (4K UHD)
+            <!-- 4K UHD Badge Pill (Cleanly Aligned Beside Favorite Button) -->
+            <span class="px-2.5 py-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-[#C2FF06]/40 text-[#C2FF06] font-mono font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] animate-pulse"></span>
+              4K UHD
             </span>
+
+            <!-- Favorite Button -->
+            <button
+              id="mobile-hero-fav-btn"
+              class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
+              aria-label="Add to favorites"
+            >
+              <svg class="w-5 h-5 text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+
+            <!-- More / Share Button -->
+            <button
+              id="mobile-hero-share-btn"
+              class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
+              aria-label="Share wallpaper"
+            >
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="5" cy="12" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="19" cy="12" r="2" />
+              </svg>
+            </button>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-[rgba(194,255,0,0.06)] border border-[#C2FF00] text-[#C2FF00] text-[10px] font-bold tracking-wider uppercase flex items-center gap-1 shadow-[0_0_8px_rgba(194,255,0,0.20)]">
-            <span>Original Resolution</span>
-            <span>👑</span>
-          </span>
         </div>
 
-        <!-- Primary Action: 58px High Solid Electric Lime Download Button -->
-        <button
-          id="main-download-4k-btn"
-          data-url={wallpaper.sourceCdn}
-          data-filename={`${wallpaper.slug}-4k.jpg`}
-          class="lumina-download-primary w-full px-6 flex items-center justify-between gap-3 group cursor-pointer"
-        >
-          <div class="flex items-center gap-3 text-left">
-            <svg class="w-6 h-6 text-[#050700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <div>
-              <div class="font-display font-bold text-base text-[#050700] leading-tight">
+        <!-- Smooth Dark Vignette Shade (Fading into #020406) -->
+        <div class="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#020406] via-[#020406]/90 to-transparent pointer-events-none z-10"></div>
+
+        <!-- Floating Download Buttons (Resting directly on the shade) -->
+        <div class="absolute inset-x-0 bottom-3 px-4 z-20 space-y-2.5">
+          <!-- Primary Sleek Rounded Pill Download Button -->
+          <button
+            id="mobile-main-download-btn"
+            data-url={wallpaper.sourceCdn}
+            data-filename={`${wallpaper.slug}-4k.jpg`}
+            data-width="3840"
+            data-height="2160"
+            class="w-full h-[54px] rounded-full bg-[#C2FF06] text-[#050605] flex items-center justify-start gap-[14px] pl-[18px] pr-5 font-bold cursor-pointer transition-all active:scale-[0.98] shadow-[0_0_28px_rgba(194,255,6,0.45)] border border-[#d8ff3a]"
+          >
+            <!-- Solid Black Circle Container with 36px Size & Vibrant Neon Lime Arrow Icon -->
+            <div class="w-[36px] h-[36px] rounded-full bg-black flex items-center justify-center shrink-0 shadow-sm">
+              <svg class="w-[18px] h-[18px] text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </div>
+            <div class="flex flex-col justify-center text-left leading-none">
+              <div id="mobile-download-btn-title" class="text-[14px] font-black font-display text-black tracking-tight leading-tight">
                 Download Original 4K
               </div>
-              <div class="text-[10px] font-semibold text-[#050700]/75 tracking-tight">
+              <div id="mobile-download-btn-sub" class="text-[10px] font-semibold text-black/80 tracking-tight leading-none mt-[3px]">
                 3840 × 2160 • High Quality • No Watermark
               </div>
             </div>
-          </div>
-          <svg class="w-5 h-5 text-[#050700] transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </button>
+          </button>
 
-        <!-- Secondary Action: Custom Crop & Resize for Phone -->
-        <a
-          href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
-          class="lumina-secondary-button w-full px-5 flex items-center justify-between gap-3 group cursor-pointer"
-        >
-          <div class="flex items-center gap-3 text-left">
-            <span class="text-lg">✂️</span>
-            <div>
-              <div class="font-semibold text-sm text-[#F0F2F4] leading-tight">
-                Custom Crop & Resize for Phone
+          <!-- Custom Crop & Resize for Phone (Sleek Rounded Pill Dark Glass) -->
+          <a
+            href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+            class="w-full h-[48px] rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-xl border border-white/20 text-white flex items-center justify-between pl-[18px] pr-5 transition-all active:scale-[0.98] shadow-lg group"
+          >
+            <div class="flex items-center gap-[14px]">
+              <div class="w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z"/>
+                </svg>
               </div>
-              <div class="text-[10px] text-[#8E969F]">
-                Create wallpaper for any device size
+              <div class="text-left">
+                <div class="text-xs font-bold text-white group-hover:text-[#C2FF06] transition-colors leading-tight">
+                  Custom Crop & Resize for Phone
+                </div>
               </div>
             </div>
-          </div>
-          <svg class="w-4 h-4 text-gray-400 group-hover:text-white transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </a>
+            <svg class="w-4 h-4 text-gray-400 group-hover:text-[#C2FF06] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
 
-        <!-- Other Resolutions Selector (4 Equal Columns) -->
-        <div class="space-y-2 pt-1">
-          <h4 class="text-xs font-semibold text-[#DDE0E3]">Other Resolutions</h4>
-          <div class="grid grid-cols-4 gap-2">
-            <button data-w="3840" data-h="2160" class="res-card-btn active p-2 rounded-[13px] bg-[rgba(194,255,0,0.045)] border border-[#C2FF00] shadow-[0_0_10px_rgba(194,255,0,0.15)] text-left flex flex-col justify-between h-[50px] transition">
-              <span class="text-[11px] font-bold text-white leading-none">🖥 4K UHD</span>
-              <span class="text-[9px] font-mono text-[#C2FF00]">3840 × 2160</span>
-            </button>
-            <button data-w="2560" data-h="1440" class="res-card-btn p-2 rounded-[13px] bg-[rgba(14,18,22,0.80)] border border-white/18 hover:border-white/30 text-left flex flex-col justify-between h-[50px] transition">
-              <span class="text-[11px] font-medium text-gray-200 leading-none">🖥 2K QHD</span>
-              <span class="text-[9px] font-mono text-gray-400">2560 × 1440</span>
-            </button>
-            <button data-w="1920" data-h="1080" class="res-card-btn p-2 rounded-[13px] bg-[rgba(14,18,22,0.80)] border border-white/18 hover:border-white/30 text-left flex flex-col justify-between h-[50px] transition">
-              <span class="text-[11px] font-medium text-gray-200 leading-none">🖥 1080p</span>
-              <span class="text-[9px] font-mono text-gray-400">1920 × 1080</span>
-            </button>
-            <button data-w="1080" data-h="2400" class="res-card-btn p-2 rounded-[13px] bg-[rgba(14,18,22,0.80)] border border-white/18 hover:border-white/30 text-left flex flex-col justify-between h-[50px] transition">
-              <span class="text-[11px] font-medium text-gray-200 leading-none">📱 Mobile</span>
-              <span class="text-[9px] font-mono text-gray-400">1080 × 2400</span>
-            </button>
+      <!-- 2. Mobile Content Details Section -->
+      <div class="px-4 pt-4 pb-8 space-y-5">
+        <!-- Title & Metadata -->
+        <div>
+          <h1 class="text-2xl font-display font-extrabold text-white tracking-tight leading-tight">
+            {wallpaper.title}
+          </h1>
+
+          <div class="flex items-center gap-3 text-xs text-[#8E969F] font-medium mt-2 flex-wrap">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <span>{wallpaper.views?.toLocaleString() || '125.4K'}</span>
+            </span>
+            <span class="text-white/20">|</span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-[#FF77AA]" fill="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+              <span>12.8K</span>
+            </span>
+            <span class="text-white/20">|</span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>Oct 12, 2026</span>
+            </span>
           </div>
         </div>
 
-        <!-- Dominant Colors Palette -->
-        <div class="space-y-2 pt-1">
+        <!-- 3. Resolution Selector Cards (Compact 4 Cards Grid) -->
+        <div class="grid grid-cols-4 gap-2">
+          <!-- 4K -->
+          <button
+            class="mobile-res-chip is-active flex flex-col justify-between p-2.5 rounded-xl border border-[#C2FF06] bg-[#C2FF06]/10 shadow-[0_0_12px_rgba(194,255,6,0.25)] text-left cursor-pointer transition-all"
+            data-name="Original 4K"
+            data-sub="3840 × 2160 • High Quality • No Watermark"
+            data-w="3840"
+            data-h="2160"
+            data-suffix="4k"
+          >
+            <div class="flex items-center gap-1 text-[11px] font-bold text-[#C2FF06]">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>4K</span>
+            </div>
+            <div class="text-[9px] font-mono text-[#C2FF06]/90 mt-1">3840 × 2160</div>
+          </button>
+
+          <!-- 8K -->
+          <button
+            class="mobile-res-chip flex flex-col justify-between p-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-left cursor-pointer transition-all hover:border-white/20"
+            data-name="Ultra 8K"
+            data-sub="7680 × 4320 • Ultra Master • Ultra High Detail"
+            data-w="7680"
+            data-h="4320"
+            data-suffix="8k"
+          >
+            <div class="flex items-center gap-1 text-[11px] font-bold text-gray-200">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>8K</span>
+            </div>
+            <div class="text-[9px] font-mono text-gray-400 mt-1">7680 × 4320</div>
+          </button>
+
+          <!-- QHD -->
+          <button
+            class="mobile-res-chip flex flex-col justify-between p-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-left cursor-pointer transition-all hover:border-white/20"
+            data-name="2K QHD"
+            data-sub="2560 × 1440 • High Refresh • Gaming Displays"
+            data-w="2560"
+            data-h="1440"
+            data-suffix="2k"
+          >
+            <div class="flex items-center gap-1 text-[11px] font-bold text-gray-200">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>QHD</span>
+            </div>
+            <div class="text-[9px] font-mono text-gray-400 mt-1">2560 × 1440</div>
+          </button>
+
+          <!-- FHD -->
+          <button
+            class="mobile-res-chip flex flex-col justify-between p-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-left cursor-pointer transition-all hover:border-white/20"
+            data-name="Full HD"
+            data-sub="1920 × 1080 • Standard FHD • Fast Download"
+            data-w="1920"
+            data-h="1080"
+            data-suffix="1080p"
+          >
+            <div class="flex items-center gap-1 text-[11px] font-bold text-gray-200">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>FHD</span>
+            </div>
+            <div class="text-[9px] font-mono text-gray-400 mt-1">1920 × 1080</div>
+          </button>
+        </div>
+
+        <!-- 4. Dominant Colors (Fixed hex values & vibrant circular swatches) -->
+        <div class="space-y-2.5">
           <div class="flex items-center justify-between">
-            <h4 class="text-xs font-semibold text-[#DDE0E3]">Dominant Colors</h4>
-            <button id="copy-palette-btn" class="text-[11px] text-gray-400 hover:text-white flex items-center gap-1 transition" title="Copy Palette">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+            <span class="text-xs font-bold text-white tracking-wide">Dominant Colors</span>
+            <button id="mobile-copy-palette-btn" class="text-xs text-[#8E969F] hover:text-[#C2FF06] flex items-center gap-1.5 cursor-pointer transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span id="mobile-copy-palette-text">Copy Palette</span>
             </button>
           </div>
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
             {dominantPalette.map((c) => (
-              <div class="flex flex-col items-center gap-1">
-                <span
-                  class="w-9 h-9 rounded-full border border-white/15 shadow-sm transition-transform hover:scale-110 cursor-pointer"
-                  style={`background-color: ${c.hex};`}
-                  title={c.label}
-                ></span>
-                <span class="text-[9px] font-mono text-[#A4AAB1] uppercase">{c.label}</span>
-              </div>
+              <button
+                class="mobile-color-dot w-9 h-9 rounded-full border-2 border-white/20 hover:border-white shadow-md transition-transform active:scale-90 cursor-pointer relative"
+                style={`background-color: ${c.hex}`}
+                title={`Copy ${c.hex} (${c.name})`}
+                data-hex={c.hex}
+              />
             ))}
           </div>
         </div>
 
-        <!-- Tags -->
-        <div class="space-y-2 pt-1">
-          <h4 class="text-xs font-semibold text-[#DDE0E3]">Tags</h4>
-          <div class="flex flex-wrap gap-1.5">
+        <!-- 5. Tags -->
+        <div class="space-y-2.5">
+          <span class="text-xs font-bold text-white tracking-wide block">Tags</span>
+          <div class="flex flex-wrap gap-2">
             {tagsList.map((tag) => (
               <a
-                href={`/category/all?q=${tag.toLowerCase()}`}
-                class="lumina-tag hover:border-lumina-lime/40 hover:text-white transition"
+                href={`/tag/${slugifyTag(tag)}`}
+                class="px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-300 hover:text-white transition-colors"
               >
                 {tag}
               </a>
@@ -390,138 +1427,1201 @@ const schema = {
           </div>
         </div>
 
-        <!-- Statistics & Share Bar -->
-        <div class="pt-4 border-t border-white/12 flex items-center justify-between text-xs text-[#9AA1A8]">
-          <div class="flex items-center gap-1 text-gray-200">
-            <span>👁</span>
-            <span class="font-bold text-white">248.7K</span>
-            <span class="text-[11px] text-gray-400">Views</span>
+        <!-- 6. Creative Studio Quick Hub (Ultra-Premium Redesign with Distinct Colors & Icons) -->
+        <div class="pt-2 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white tracking-wide">Creative Studio Tools</span>
+            <span class="text-[10px] font-mono text-[#8E969F]">Free Web Apps</span>
           </div>
-          <div class="flex items-center gap-1 text-gray-200">
-            <span class="text-lumina-pink">♡</span>
-            <span class="font-bold text-white">12.4K</span>
-            <span class="text-[11px] text-gray-400">Likes</span>
+          <div class="grid grid-cols-3 gap-2.5">
+            <!-- 1. 4K Cropper: Electric Lime Theme -->
+            <a
+              href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+              class="relative overflow-hidden p-3 rounded-2xl bg-gradient-to-b from-[#C2FF06]/15 via-[#0d121c]/90 to-[#0c1017] border border-[#C2FF06]/30 hover:border-[#C2FF06] transition-all flex flex-col items-center text-center gap-2 shadow-lg group active:scale-95"
+            >
+              <div class="w-9 h-9 rounded-xl bg-[#C2FF06]/20 border border-[#C2FF06]/40 flex items-center justify-center text-[#C2FF06] shadow-[0_0_12px_rgba(194,255,6,0.3)] group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z"/>
+                </svg>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-xs font-bold text-white block group-hover:text-[#C2FF06] transition-colors">4K Cropper</span>
+                <span class="text-[9px] text-gray-400 block font-medium">Custom Ratio</span>
+              </div>
+            </a>
+
+            <!-- 2. Avatar Studio: Hot Pink Theme -->
+            <a
+              href={`/tool/avatar?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+              class="relative overflow-hidden p-3 rounded-2xl bg-gradient-to-b from-[#FF28B8]/15 via-[#0d121c]/90 to-[#0c1017] border border-[#FF28B8]/30 hover:border-[#FF28B8] transition-all flex flex-col items-center text-center gap-2 shadow-lg group active:scale-95"
+            >
+              <div class="w-9 h-9 rounded-xl bg-[#FF28B8]/20 border border-[#FF28B8]/40 flex items-center justify-center text-[#FF28B8] shadow-[0_0_12px_rgba(255,40,184,0.3)] group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-xs font-bold text-white block group-hover:text-[#FF28B8] transition-colors">Avatar Maker</span>
+                <span class="text-[9px] text-gray-400 block font-medium">PFP & Masks</span>
+              </div>
+            </a>
+
+            <!-- 3. Dual Split Screen: Cyan Theme -->
+            <a
+              href={`/tool/splitter?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+              class="relative overflow-hidden p-3 rounded-2xl bg-gradient-to-b from-[#00F0FF]/15 via-[#0d121c]/90 to-[#0c1017] border border-[#00F0FF]/30 hover:border-[#00F0FF] transition-all flex flex-col items-center text-center gap-2 shadow-lg group active:scale-95"
+            >
+              <div class="w-9 h-9 rounded-xl bg-[#00F0FF]/20 border border-[#00F0FF]/40 flex items-center justify-center text-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.3)] group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-xs font-bold text-white block group-hover:text-[#00F0FF] transition-colors">Split Screen</span>
+                <span class="text-[9px] text-gray-400 block font-medium">Dual Monitor</span>
+              </div>
+            </a>
           </div>
-          <div class="flex items-center gap-1 text-gray-200">
-            <span>↓</span>
-            <span class="font-bold text-white">3.1K</span>
-            <span class="text-[11px] text-gray-400">Downloads</span>
-          </div>
-          <button
-            id="share-btn"
-            class="h-[34px] px-3.5 rounded-[12px] bg-[rgba(20,25,30,0.80)] border border-white/20 hover:border-white/35 text-white text-xs font-semibold flex items-center gap-1.5 transition"
-          >
-            <svg class="w-3.5 h-3.5 text-lumina-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-            <span>Share</span>
-          </button>
         </div>
 
-        <!-- ========================================================
-             Advertisement Card (Magenta / LG UltraGear)
-             ======================================================== -->
-        <div class="lumina-ad-magenta p-3.5 space-y-2 mt-4">
-          <div class="flex items-center justify-between text-[10px] uppercase font-mono tracking-wider">
-            <span class="px-2 py-0.5 rounded-full bg-white/[0.08] text-gray-300 font-bold">
-              ADVERTISEMENT
-            </span>
-            <span class="text-gray-400 text-[10px]">ⓘ</span>
-          </div>
+      </div>
+    </div>
 
-          <div class="flex items-center justify-between gap-3">
-            <div class="space-y-1">
-              <div class="flex items-center gap-1.5">
-                <span class="w-4 h-4 rounded bg-[#E5004F] flex items-center justify-center text-[8px] font-bold text-white">LG</span>
-                <span class="text-xs font-bold text-white">UltraGear™</span>
-              </div>
-              <h4 class="text-xs sm:text-[13px] font-bold text-white leading-tight">
-                Level Up Your Visual World
-              </h4>
-              <p class="text-[10px] text-gray-400">4K OLED | 240Hz | 0.03ms</p>
+    <!-- ========================================================
+         FULL-WIDTH STRETCH CONTAINER FOR DISCOVERY & RUNWAY SECTIONS
+         ======================================================== -->
+    <div class="relative z-10 w-full px-3 sm:px-8 lg:px-12 pb-16 space-y-12">
+      
+      <!-- ========================================================
+           SIMILAR 4K WALLPAPERS (Dedicated Mobile 2-Col Portrait 9:16 vs Desktop 4-Col Landscape)
+           ======================================================== -->
+      <section class="w-full pt-6 border-t border-white/[0.08]">
+        <!-- 1. MOBILE DEDICATED 2-COLUMN 9:16 VERTICAL CARDS (lg:hidden) -->
+        <div class="lg:hidden space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#C2FF06] shadow-[0_0_8px_#C2FF06]"></span>
+              <h2 class="text-base font-display font-bold text-white tracking-tight">
+                Similar <span class="text-[#C2FF06]">Wallpapers</span>
+              </h2>
             </div>
 
-            <!-- Monitor Visual Thumbnail -->
-            <div class="w-24 aspect-[16/10] rounded-lg overflow-hidden bg-black/80 border border-white/10 shrink-0">
-              <img
-                src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&q=80"
-                alt="LG UltraGear"
-                class="w-full h-full object-cover"
-              />
-            </div>
+            <a
+              href={`/category/${wallpaper.category ? wallpaper.category.toLowerCase().replace(/\s+/g, '-') : 'all'}`}
+              class="text-xs font-semibold text-[#C2FF06] hover:underline flex items-center gap-1 shrink-0"
+            >
+              <span>View All</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <a
-            href="https://www.google.com/search?q=LG+UltraGear+4K+OLED"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-full py-2 rounded-xl bg-white/[0.08] hover:bg-white/15 border border-white/15 text-white text-xs font-bold text-center block transition"
-          >
-            Learn More →
+          <!-- 2-Column 9:16 Mobile Phone Portrait Wallpaper Cards -->
+          <div class="grid grid-cols-2 gap-3">
+            {displaySimilar.map((wp) => (
+              <a
+                href={`/wallpapers/${wp.slug}`}
+                class="group relative aspect-[9/16] rounded-[18px] overflow-hidden bg-[#070A0D] border border-white/[0.08] hover:border-walpix-lime/40 transition-all shadow-md flex flex-col justify-between p-2.5 active:scale-[0.98]"
+              >
+                <!-- Image with centered cover -->
+                <img
+                  src={wp.sourceCdn}
+                  alt={wp.title}
+                  loading="lazy"
+                  class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out select-none"
+                  onerror="this.src='/images/mockup_cards/card-1-mountain.webp'"
+                />
+                <!-- Top Badges Overlay (4K UHD + 9:16 Badge) -->
+                <div class="relative z-10 flex items-center justify-between pointer-events-none">
+                  <span class="card-badge-res px-2 py-0.5 rounded-full bg-black/45 border border-white/20 text-white/90 text-[10px] font-medium shadow-sm backdrop-blur-md">
+                    4K UHD
+                  </span>
+                  <span class="card-badge-aspect inline-flex items-center justify-center min-w-[32px] h-[20px] px-1.5 rounded-full bg-black/40 border border-white/20 text-white/80 text-[9px] font-mono font-medium shadow-sm backdrop-blur-md">
+                    9:16
+                  </span>
+                </div>
+                <!-- Bottom Cinematic Vignette & Metadata -->
+                <div class="relative z-10 -mx-2.5 -mb-2.5 p-2.5 bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none">
+                  <h3 class="text-xs font-semibold text-white truncate leading-tight group-hover:text-walpix-lime transition-colors">
+                    {wp.title}
+                  </h3>
+                  <div class="flex items-center justify-between text-[10px] text-[#A6ABB1] mt-1 font-mono">
+                    <span class="truncate">{wp.category || '4K UHD'}</span>
+                    <span class="text-walpix-lime font-bold">Free</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- 2. DESKTOP ORIGINAL 4-COLUMN CARDS (hidden lg:block - 100% UNTOUCHED) -->
+        <div class="hidden lg:block space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime shadow-[0_0_10px_#C2FF06]"></span>
+              <h2 class="text-2xl font-display font-bold text-white tracking-tight">
+                Similar <span class="text-walpix-lime">Wallpapers</span>
+              </h2>
+            </div>
+
+            <a
+              href={`/category/${wallpaper.category ? wallpaper.category.toLowerCase().replace(/\s+/g, '-') : 'all'}`}
+              class="text-xs font-mono text-walpix-lime hover:underline font-bold flex items-center gap-1"
+            >
+              <span>View All in {wallpaper.category || 'Category'}</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-4 gap-6">
+            {displaySimilar.map((wp, index) => (
+              <WallpaperCard wallpaper={wp} priority={index < 4} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           BOTTOM DISCOVERY RUNWAY: EXPLORE MORE COLLECTIONS (Responsive)
+           ======================================================== -->
+      <section class="w-full pt-6 border-t border-white/[0.08]">
+        <div class="flex items-center justify-between mb-6 pb-2 border-b border-white/[0.08]">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-walpix-lime shadow-[0_0_8px_#C2FF06]"></span>
+            <h2 class="text-base sm:text-2xl font-bold text-white tracking-tight">
+              Explore More <span class="text-walpix-lime">Collections</span>
+            </h2>
+          </div>
+          <a href="/collections" class="text-xs font-mono text-walpix-lime hover:underline font-bold flex items-center gap-1">
+            <span>View All</span>
+            <span>→</span>
           </a>
         </div>
 
-      </aside>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {bottomRunwayCollections.map((col) => (
+            <CollageCollectionCard
+              title={col.title}
+              category={col.category}
+              count={col.count}
+              href={col.href}
+              images={col.images}
+            />
+          ))}
+        </div>
+      </section>
 
+    </div>
+
+    <!-- ========================================================
+         IMMERSIVE FULLSCREEN MOBILE PHONE PREVIEW MODAL
+         Allows user to preview wallpaper full-screen on mobile
+         with optional lockscreen overlay (Clock, Date, UI) and 1-tap download
+         ======================================================== -->
+    <div
+      id="fullscreen-phone-modal"
+      class="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl hidden flex flex-col items-center justify-between p-3 sm:p-5 select-none transition-all duration-300"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Fullscreen Phone Wallpaper Preview"
+    >
+      <!-- Top Control Bar -->
+      <div class="w-full max-w-sm flex items-center justify-between z-30 pt-1 px-1">
+        <button
+          id="toggle-lockscreen-ui-btn"
+          type="button"
+          class="h-8 px-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-medium text-white flex items-center gap-1.5 backdrop-blur-md transition-colors cursor-pointer"
+        >
+          <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="lockscreen-toggle-text">Hide Lockscreen UI</span>
+        </button>
+
+        <button
+          id="close-fullscreen-modal-btn"
+          type="button"
+          class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+          aria-label="Close Fullscreen Preview"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Phone Frame Canvas -->
+      <div class="relative w-full max-w-[340px] flex-1 my-2 rounded-[38px] overflow-hidden border-[4px] border-[#252830] shadow-[0_0_60px_rgba(0,0,0,0.95)] bg-black flex items-center justify-center">
+        <!-- Live Wallpaper Preview Image -->
+        <img
+          id="modal-phone-img"
+          src={wallpaper.sourceCdn}
+          alt={wallpaper.title}
+          class="w-full h-full object-cover object-center select-none"
+        />
+
+        <!-- Dynamic Island / Speaker Pill at Top -->
+        <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-5 rounded-full bg-black border border-white/10 flex items-center justify-center pointer-events-none z-20">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#111] border border-white/15"></span>
+        </div>
+
+        <!-- Lockscreen UI Overlay (Clock, Date, Quick Actions) -->
+        <div id="modal-lockscreen-overlay" class="absolute inset-0 pointer-events-none flex flex-col justify-between p-6 z-10 transition-opacity duration-300">
+          <div class="text-center pt-10 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+            <span class="text-xs uppercase font-medium tracking-widest text-white/90">Monday, October 14</span>
+            <h3 class="text-6xl font-black font-display tracking-tight mt-1 text-white">09:41</h3>
+          </div>
+
+          <div class="flex justify-between items-center px-2 pb-4">
+            <span class="w-11 h-11 rounded-full bg-black/45 backdrop-blur-md border border-white/25 flex items-center justify-center text-lg shadow-lg">🔦</span>
+            <span class="w-11 h-11 rounded-full bg-black/45 backdrop-blur-md border border-white/25 flex items-center justify-center text-lg shadow-lg">📷</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Action Bar (Instant Phone Download & Cropper) -->
+      <div class="w-full max-w-sm flex items-center gap-2.5 pb-2 px-1 z-30">
+        <button
+          id="modal-download-phone-btn"
+          type="button"
+          data-url={wallpaper.sourceCdn}
+          data-filename={`${wallpaper.slug}-mobile-9x16.jpg`}
+          data-width="1170"
+          data-height="2532"
+          class="flex-1 h-12 rounded-xl bg-walpix-lime hover:bg-[#b0df00] text-black font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-walpix-lime/25 active:scale-95 transition-all cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          <span>Download Phone 9:16</span>
+        </button>
+
+        <a
+          href={`/tool/cropper?url=${encodeURIComponent(wallpaper.sourceCdn)}`}
+          class="h-12 px-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+        >
+          <span>✂️ Crop</span>
+        </a>
+      </div>
     </div>
 
   </main>
 
+  <!-- Existing Global Footer (Untouched) -->
   <Footer />
 </Layout>
 
+<!-- ========================================================
+     SCOPED STYLES STRICTLY ISOLATED TO .wallpaper-detail-page
+     ======================================================== -->
+<style>
+  .wallpaper-detail-page {
+    isolation: isolate;
+    --detail-accent: #C2F600;
+    --detail-surface: rgba(7, 10, 13, 0.72);
+    --detail-surface-soft: rgba(255, 255, 255, 0.045);
+    --detail-border: rgba(255, 255, 255, 0.15);
+    --detail-border-strong: rgba(255, 255, 255, 0.30);
+    --detail-text: #F8FAFC;
+    --detail-text-secondary: #B7BEC7;
+    --detail-text-muted: #7F8791;
+  }
+
+  /* Ambient Animated Subtle Floating Lime/Green Glow */
+  @keyframes ambientDriftLeftRight {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.65;
+    }
+    50% {
+      transform: translate3d(-140px, 45px, 0) scale(1.15);
+      opacity: 0.95;
+    }
+    100% {
+      transform: translate3d(90px, -35px, 0) scale(0.95);
+      opacity: 0.70;
+    }
+  }
+
+  @keyframes ambientDriftRightLeft {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.60;
+    }
+    50% {
+      transform: translate3d(160px, -60px, 0) scale(1.18);
+      opacity: 0.90;
+    }
+    100% {
+      transform: translate3d(-100px, 40px, 0) scale(0.92);
+      opacity: 0.65;
+    }
+  }
+
+  .ambient-drift-1 {
+    animation: ambientDriftLeftRight 20s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  .ambient-drift-2 {
+    animation: ambientDriftRightLeft 24s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  .ambient-drift-3 {
+    animation: ambientDriftLeftRight 22s ease-in-out 4s infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  /* Main Wallpaper Viewer */
+  .wallpaper-detail-page .detail-viewer {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  /* 4K UHD Badge (Minimal Frosted Glass) */
+  .wallpaper-detail-page .viewer-badge {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 16:9 Aspect Badge (Minimal Frosted Glass) */
+  .wallpaper-detail-page .viewer-badge-aspect {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Mobile Re-Ordering: Wallpaper Image (1) -> Download & Info Panel (2) -> Simulation (3) -> Formats/Tags (4) */
+  @media (max-width: 1023px) {
+    .detail-grid-wrapper {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 1.25rem !important;
+    }
+    .detail-left-column {
+      display: contents !important;
+    }
+    .detail-viewer {
+      order: 1 !important;
+    }
+    .detail-viewer.is-phone-aspect {
+      aspect-ratio: 9 / 16 !important;
+      max-height: 68vh !important;
+      max-width: 360px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    .info-panel {
+      order: 2 !important;
+      width: 100% !important;
+    }
+    .detail-sim-container {
+      order: 3 !important;
+      width: 100% !important;
+    }
+    .detail-formats-container {
+      order: 4 !important;
+      width: 100% !important;
+    }
+  }
+
+  /* Quick Format Target Chips */
+  .wallpaper-detail-page .quick-format-chip {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .wallpaper-detail-page .quick-format-chip:hover {
+    border-color: rgba(194, 246, 0, 0.4);
+    color: #FFFFFF;
+  }
+  .wallpaper-detail-page .quick-format-chip.is-active {
+    background: rgba(194, 246, 0, 0.12);
+    border-color: #C2F600;
+    color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(194, 246, 0, 0.2);
+  }
+
+  /* Aspect Toggle Buttons */
+  .aspect-toggle-btn.is-active {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Favorite Pill Counter */
+  .wallpaper-detail-page .favorite-pill {
+    background: rgba(5, 7, 10, 0.70);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+  }
+  .wallpaper-detail-page .favorite-pill.is-liked {
+    border-color: rgba(255, 119, 170, 0.5);
+    box-shadow: 0 0 12px rgba(255, 119, 170, 0.3);
+  }
+  .wallpaper-detail-page .favorite-pill.is-liked svg {
+    color: #FF77AA;
+    fill: currentColor;
+  }
+
+  /* Navigation Controls */
+  .wallpaper-detail-page .viewer-control {
+    background: rgba(3, 5, 7, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(10px);
+  }
+  .wallpaper-detail-page .viewer-control:hover {
+    border-color: #C2F600;
+    box-shadow: 0 0 14px rgba(194, 246, 0, 0.25);
+  }
+
+  /* Information Panel */
+  .wallpaper-detail-page .info-panel {
+    background: rgba(7, 10, 13, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(18px);
+  }
+
+  /* Selected Resolution Badge */
+  .wallpaper-detail-page .resolution-badge {
+    background: rgba(194, 246, 0, 0.05);
+    border: 1px solid #C2F600;
+    box-shadow: 0 0 8px rgba(194, 246, 0, 0.18);
+  }
+
+  /* Primary Download CTA */
+  .wallpaper-detail-page .primary-download {
+    background: #C2F600;
+    color: #050605;
+    box-shadow: 0 0 14px rgba(194, 246, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Secondary Action */
+  .wallpaper-detail-page .secondary-action {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(12px);
+  }
+  .wallpaper-detail-page .secondary-action:hover {
+    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(255, 255, 255, 0.32);
+  }
+
+  /* Other Resolution Options */
+  .wallpaper-detail-page .resolution-option {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .wallpaper-detail-page .resolution-option.is-active {
+    background: rgba(194, 246, 0, 0.045);
+    border-color: #C2F600;
+    box-shadow: 0 0 10px rgba(194, 246, 0, 0.15);
+  }
+
+  /* Dominant Colors */
+  .wallpaper-detail-page .color-swatch {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .wallpaper-detail-page .copy-palette-button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .wallpaper-detail-page .copy-palette-button:hover {
+    border-color: rgba(255, 255, 255, 0.30);
+  }
+
+  /* Tags */
+  .wallpaper-detail-page .tag {
+    background: rgba(255, 255, 255, 0.065);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .wallpaper-detail-page .tag:hover {
+    border-color: rgba(194, 246, 0, 0.35);
+    color: #FFFFFF;
+  }
+
+  /* Stats Row */
+  .wallpaper-detail-page .detail-stats {
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .wallpaper-detail-page .share-button {
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+  }
+  .wallpaper-detail-page .share-button:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Live Screen Simulation */
+  .wallpaper-detail-page .simulation {
+    background: rgba(7, 10, 13, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(18px);
+  }
+
+  /* Device Selector */
+  .wallpaper-detail-page .device-option {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #9DA5AE;
+  }
+  .wallpaper-detail-page .device-option.is-active {
+    background: rgba(194, 246, 0, 0.045);
+    border-color: #C2F600;
+    color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(194, 246, 0, 0.18);
+  }
+
+  /* Monetization Ad Card */
+  .wallpaper-detail-page .detail-ad {
+    background: linear-gradient(135deg, rgba(20, 10, 25, 0.92), rgba(8, 9, 14, 0.96));
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    box-shadow: 0 0 24px rgba(255, 20, 147, 0.08);
+  }
+</style>
+
+<!-- ========================================================
+     CLIENT-SIDE INTERACTION SCRIPT
+     ======================================================== -->
 <script>
-  // Direct Download Trigger
-  const downloadBtn = document.getElementById('main-download-4k-btn');
+  // 1. Resolution Split-Button Dropdown & Canvas Scaling Logic
+  const resTrigger = document.getElementById('res-dropdown-trigger');
+  const resMenu = document.getElementById('res-dropdown-menu');
+  const resChevron = document.getElementById('res-dropdown-chevron');
+  const downloadBtn = document.getElementById('main-download-btn');
+  const btnTitle = document.getElementById('btn-download-title');
+  const btnSub = document.getElementById('btn-download-subtitle');
+  const btnBadge = document.getElementById('btn-download-badge');
+  const activeResLabel = document.getElementById('active-res-label');
+
+  // Toggle Dropdown
+  resTrigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    resMenu?.classList.toggle('hidden');
+    resChevron?.classList.toggle('rotate-180');
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!resMenu?.contains(e.target as Node) && !resTrigger?.contains(e.target as Node)) {
+      resMenu?.classList.add('hidden');
+      resChevron?.classList.remove('rotate-180');
+    }
+  });
+
+  // Handle Preset Select
+  const resButtons = document.querySelectorAll('.res-select-btn');
+  resButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const name = btn.getAttribute('data-name');
+      const sub = btn.getAttribute('data-sub');
+      const w = btn.getAttribute('data-w');
+      const h = btn.getAttribute('data-h');
+      const badge = btn.getAttribute('data-badge');
+      const suffix = btn.getAttribute('data-suffix');
+
+      if (downloadBtn && w && h && name) {
+        downloadBtn.setAttribute('data-width', w);
+        downloadBtn.setAttribute('data-height', h);
+        const originalFilename = downloadBtn.getAttribute('data-filename') || 'wallpaper.jpg';
+        const baseName = originalFilename.replace(/-(4k|2k|1080p|iphone|samsung)\.jpg$/, '');
+        downloadBtn.setAttribute('data-filename', `${baseName}-${suffix}.jpg`);
+
+        if (btnTitle) btnTitle.textContent = `Download ${name}`;
+        if (btnSub && sub) btnSub.textContent = sub;
+        if (btnBadge && badge) btnBadge.textContent = badge;
+        if (activeResLabel) activeResLabel.textContent = `${w} × ${h} (${name})`;
+      }
+
+      resMenu?.classList.add('hidden');
+      resChevron?.classList.remove('rotate-180');
+    });
+  });
+
+  // Client-Side Canvas Crop & Download Trigger
   if (downloadBtn) {
     downloadBtn.addEventListener('click', async () => {
       const url = downloadBtn.getAttribute('data-url');
       const filename = downloadBtn.getAttribute('data-filename') || 'wallpaper-4k.jpg';
+      const targetW = parseInt(downloadBtn.getAttribute('data-width') || '3840');
+      const targetH = parseInt(downloadBtn.getAttribute('data-height') || '2160');
+
       if (!url) return;
 
-      downloadBtn.classList.add('opacity-80');
+      downloadBtn.classList.add('opacity-75');
       try {
-        const res = await fetch(url, { referrerPolicy: 'no-referrer' });
-        const blob = await res.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(blobUrl);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = url;
+
+        await new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = () => resolve(null);
+        });
+
+        // HTML5 Offscreen Canvas Scaling & Cropping Engine
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+
+        if (ctx && img.width > 0) {
+          // Accurate object-fit cover math
+          const srcAspect = img.width / img.height;
+          const targetAspect = targetW / targetH;
+          let sx = 0, sy = 0, sw = img.width, sh = img.height;
+
+          if (srcAspect > targetAspect) {
+            sw = img.height * targetAspect;
+            sx = (img.width - sw) / 2;
+          } else {
+            sh = img.width / targetAspect;
+            sy = (img.height - sh) / 2;
+          }
+
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const blobUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = blobUrl;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(blobUrl);
+            }
+          }, 'image/jpeg', 0.95);
+        } else {
+          // Direct fallback if canvas render unavailable
+          window.open(url, '_blank');
+        }
       } catch (err) {
         window.open(url, '_blank');
       } finally {
-        downloadBtn.classList.remove('opacity-80');
+        downloadBtn.classList.remove('opacity-75');
       }
     });
   }
 
-  // Other Resolutions selection
-  const resCards = document.querySelectorAll('.res-card-btn');
-  resCards.forEach((btn) => {
+  // 2. Favorite Toggle Interaction
+  const favBtn = document.getElementById('detail-fav-btn');
+  if (favBtn) {
+    let liked = false;
+    favBtn.addEventListener('click', () => {
+      liked = !liked;
+      favBtn.classList.toggle('is-liked', liked);
+      const countEl = favBtn.querySelector('span');
+      if (countEl) {
+        countEl.textContent = liked ? '12.5K' : '12.4K';
+      }
+    });
+  }
+
+  // 3. Resolution Cards Selection
+  const resOptions = document.querySelectorAll('.resolution-option');
+  resOptions.forEach((btn) => {
     btn.addEventListener('click', () => {
-      resCards.forEach((b) => {
-        b.className = 'res-card-btn p-2 rounded-[13px] bg-[rgba(14,18,22,0.80)] border border-white/18 hover:border-white/30 text-left flex flex-col justify-between h-[50px] transition';
-        b.querySelector('span:last-child')?.classList.remove('text-[#C2FF00]');
-        b.querySelector('span:last-child')?.classList.add('text-gray-400');
-      });
-      btn.className = 'res-card-btn active p-2 rounded-[13px] bg-[rgba(194,255,0,0.045)] border border-[#C2FF00] shadow-[0_0_10px_rgba(194,255,0,0.15)] text-left flex flex-col justify-between h-[50px] transition';
-      btn.querySelector('span:last-child')?.classList.remove('text-gray-400');
-      btn.querySelector('span:last-child')?.classList.add('text-[#C2FF00]');
+      resOptions.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      const res = btn.getAttribute('data-res');
+      const name = btn.getAttribute('data-name');
+      if (activeResLabel && res && name) {
+        activeResLabel.textContent = `${res} (${name})`;
+      }
+      if (downloadBtn && res && name) {
+        if (name.includes('4K')) {
+          downloadBtn.setAttribute('data-width', '3840');
+          downloadBtn.setAttribute('data-height', '2160');
+          if (btnTitle) btnTitle.textContent = 'Download 4K Ultra HD';
+          if (btnBadge) btnBadge.textContent = '4K';
+        } else if (name.includes('2K')) {
+          downloadBtn.setAttribute('data-width', '2560');
+          downloadBtn.setAttribute('data-height', '1440');
+          if (btnTitle) btnTitle.textContent = 'Download 2K Quad HD';
+          if (btnBadge) btnBadge.textContent = '2K';
+        } else if (name.includes('1080p')) {
+          downloadBtn.setAttribute('data-width', '1920');
+          downloadBtn.setAttribute('data-height', '1080');
+          if (btnTitle) btnTitle.textContent = 'Download 1080p Full HD';
+          if (btnBadge) btnBadge.textContent = 'FHD';
+        } else if (name.includes('Mobile')) {
+          downloadBtn.setAttribute('data-width', '1170');
+          downloadBtn.setAttribute('data-height', '2532');
+          if (btnTitle) btnTitle.textContent = 'Download Mobile 9:19.5';
+          if (btnBadge) btnBadge.textContent = 'iOS';
+        }
+      }
     });
   });
 
-  // Share Button
-  const shareBtn = document.getElementById('share-btn');
-  shareBtn?.addEventListener('click', () => {
+  // 4. Dominant Palette Copy to Clipboard
+  const copyPaletteBtn = document.getElementById('copy-palette-btn');
+  const copyPaletteText = document.getElementById('copy-palette-text');
+  const swatches = document.querySelectorAll('.color-swatch');
+  
+  if (copyPaletteBtn && copyPaletteText) {
+    copyPaletteBtn.addEventListener('click', () => {
+      const hexes: string[] = [];
+      swatches.forEach((s) => {
+        const title = s.getAttribute('title');
+        if (title) {
+          const match = title.match(/#[A-Fa-f0-9]{6}/);
+          if (match) hexes.push(match[0]);
+        }
+      });
+      const textToCopy = hexes.length > 0 ? hexes.join(', ') : '#FF0055, #8A2BE2, #00E5FF, #1A1A2E, #C2F600';
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyPaletteText.textContent = 'Copied!';
+        setTimeout(() => {
+          copyPaletteText.textContent = 'Copy';
+        }, 2000);
+      });
+    });
+  }
+
+  // Swatch Individual Click Copy
+  swatches.forEach((swatch) => {
+    swatch.addEventListener('click', () => {
+      const title = swatch.getAttribute('title');
+      const hex = title ? title.replace('Click to copy ', '') : '';
+      if (hex) {
+        navigator.clipboard.writeText(hex);
+        if (copyPaletteText) {
+          copyPaletteText.textContent = `${hex} Copied!`;
+          setTimeout(() => {
+            copyPaletteText.textContent = 'Copy';
+          }, 1500);
+        }
+      }
+    });
+  });
+
+  // 5. Share Button Web Share API
+  const shareBtn = document.getElementById('detail-share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('Wallpaper link copied to clipboard!');
+        });
+      }
+    });
+  }
+
+  // 6. Multi-Device Simulation Switcher Engine (MacBook, iPhone, Desktop, Tablet, Dual Screen)
+  const deviceTabs = document.querySelectorAll('.device-option');
+  const simViews = document.querySelectorAll('.device-sim-view');
+
+  deviceTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const targetDevice = tab.getAttribute('data-device');
+      if (!targetDevice) return;
+
+      // 1. Update tab active state
+      deviceTabs.forEach((t) => t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+
+      // 2. Hide all sim views and show targeted view smoothly
+      simViews.forEach((view) => {
+        const viewDevice = view.getAttribute('data-device-view');
+        if (viewDevice === targetDevice) {
+          view.classList.remove('hidden');
+          view.style.display = 'flex';
+          view.style.opacity = '0';
+          view.style.transform = 'scale(0.97)';
+          requestAnimationFrame(() => {
+            view.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            view.style.opacity = '1';
+            view.style.transform = 'scale(1)';
+          });
+        } else {
+          view.style.opacity = '0';
+          view.style.transform = 'scale(0.97)';
+          view.classList.add('hidden');
+          view.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // 7. Mobile Aspect Ratio Switcher (9:16 Phone vs 16:9 Wide)
+  const viewerContainer = document.getElementById('detail-viewer-container');
+  const aspectPhoneBtn = document.getElementById('aspect-phone-btn');
+  const aspectWideBtn = document.getElementById('aspect-wide-btn');
+
+  aspectPhoneBtn?.addEventListener('click', () => {
+    viewerContainer?.classList.add('is-phone-aspect');
+    aspectPhoneBtn.classList.add('is-active', 'bg-white/20');
+    aspectWideBtn?.classList.remove('is-active', 'bg-white/20');
+  });
+
+  aspectWideBtn?.addEventListener('click', () => {
+    viewerContainer?.classList.remove('is-phone-aspect');
+    aspectWideBtn.classList.add('is-active', 'bg-white/20');
+    aspectPhoneBtn?.classList.remove('is-active', 'bg-white/20');
+  });
+
+  // 8. Quick Format Chips Selection
+  const formatChips = document.querySelectorAll('.quick-format-chip');
+  formatChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      formatChips.forEach((c) => c.classList.remove('is-active'));
+      chip.classList.add('is-active');
+
+      const w = chip.getAttribute('data-w');
+      const h = chip.getAttribute('data-h');
+      const name = chip.getAttribute('data-name');
+      const badge = chip.getAttribute('data-badge');
+      const suffix = chip.getAttribute('data-suffix');
+      const sub = chip.getAttribute('data-sub');
+
+      if (downloadBtn && w && h && name) {
+        downloadBtn.setAttribute('data-width', w);
+        downloadBtn.setAttribute('data-height', h);
+        const originalFilename = downloadBtn.getAttribute('data-filename') || 'wallpaper.jpg';
+        const baseName = originalFilename.replace(/-(4k|2k|1080p|iphone|samsung)\.jpg$/, '');
+        downloadBtn.setAttribute('data-filename', `${baseName}-${suffix}.jpg`);
+
+        if (btnTitle) btnTitle.textContent = `Download ${name}`;
+        if (btnSub && sub) btnSub.textContent = sub;
+        if (btnBadge && badge) btnBadge.textContent = badge;
+        if (activeResLabel) activeResLabel.textContent = `${w} × ${h} (${name})`;
+      }
+    });
+  });
+
+  // 9. Fullscreen Phone Preview Modal Controls
+  const phoneModal = document.getElementById('fullscreen-phone-modal');
+  const openModalBtn = document.getElementById('open-fullscreen-preview-btn');
+  const quickModalBtn = document.getElementById('preview-fullscreen-quick-btn');
+  const closeModalBtn = document.getElementById('close-fullscreen-modal-btn');
+  const toggleLockscreenBtn = document.getElementById('toggle-lockscreen-ui-btn');
+  const lockscreenOverlay = document.getElementById('modal-lockscreen-overlay');
+  const lockscreenToggleText = document.getElementById('lockscreen-toggle-text');
+  const modalDownloadBtn = document.getElementById('modal-download-phone-btn');
+
+  const openPhoneModal = () => {
+    if (phoneModal) {
+      phoneModal.classList.remove('hidden');
+      phoneModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  const closePhoneModal = () => {
+    if (phoneModal) {
+      phoneModal.classList.add('hidden');
+      phoneModal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+  };
+
+  openModalBtn?.addEventListener('click', openPhoneModal);
+  quickModalBtn?.addEventListener('click', openPhoneModal);
+  closeModalBtn?.addEventListener('click', closePhoneModal);
+
+  // Close on ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePhoneModal();
+  });
+
+  // Toggle Lockscreen UI
+  let lockscreenVisible = true;
+  toggleLockscreenBtn?.addEventListener('click', () => {
+    lockscreenVisible = !lockscreenVisible;
+    if (lockscreenOverlay) {
+      lockscreenOverlay.style.opacity = lockscreenVisible ? '1' : '0';
+    }
+    if (lockscreenToggleText) {
+      lockscreenToggleText.textContent = lockscreenVisible ? 'Show Lockscreen UI' : 'Hide Lockscreen UI';
+    }
+  });
+
+  // Modal Instant Download (Canvas 9:16 Mobile Fit)
+  modalDownloadBtn?.addEventListener('click', async () => {
+    const url = modalDownloadBtn.getAttribute('data-url');
+    const filename = modalDownloadBtn.getAttribute('data-filename') || 'wallpaper-phone-9x16.jpg';
+    const targetW = 1170;
+    const targetH = 2532;
+
+    if (!url) return;
+    modalDownloadBtn.classList.add('opacity-75');
+
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = url;
+
+      await new Promise((resolve) => {
+        img.onload = resolve;
+        img.onerror = () => resolve(null);
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+
+      if (ctx && img.width > 0) {
+        const srcAspect = img.width / img.height;
+        const targetAspect = targetW / targetH;
+        let sx = 0, sy = 0, sw = img.width, sh = img.height;
+
+        if (srcAspect > targetAspect) {
+          sw = img.height * targetAspect;
+          sx = (img.width - sw) / 2;
+        } else {
+          sh = img.width / targetAspect;
+          sy = (img.height - sh) / 2;
+        }
+
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+          }
+        }, 'image/jpeg', 0.95);
+      } else {
+        window.open(url, '_blank');
+      }
+    } catch (e) {
+      window.open(url, '_blank');
+    } finally {
+      modalDownloadBtn.classList.remove('opacity-75');
+    }
+  });
+
+  // 10. Top Share Action Handler
+  const shareBtnTop = document.getElementById('detail-share-btn-top');
+  shareBtnTop?.addEventListener('click', () => {
     if (navigator.share) {
       navigator.share({ title: document.title, url: window.location.href });
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Wallpaper link copied to clipboard!');
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Wallpaper link copied to clipboard!');
+      });
     }
   });
+
+  // ========================================================
+  // 11. MOBILE DETAIL VIEW INTERACTIVE CONTROLLERS
+  // ========================================================
+  
+  // Mobile Main Download Button (Canvas Scaled Download)
+  const mobileDownloadBtn = document.getElementById('mobile-main-download-btn');
+  const mobileDownloadTitle = document.getElementById('mobile-download-btn-title');
+  const mobileDownloadSub = document.getElementById('mobile-download-btn-sub');
+
+  if (mobileDownloadBtn) {
+    mobileDownloadBtn.addEventListener('click', async () => {
+      const url = mobileDownloadBtn.getAttribute('data-url');
+      const filename = mobileDownloadBtn.getAttribute('data-filename') || 'wallpaper.jpg';
+      const targetW = parseInt(mobileDownloadBtn.getAttribute('data-width') || '3840', 10);
+      const targetH = parseInt(mobileDownloadBtn.getAttribute('data-height') || '2160', 10);
+
+      if (!url) return;
+
+      mobileDownloadBtn.classList.add('opacity-75', 'pointer-events-none');
+
+      try {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject();
+          img.src = url;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+
+        if (ctx && img.width > 0) {
+          const srcAspect = img.width / img.height;
+          const targetAspect = targetW / targetH;
+          let sx = 0, sy = 0, sw = img.width, sh = img.height;
+
+          if (srcAspect > targetAspect) {
+            sw = img.height * targetAspect;
+            sx = (img.width - sw) / 2;
+          } else {
+            sh = img.width / targetAspect;
+            sy = (img.height - sh) / 2;
+          }
+
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const blobUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = blobUrl;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(blobUrl);
+            }
+          }, 'image/jpeg', 0.95);
+        } else {
+          window.open(url, '_blank');
+        }
+      } catch (err) {
+        window.open(url, '_blank');
+      } finally {
+        mobileDownloadBtn.classList.remove('opacity-75', 'pointer-events-none');
+      }
+    });
+  }
+
+  // Mobile Resolution Chips Switching
+  const mobileResChips = document.querySelectorAll('.mobile-res-chip');
+  mobileResChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      // 1. Reset active styles on all chips
+      mobileResChips.forEach((c) => {
+        c.classList.remove('is-active', 'border-[#C2FF06]', 'bg-[#C2FF06]/10', 'shadow-[0_0_12px_rgba(194,255,6,0.25)]');
+        c.classList.add('border-white/10', 'bg-white/[0.04]');
+        const textEl = c.querySelector('span');
+        const iconEl = c.querySelector('svg');
+        const subEl = c.querySelector('.text-\\[9px\\]');
+        if (textEl) textEl.className = 'text-gray-200';
+        if (iconEl) iconEl.classList.remove('text-[#C2FF06]');
+        if (subEl) subEl.className = 'text-[9px] font-mono text-gray-400 mt-1';
+      });
+
+      // 2. Set active styles on clicked chip
+      chip.classList.add('is-active', 'border-[#C2FF06]', 'bg-[#C2FF06]/10', 'shadow-[0_0_12px_rgba(194,255,6,0.25)]');
+      chip.classList.remove('border-white/10', 'bg-white/[0.04]');
+      const activeText = chip.querySelector('span');
+      const activeIcon = chip.querySelector('svg');
+      const activeSub = chip.querySelector('.text-\\[9px\\]');
+      if (activeText) activeText.className = 'text-[#C2FF06]';
+      if (activeIcon) activeIcon.classList.add('text-[#C2FF06]');
+      if (activeSub) activeSub.className = 'text-[9px] font-mono text-[#C2FF06]/90 mt-1';
+
+      // 3. Update download button attributes
+      const name = chip.getAttribute('data-name');
+      const sub = chip.getAttribute('data-sub');
+      const w = chip.getAttribute('data-w');
+      const h = chip.getAttribute('data-h');
+      const suffix = chip.getAttribute('data-suffix');
+
+      if (mobileDownloadBtn && w && h) {
+        mobileDownloadBtn.setAttribute('data-width', w);
+        mobileDownloadBtn.setAttribute('data-height', h);
+        if (suffix) {
+          const currentFilename = mobileDownloadBtn.getAttribute('data-filename') || 'wallpaper.jpg';
+          const baseName = currentFilename.replace(/-[a-z0-9]+\.jpg$/, '');
+          mobileDownloadBtn.setAttribute('data-filename', `${baseName}-${suffix}.jpg`);
+        }
+      }
+      if (mobileDownloadTitle && name) {
+        mobileDownloadTitle.textContent = `Download ${name}`;
+      }
+      if (mobileDownloadSub && sub) {
+        mobileDownloadSub.textContent = sub;
+      }
+    });
+  });
+
+  // Mobile Hero Favorite Button
+  const mobileFavBtn = document.getElementById('mobile-hero-fav-btn');
+  if (mobileFavBtn) {
+    let isMobileLiked = false;
+    mobileFavBtn.addEventListener('click', () => {
+      isMobileLiked = !isMobileLiked;
+      const svg = mobileFavBtn.querySelector('svg');
+      if (svg) {
+        if (isMobileLiked) {
+          svg.setAttribute('fill', '#FF77AA');
+          svg.classList.add('text-[#FF77AA]');
+          mobileFavBtn.classList.add('border-[#FF77AA]/50');
+        } else {
+          svg.setAttribute('fill', 'none');
+          svg.classList.remove('text-[#FF77AA]');
+          mobileFavBtn.classList.remove('border-[#FF77AA]/50');
+        }
+      }
+    });
+  }
+
+  // Mobile Hero Share Button
+  const mobileShareBtn = document.getElementById('mobile-hero-share-btn');
+  if (mobileShareBtn) {
+    mobileShareBtn.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('Wallpaper link copied to clipboard!');
+        });
+      }
+    });
+  }
+
+  // Mobile Copy Palette
+  const mobileCopyPaletteBtn = document.getElementById('mobile-copy-palette-btn');
+  const mobileCopyPaletteText = document.getElementById('mobile-copy-palette-text');
+  const mobileColorDots = document.querySelectorAll('.mobile-color-dot');
+
+  if (mobileCopyPaletteBtn && mobileCopyPaletteText) {
+    mobileCopyPaletteBtn.addEventListener('click', () => {
+      const hexList: string[] = [];
+      mobileColorDots.forEach((dot) => {
+        const hex = dot.getAttribute('data-hex');
+        if (hex) hexList.push(hex);
+      });
+      const textToCopy = hexList.length > 0 ? hexList.join(', ') : '#FF0055, #8A2BE2, #00E5FF, #1A1A2E, #C2FF06';
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        mobileCopyPaletteText.textContent = 'Copied!';
+        setTimeout(() => {
+          mobileCopyPaletteText.textContent = 'Copy Palette';
+        }, 2000);
+      });
+    });
+  }
+
+  // Individual Mobile Color Dot Click
+  mobileColorDots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const hex = dot.getAttribute('data-hex');
+      if (hex) {
+        navigator.clipboard.writeText(hex);
+        if (mobileCopyPaletteText) {
+          mobileCopyPaletteText.textContent = `${hex} Copied!`;
+          setTimeout(() => {
+            mobileCopyPaletteText.textContent = 'Copy Palette';
+          }, 1500);
+        }
+      }
+    });
+  });
 </script>
+

@@ -1,48 +1,92 @@
 ---
 interface Props {
   slotId?: string;
+  adClient?: string;
   format?: 'rectangle' | 'leaderboard' | 'native' | 'in-feed';
   className?: string;
 }
 
-const { slotId = 'default-slot', format = 'native', className = '' } = Astro.props;
+const {
+  slotId = 'default-slot',
+  adClient = 'ca-pub-0000000000000000',
+  format = 'rectangle',
+  className = '',
+} = Astro.props;
+
+const isLiveAdSense = adClient !== 'ca-pub-0000000000000000';
 
 const formatStyles = {
-  rectangle: 'min-h-[280px] max-w-[336px]',
-  leaderboard: 'min-h-[90px] max-w-[728px]',
+  rectangle: 'min-h-[280px] w-full max-w-[360px]',
+  leaderboard: 'min-h-[90px] w-full max-w-[728px]',
   native: 'min-h-[300px] w-full',
   'in-feed': 'min-h-[250px] w-full',
 };
 ---
 
-<div class={`adsense-wrapper my-6 flex flex-col items-center justify-center ${className}`}>
-  <!-- Mandatory Compliance Label -->
-  <span class="text-[10px] uppercase font-mono tracking-widest text-gray-500 mb-1.5 self-center">
-    Advertisement
-  </span>
-
-  <!-- Reserved Container (Prevents Cumulative Layout Shift - CLS) -->
-  <div class={`w-full ${formatStyles[format]} rounded-2xl bg-obsidian-850/50 border border-dashed border-white/10 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group`}>
-    
-    <!-- Real Ad Unit Container (Populated when AdSense script is live) -->
-    <ins
-      class="adsbygoogle w-full h-full block"
-      style="display:block"
-      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-      data-ad-slot={slotId}
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    ></ins>
-
-    <!-- Development / Preview Placeholder -->
-    <div class="ad-placeholder flex flex-col items-center gap-2 pointer-events-none text-gray-600">
-      <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-500">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+<div class={`adsense-wrapper my-4 flex flex-col items-center justify-center ${className}`}>
+  {isLiveAdSense ? (
+    <!-- Live AdSense Real Container -->
+    <div class={`w-full ${formatStyles[format]} rounded-2xl bg-[#090c10]/90 border border-white/10 p-3 sm:p-4 overflow-hidden backdrop-blur-md shadow-2xl`}>
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400 font-semibold">
+          ADVERTISEMENT
+        </span>
+        <span class="text-[9px] text-gray-500 font-mono">
+          SPONSORED
+        </span>
+      </div>
+      <div class="w-full h-full flex items-center justify-center overflow-hidden">
+        <ins
+          class="adsbygoogle w-full h-full block"
+          style="display:block"
+          data-ad-client={adClient}
+          data-ad-slot={slotId}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script is:inline>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    </div>
+  ) : (
+    <!-- Clean Minimalist Fallback Slot: Corner Watermark Icon, Minimal Text -->
+    <div class={`w-full ${formatStyles[format]} rounded-2xl bg-[#05070a] border border-white/[0.09] p-5 flex flex-col justify-between select-none shadow-md overflow-hidden relative`}>
+      <!-- Corner Decorative Watermark Icon (Bottom-Left) -->
+      <div class="absolute -bottom-6 -left-6 w-24 h-24 text-walpix-lime/[0.08] pointer-events-none select-none">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
         </svg>
       </div>
-      <span class="text-xs font-medium text-gray-400">Google AdSense Placement Zone</span>
-      <span class="text-[10px] text-gray-600 font-mono">Zero-CLS High-RPM Container</span>
+
+      <!-- Header Badges -->
+      <div class="relative z-10 flex items-center justify-between text-[10px] font-mono">
+        <span class="text-[10px] font-mono text-walpix-lime uppercase tracking-widest font-bold">
+          FOR ADVERTISEMENT
+        </span>
+        <span class="px-2 py-0.5 rounded bg-walpix-lime/10 border border-walpix-lime/25 text-walpix-lime font-bold uppercase text-[9px]">
+          AVAILABLE
+        </span>
+      </div>
+
+      <!-- Main Body: Clean & Minimal (No Icon Box) -->
+      <div class="relative z-10 my-auto py-2 text-center">
+        <h4 class="text-base font-bold text-white tracking-tight">
+          Display Sponsorship Slot
+        </h4>
+        <p class="text-xs text-[#8E949E] mt-1">
+          High-visibility placement for creative tools & hardware brands
+        </p>
+      </div>
+
+      <!-- Footer Action -->
+      <div class="relative z-10 w-full pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-gray-500 font-mono">
+        <span>Responsive Slot</span>
+        <a href="/contact" class="text-walpix-lime hover:underline font-bold inline-flex items-center gap-1">
+          <span>Advertise Here</span>
+          <span>→</span>
+        </a>
+      </div>
     </div>
-  </div>
+  )}
 </div>

@@ -13,12 +13,15 @@
     --lumina-card: #080A0C;
 
     --lime: #C2FF06;
+    --lime-rgb: 194 255 6;
     --lime-bright: #D0FF00;
     --lime-soft: #B8F52A;
     --lime-dark: #9CC700;
 
     --magenta: #F91ACF;
+    --magenta-rgb: 249 26 207;
     --pink: #FF3FAE;
+    --pink-rgb: 255 63 174;
 
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-default: rgba(255, 255, 255, 0.12);
@@ -35,6 +38,7 @@
 
   html {
     background: #030405;
+    overflow-x: clip;
   }
 
   body {
@@ -45,7 +49,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {
@@ -83,12 +87,68 @@
     box-shadow: 0 0 12px rgba(194, 255, 6, 0.30), inset 0 0 16px rgba(194, 255, 6, 0.04);
   }
 
+  /* Ultra-Luxury Glass Container */
+  .glass-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  /* Walpix & Lumina Brand Accents & Utilities */
+  .walpix-gradient-text,
   .lumina-gradient-text {
     background: linear-gradient(90deg, #C2FF06 0%, #F6D72D 42%, #F91ACF 100%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+  }
+
+  .bg-walpix-lime,
+  .bg-lumina-lime {
+    background-color: #C2FF06 !important;
+  }
+
+  .text-walpix-lime,
+  .text-lumina-lime {
+    color: #C2FF06 !important;
+  }
+
+  .border-walpix-lime,
+  .border-lumina-lime {
+    border-color: #C2FF06 !important;
+  }
+
+  .bg-walpix-magenta,
+  .bg-lumina-magenta {
+    background-color: #F91ACF !important;
+  }
+
+  .text-walpix-magenta,
+  .text-lumina-magenta {
+    color: #F91ACF !important;
+  }
+
+  .text-walpix-pink,
+  .text-lumina-pink {
+    color: #FF3FAE !important;
+  }
+
+  .shadow-lime {
+    box-shadow: 0 0 10px rgba(194, 255, 6, 0.45), 0 0 30px rgba(194, 255, 6, 0.20) !important;
+  }
+
+  .shadow-lime-sm {
+    box-shadow: 0 0 8px rgba(194, 255, 6, 0.35), 0 0 18px rgba(194, 255, 6, 0.12) !important;
   }
 
   .hero-overlay {
@@ -282,3 +342,223 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #C2FF06;
 }
+
+/* ==========================================================================
+   DYNAMIC DEVICE & ORIENTATION GRID ENGINE (WALPIX DYNAMIC RATIO MORPHING)
+   ========================================================================== */
+
+/* Universal smooth morphing transitions for all wallpaper cards (Instant 60FPS Morph) */
+.wallpaper-card,
+.walpix-gallery-card-item,
+.lumina-gallery-card-item {
+  transition: aspect-ratio 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease,
+              border-radius 0.3s ease !important;
+}
+
+.wallpaper-card img,
+.walpix-gallery-card-item img,
+.lumina-gallery-card-item img {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 1. MOBILE PHONE MODE (9:16 Tall Smartphone Screen) */
+#wallpaper-grid-container.grid-mode-phone,
+#wallpapers-grid-container.grid-mode-phone {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (min-width: 640px) {
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (min-width: 860px) {
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  #wallpaper-grid-container.grid-mode-phone,
+  #wallpapers-grid-container.grid-mode-phone {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+}
+
+/* Phone Cards Aspect Ratio & Styling: Real 9:16 Portrait */
+.grid-mode-phone .wallpaper-card,
+.grid-mode-phone .walpix-gallery-card-item,
+.grid-mode-phone .lumina-gallery-card-item {
+  aspect-ratio: 9 / 16 !important;
+  border-radius: 18px !important;
+}
+
+.grid-mode-phone .card-download-btn .btn-text {
+  display: none !important;
+}
+
+.grid-mode-phone .card-download-btn {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  height: 26px !important;
+}
+
+.grid-mode-phone .card-views {
+  display: flex !important;
+  font-size: 10px !important;
+}
+
+.grid-mode-phone .card-swatches {
+  display: none !important;
+}
+
+.grid-mode-phone .card-likes-box {
+  display: none !important;
+}
+
+/* Glassy Minimalist Resolution & Aspect Badges (No Harsh Neon Border) */
+.card-badge-res {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.card-badge-aspect {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* 2. DUAL SCREEN / ULTRAWIDE MODE (32:9 Super Panoramic Display) */
+#wallpaper-grid-container.grid-mode-dual,
+#wallpapers-grid-container.grid-mode-dual {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+@media (min-width: 640px) {
+  #wallpaper-grid-container.grid-mode-dual,
+  #wallpapers-grid-container.grid-mode-dual {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  #wallpaper-grid-container.grid-mode-dual,
+  #wallpapers-grid-container.grid-mode-dual {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+}
+
+/* Dual Screen Cards Aspect Ratio & Styling: Sleek Panoramic Preview (21:9 Ultrawide Ratio - Reduced Height) */
+.grid-mode-dual .wallpaper-card,
+.grid-mode-dual .walpix-gallery-card-item,
+.grid-mode-dual .lumina-gallery-card-item {
+  aspect-ratio: 21 / 9 !important;
+  border-radius: 16px !important;
+}
+
+/* 3. DESKTOP 4K & ALL FORMATS MODE (16:9 Widescreen) */
+#wallpaper-grid-container.grid-mode-desktop,
+#wallpapers-grid-container.grid-mode-desktop,
+#wallpaper-grid-container.grid-mode-all,
+#wallpapers-grid-container.grid-mode-all {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+}
+
+@media (max-width: 1200px) {
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #wallpaper-grid-container.grid-mode-desktop,
+  #wallpapers-grid-container.grid-mode-desktop,
+  #wallpaper-grid-container.grid-mode-all,
+  #wallpapers-grid-container.grid-mode-all {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+
+.grid-mode-desktop .wallpaper-card,
+.grid-mode-desktop .walpix-gallery-card-item,
+.grid-mode-desktop .lumina-gallery-card-item,
+.grid-mode-all .wallpaper-card,
+.grid-mode-all .walpix-gallery-card-item,
+.grid-mode-all .lumina-gallery-card-item {
+  aspect-ratio: 16 / 9 !important;
+}
+
+/* Dynamic Aspect Ratio Badges via CSS (Fallback & Synchronous) */
+.grid-mode-phone .card-badge-aspect {
+  font-size: 0 !important;
+}
+.grid-mode-phone .card-badge-aspect::after {
+  content: "9:16" !important;
+  font-size: 10px !important;
+}
+
+.grid-mode-dual .card-badge-aspect {
+  font-size: 0 !important;
+}
+.grid-mode-dual .card-badge-aspect::after {
+  content: "32:9" !important;
+  font-size: 10px !important;
+}
+
+.grid-mode-desktop .card-badge-aspect,
+.grid-mode-all .card-badge-aspect {
+  font-size: 0 !important;
+}
+.grid-mode-desktop .card-badge-aspect::after,
+.grid-mode-all .card-badge-aspect::after {
+  content: "16:9" !important;
+  font-size: 10px !important;
+}
+

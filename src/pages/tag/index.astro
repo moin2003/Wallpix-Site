@@ -1,0 +1,391 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
+import { getAllTags, wallpapers } from '../../data/wallpapers';
+import { MAIN_CATEGORIES } from '../../data/taxonomy';
+
+const rawAllTags = getAllTags();
+
+// Build efficient tag-to-thumbnail cache from wallpapers
+const tagThumbMap = new Map<string, string>();
+wallpapers.forEach((wp) => {
+  (wp.tags || []).forEach((t) => {
+    const s = t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+    if (!tagThumbMap.has(s) && wp.sourceCdn) {
+      tagThumbMap.set(s, wp.sourceCdn);
+    }
+  });
+});
+
+const DEFAULT_FALLBACKS = [
+  '/images/mockup_cards/card-3-shadowrealm.webp',
+  '/images/mockup_cards/card-1-mountain.webp',
+  '/images/mockup_cards/card-2-neondrive.webp',
+  '/images/mockup_cards/card-4-cosmichorizon.webp',
+  '/images/mockup_cards/card-5-forestcalm.webp',
+  '/images/mockup_cards/card-6-nightbeast.webp',
+];
+
+function getThumb(slug: string, index: number): string {
+  if (tagThumbMap.has(slug)) return tagThumbMap.get(slug)!;
+  return DEFAULT_FALLBACKS[index % DEFAULT_FALLBACKS.length];
+}
+
+// Map tags with thumbnails
+const allTagsWithThumbs = rawAllTags.map((tag, idx) => ({
+  ...tag,
+  thumb: getThumb(tag.slug, idx),
+  firstLetter: (tag.name || 'A')[0].toUpperCase(),
+}));
+
+const INITIAL_DISPLAY_COUNT = 96;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'All 4K Wallpaper Tags & Topic Hubs | WALPIX 4K',
+  description: 'Explore 8,700+ curated wallpaper tags, anime franchises, supercar models, and aesthetic keywords in lossless 4K UHD resolution.',
+  url: 'https://walpix.site/tag',
+};
+
+const alphabetList = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+---
+
+<Layout
+  title="All 4K Wallpaper Tags & Topic Hubs (8,700+ Collections) | WALPIX 4K"
+  description="Explore the complete master directory of 8,700+ 4K wallpaper tags: Anime series, supercars, AMOLED, cyberpunk, nature, gaming champions, and characters."
+  schema={schema}
+>
+  <!-- Floating Glass Capsule Header -->
+  <Header currentCategory="topics" />
+
+  <main class="relative min-h-screen bg-[#020406] text-white overflow-hidden pb-16">
+    
+    <!-- Ambient Green Background Glows & Matrix Texture -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-32 right-10 w-[600px] h-[600px] bg-walpix-lime/[0.045] rounded-full blur-[140px]"></div>
+      <div class="absolute top-1/3 -left-32 w-[650px] h-[650px] bg-walpix-lime/[0.035] rounded-full blur-[160px]"></div>
+      <div class="absolute bottom-20 right-1/4 w-[700px] h-[700px] bg-walpix-lime/[0.04] rounded-full blur-[180px]"></div>
+      <div class="absolute inset-0 bg-matrix-dots opacity-40"></div>
+    </div>
+
+    <!-- Master Header Container (Left-Aligned, Highly Optimized for Mobile & Desktop) -->
+    <section class="relative z-10 w-full bg-[#030508] border-b border-white/[0.08] pt-4 sm:pt-6 pb-5 sm:pb-8">
+      <div class="w-full px-4 sm:px-8 lg:px-12 text-left">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#8E949E] font-mono mb-2.5 sm:mb-4 text-left overflow-x-auto no-scrollbar whitespace-nowrap">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <a href="/categories" class="hover:text-white transition-colors">Categories</a>
+          <span>/</span>
+          <span class="text-walpix-lime font-bold">Tags Directory</span>
+        </nav>
+
+        <!-- Main Heading & Badge -->
+        <div class="max-w-4xl space-y-2 sm:space-y-3 text-left">
+          <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-[10px] sm:text-xs font-mono font-bold text-walpix-lime uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-walpix-lime animate-pulse"></span>
+            <span>Master Keyword Directory • {rawAllTags.length.toLocaleString()}+ Tags</span>
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight text-left">
+            ALL WALLPAPER <span class="text-walpix-lime">TAGS & HUBS</span>
+          </h1>
+
+          <p class="text-xs sm:text-base text-gray-300 max-w-2xl leading-relaxed text-left">
+            Explore our complete catalog of {rawAllTags.length.toLocaleString()}+ dedicated wallpaper keywords, franchises, anime characters, and aesthetics. Click any tag box to view all dedicated 4K wallpapers.
+          </p>
+
+          <!-- Interactive Instant Search Box -->
+          <div class="pt-2 sm:pt-3 max-w-xl">
+            <div class="relative flex items-center w-full">
+              <div class="absolute left-3.5 text-gray-400 pointer-events-none">
+                <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="tag-search-input"
+                placeholder="Search any tag (e.g. Anime, Naruto, Porsche, AMOLED)..."
+                autocomplete="off"
+                class="w-full h-11 sm:h-12 pl-10 pr-10 rounded-xl sm:rounded-2xl bg-white/[0.06] border border-white/15 focus:border-walpix-lime/60 focus:bg-black/80 focus:ring-2 focus:ring-walpix-lime/20 text-white placeholder-gray-400 text-xs sm:text-sm font-medium outline-none transition-all duration-200"
+              />
+              <button
+                id="clear-search-btn"
+                class="absolute right-3 hidden text-gray-400 hover:text-white p-1 rounded-full text-xs"
+                title="Clear Search"
+              >
+                ✕
+              </button>
+            </div>
+            <div id="search-feedback" class="text-[11px] font-mono text-gray-400 mt-1.5 px-1 hidden">
+              Found <span id="match-count" class="text-walpix-lime font-bold">0</span> matching tags
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Quick Alphabet Filter Bar (Horizontal scroll on mobile, wrap on desktop) -->
+      <div class="w-full px-4 sm:px-8 lg:px-12 pt-4 sm:pt-6">
+        <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1">
+          <span class="text-[10px] sm:text-[11px] font-mono text-gray-400 uppercase tracking-wider font-bold mr-1 shrink-0">Filter:</span>
+          {alphabetList.map((letter) => (
+            <button
+              class={`letter-filter-btn shrink-0 h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg text-xs font-mono font-bold transition-all duration-200 cursor-pointer ${
+                letter === 'All'
+                  ? 'bg-walpix-lime text-black shadow-[0_0_12px_rgba(194,255,6,0.3)]'
+                  : 'bg-white/[0.05] hover:bg-white/[0.12] text-gray-300 hover:text-white border border-white/10'
+              }`}
+              data-letter={letter}
+            >
+              {letter}
+            </button>
+          ))}
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Top AdSense Leaderboard Banner -->
+    <AdSenseLeaderboard className="pt-4 pb-2" variant="top" />
+
+    <!-- Main Tag Boxes Grid Section -->
+    <section class="w-full px-3.5 sm:px-8 lg:px-12 pt-4 sm:pt-6 pb-12">
+      
+      <!-- Section Title & Counter Bar -->
+      <div class="flex items-center justify-between mb-3.5 sm:mb-5 pb-2.5 sm:pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-walpix-lime shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z" />
+          </svg>
+          <h2 class="text-xs sm:text-base font-bold text-white uppercase tracking-wider font-mono">
+            Browse All Tag Hubs (<span id="visible-tags-total">{rawAllTags.length.toLocaleString()}</span> Total)
+          </h2>
+        </div>
+        <span class="text-[10px] sm:text-xs font-mono text-gray-400">
+          Showing <span id="current-visible-count" class="text-walpix-lime font-bold">{Math.min(INITIAL_DISPLAY_COUNT, rawAllTags.length)}</span> tags
+        </span>
+      </div>
+
+      <!-- Responsive Tag Boxes Grid: Sleek, Compact Hashtag Cards -->
+      <div
+        id="tag-boxes-container"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3"
+      >
+        {allTagsWithThumbs.map((tag, idx) => {
+          const isHidden = idx >= INITIAL_DISPLAY_COUNT;
+          return (
+            <a
+              href={`/tag/${tag.slug}`}
+              class={`tag-card-box group relative flex flex-col items-center justify-center text-center h-[64px] sm:h-[72px] md:h-[76px] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/80 shadow-sm hover:shadow-[0_0_20px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none px-2.5 py-1.5 ${
+                isHidden ? 'tag-initially-hidden hidden' : ''
+              }`}
+              data-name={tag.name.toLowerCase()}
+              data-slug={tag.slug.toLowerCase()}
+              data-letter={tag.firstLetter}
+            >
+              <!-- Background Thumbnail -->
+              <img
+                src={tag.thumb}
+                alt={`${tag.name} Wallpapers`}
+                loading={idx < 18 ? 'eager' : 'lazy'}
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out opacity-65 group-hover:opacity-80"
+                onerror="this.src='/images/mockup_cards/card-3-shadowrealm.webp'"
+              />
+
+              <!-- Solid Deep Black Shade Overlay for High Contrast -->
+              <div class="absolute inset-0 bg-black/75 group-hover:bg-black/60 backdrop-blur-[0.5px] transition-colors"></div>
+
+              <!-- Centered Hashtag Content Area -->
+              <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-full min-w-0 px-1">
+                <div class="flex items-center justify-center gap-1 max-w-full">
+                  <span class="text-walpix-lime font-mono font-black text-sm sm:text-base leading-none drop-shadow-[0_0_8px_rgba(194,255,6,0.6)] shrink-0">#</span>
+                  <h3 class="text-xs sm:text-[13px] md:text-sm font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-md tracking-tight leading-tight">
+                    {tag.name}
+                  </h3>
+                </div>
+                <span class="text-[9px] sm:text-[10px] font-mono text-zinc-400 group-hover:text-zinc-200 transition-colors mt-0.5 leading-none">
+                  {tag.count} Wallpapers
+                </span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- No Match State -->
+      <div id="no-tag-match" class="hidden text-center py-16 space-y-3">
+        <div class="w-12 h-12 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center mx-auto text-walpix-lime">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-white">No tags found matching your search</h3>
+        <p class="text-xs text-gray-400 max-w-sm mx-auto">
+          Try searching for another keyword like "Anime", "Cyberpunk", "Porsche", "Nature", or reset the search.
+        </p>
+        <button
+          id="reset-filter-btn"
+          class="px-4 py-2 rounded-xl bg-walpix-lime text-black font-bold text-xs hover:bg-walpix-lime-bright transition cursor-pointer"
+        >
+          View All Tags
+        </button>
+      </div>
+
+      <!-- Progressive "Load More" Button -->
+      {rawAllTags.length > INITIAL_DISPLAY_COUNT && (
+        <div id="load-more-tag-wrapper" class="flex flex-col items-center justify-center pt-8 sm:pt-10">
+          <button
+            id="load-more-tags-btn"
+            class="group relative inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 rounded-full bg-[#090C10] hover:bg-walpix-lime text-white hover:text-black border border-white/[0.12] hover:border-walpix-lime font-bold text-xs font-mono uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-[0_0_24px_rgba(194,255,6,0.35)] cursor-pointer active:scale-95"
+            data-step="96"
+            data-current={INITIAL_DISPLAY_COUNT}
+            data-total={rawAllTags.length}
+          >
+            <svg class="w-4 h-4 text-walpix-lime group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+            <span id="load-more-tag-text">Load Next 96 Tag Hubs</span>
+          </button>
+        </div>
+      )}
+
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <Footer />
+</Layout>
+
+<script>
+  const searchInput = document.getElementById('tag-search-input') as HTMLInputElement | null;
+  const clearSearchBtn = document.getElementById('clear-search-btn');
+  const searchFeedback = document.getElementById('search-feedback');
+  const matchCount = document.getElementById('match-count');
+  const cards = document.querySelectorAll<HTMLElement>('.tag-card-box');
+  const noMatch = document.getElementById('no-tag-match');
+  const letterButtons = document.querySelectorAll<HTMLButtonElement>('.letter-filter-btn');
+  const loadMoreBtn = document.getElementById('load-more-tags-btn') as HTMLButtonElement | null;
+  const loadMoreWrapper = document.getElementById('load-more-tag-wrapper');
+  const currentVisibleCount = document.getElementById('current-visible-count');
+  const resetBtn = document.getElementById('reset-filter-btn');
+
+  let activeLetter = 'All';
+  let activeQuery = '';
+  let currentVisibleLimit = 96;
+
+  function filterAllTags() {
+    let visible = 0;
+    const isFiltered = activeQuery !== '' || activeLetter !== 'All';
+
+    cards.forEach((card) => {
+      const name = card.getAttribute('data-name') || '';
+      const slug = card.getAttribute('data-slug') || '';
+      const letter = card.getAttribute('data-letter') || '';
+
+      const matchesSearch = !activeQuery || name.includes(activeQuery) || slug.includes(activeQuery);
+      const matchesLetter = activeLetter === 'All' || letter === activeLetter;
+
+      if (matchesSearch && matchesLetter) {
+        visible++;
+        if (isFiltered || visible <= currentVisibleLimit) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (currentVisibleCount) {
+      currentVisibleCount.textContent = Math.min(visible, isFiltered ? visible : currentVisibleLimit).toLocaleString();
+    }
+
+    if (matchCount) {
+      matchCount.textContent = visible.toLocaleString();
+    }
+
+    if (searchFeedback) {
+      searchFeedback.classList.toggle('hidden', !activeQuery);
+    }
+
+    if (noMatch) {
+      noMatch.classList.toggle('hidden', visible > 0);
+    }
+
+    if (loadMoreWrapper) {
+      loadMoreWrapper.style.display = isFiltered || currentVisibleLimit >= visible ? 'none' : 'flex';
+    }
+  }
+
+  // Live Instant Search
+  searchInput?.addEventListener('input', (e) => {
+    activeQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
+    clearSearchBtn?.classList.toggle('hidden', !activeQuery);
+    filterAllTags();
+  });
+
+  clearSearchBtn?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      activeQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      filterAllTags();
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    activeQuery = '';
+    activeLetter = 'All';
+    letterButtons.forEach(btn => {
+      btn.classList.toggle('bg-walpix-lime', btn.getAttribute('data-letter') === 'All');
+      btn.classList.toggle('text-black', btn.getAttribute('data-letter') === 'All');
+      btn.classList.toggle('bg-white/[0.05]', btn.getAttribute('data-letter') !== 'All');
+      btn.classList.toggle('text-gray-300', btn.getAttribute('data-letter') !== 'All');
+    });
+    filterAllTags();
+  });
+
+  // Alphabet Quick Filters
+  letterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      letterButtons.forEach((b) => {
+        b.classList.remove('bg-walpix-lime', 'text-black', 'shadow-[0_0_12px_rgba(194,255,6,0.3)]');
+        b.classList.add('bg-white/[0.05]', 'text-gray-300');
+      });
+      btn.classList.add('bg-walpix-lime', 'text-black', 'shadow-[0_0_12px_rgba(194,255,6,0.3)]');
+      btn.classList.remove('bg-white/[0.05]', 'text-gray-300');
+
+      activeLetter = btn.getAttribute('data-letter') || 'All';
+      filterAllTags();
+    });
+  });
+
+  // Progressive Load More
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      const step = parseInt(loadMoreBtn.getAttribute('data-step') || '96', 10);
+      currentVisibleLimit += step;
+      filterAllTags();
+    });
+  }
+</script>
+
+<style>
+  .bg-matrix-dots {
+    background-image: radial-gradient(rgba(194, 255, 6, 0.22) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+  }
+</style>

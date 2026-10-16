@@ -10,6 +10,27 @@ This project workspace is configured with an elite arsenal of **236 specialized 
 
 ---
 
+## 🔒 SUPREME DIRECTIVE: COMPLETE UI, LAYOUT & VISUAL FREEZE (STRICT LOCK)
+
+**CRITICAL MANDATE - READ AND ENFORCE BEFORE EXECUTING ANY TASK:**
+
+1. **Absolute Visual Lock (Mobile & Desktop)**: 
+   * The complete UI/UX of the Homepage, Wallpaper Gallery, Wallpaper Detail Page, Header/Navbar, Hero Slideshow, Category Carousel, and Footer is **100% FINALIZED, FROZEN, AND LOCKED**.
+   * Specifically protected: All font families (notably `"Moon Dance", cursive` on the Hero highlight, `'Outfit'`, `'Inter'`), button shapes, padding, capsule dimensions, icon metrics (`32px` search / `34px` menu in navbar), and color gradients.
+
+2. **Zero Unsolicited Visual Modifications**:
+   * **NEVER** alter, refactor, trim, replace, or "optimize" any visual styles, font imports, layout widths, heights, or CSS classes unless the user explicitly gives a direct instruction to modify that specific visual element.
+
+3. **No Overthinking & Strict Scope Isolation**:
+   * Whenever a task is assigned, understand the exact scope requested and execute **ONLY** that specific task.
+   * Do not touch unrelated components, do not perform "drive-by refactorings", and never touch global styling or font imports.
+
+4. **Non-Destructive Performance & SEO Operations**:
+   * When handling SEO, indexing, or performance tasks, operate strictly on the backend, data, structured schemas, meta tags, and sitemaps.
+   * If any automated audit tool (like Lighthouse or PageSpeed) recommends altering fonts or touch target dimensions that would alter the approved design, **DO NOT CHANGE THEM** without presenting the trade-off and obtaining explicit user permission first.
+
+---
+
 ## Complete Specialized Skills Index (236 Total in `.agent/skills/`)
 
 ### 1. Web Design, UI/UX & Design Systems
@@ -30,6 +51,8 @@ This project workspace is configured with an elite arsenal of **236 specialized 
 - [`core-web-vitals`](./.agent/skills/core-web-vitals/SKILL.md) & [`web-performance-optimization`](./.agent/skills/web-performance-optimization/SKILL.md) - LCP, INP, CLS optimization.
 
 ### 3. SE Ranking & Search Dominance (SEO, GEO & AEO)
+- [`humanizer`](./.agent/skills/humanizer/SKILL.md) - Benchmark 54k+ star anti-AI writing & Wikipedia style humanizer engine.
+- [`human-seo-writer`](./.agent/skills/human-seo-writer/SKILL.md) - Diamond-grade humanized SEO content creation.
 - [`seo-geo-aeo`](./.agent/skills/seo-geo-aeo/SKILL.md) - Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO).
 - [`seo-expert`](./.agent/skills/seo-expert/SKILL.md) - Technical SEO, Open Graph, Twitter Cards, and Sitemaps.
 - [`seo-keyword-cluster`](./.agent/skills/seo-keyword-cluster/SKILL.md) & [`seo-keyword-niche`](./.agent/skills/seo-keyword-niche/SKILL.md) - Keyword clustering & long-tail mining.

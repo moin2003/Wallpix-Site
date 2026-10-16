@@ -1,0 +1,1009 @@
+---
+import { TOPIC_HUBS } from '../data/topics';
+
+// Comprehensive Category Sub-Folders Database for WALPIX 4K
+export interface SubFolderItem {
+  name: string;
+  slug: string;
+  count: string;
+  badge?: string;
+  thumb: string;
+  tagQuery?: string;
+}
+
+export interface CategoryGroup {
+  id: string;
+  name: string;
+  slug: string;
+  totalCount: string;
+  hubUrl: string;
+  description: string;
+  subFolders: SubFolderItem[];
+}
+
+export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
+  // 1. Anime & Manga
+  'anime': {
+    id: 'anime',
+    name: 'Anime & Manga',
+    slug: 'anime',
+    totalCount: '13,500+ Wallpapers',
+    hubUrl: '/category/anime',
+    description: 'Explore legendary anime sagas, iconic shinobi warriors, dark cursed realms, and Studio Ghibli sceneries.',
+    subFolders: [
+      {
+        name: 'Naruto & Shinobi',
+        slug: 'naruto',
+        count: '1,420+ Wallpapers',
+        badge: 'Sage Mode 4K',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'naruto'
+      },
+      {
+        name: 'Jujutsu Kaisen',
+        slug: 'jujutsu-kaisen',
+        count: '980+ Wallpapers',
+        badge: 'Cursed Realm',
+        thumb: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+        tagQuery: 'jujutsu-kaisen'
+      },
+      {
+        name: 'Studio Ghibli',
+        slug: 'studio-ghibli',
+        count: '850+ Wallpapers',
+        badge: 'Miyazaki Scenic',
+        thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+        tagQuery: 'studio-ghibli'
+      },
+      {
+        name: 'Demon Slayer (Kimetsu)',
+        slug: 'demon-slayer',
+        count: '1,120+ Wallpapers',
+        badge: 'Breathing Styles',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'demon-slayer'
+      },
+      {
+        name: 'Dragon Ball Z / Super',
+        slug: 'dragon-ball',
+        count: '1,250+ Wallpapers',
+        badge: 'Ultra Instinct',
+        thumb: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
+        tagQuery: 'dragon-ball'
+      },
+      {
+        name: 'Attack on Titan',
+        slug: 'attack-on-titan',
+        count: '890+ Wallpapers',
+        badge: 'Shingeki 4K',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'attack-on-titan'
+      },
+      {
+        name: 'One Piece',
+        slug: 'one-piece',
+        count: '1,540+ Wallpapers',
+        badge: 'Gear 5 Joyboy',
+        thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+        tagQuery: 'one-piece'
+      },
+      {
+        name: 'Bleach & Bankai',
+        slug: 'bleach',
+        count: '740+ Wallpapers',
+        badge: 'Thousand-Year War',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'bleach'
+      },
+      {
+        name: 'Chainsaw Man',
+        slug: 'chainsaw-man',
+        count: '680+ Wallpapers',
+        badge: 'Devil Hunter',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.webp',
+        tagQuery: 'chainsaw-man'
+      },
+      {
+        name: 'Solo Leveling',
+        slug: 'solo-leveling',
+        count: '590+ Wallpapers',
+        badge: 'Shadow Monarch',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'solo-leveling'
+      },
+      {
+        name: 'Anime Blade Samurai',
+        slug: 'samurai',
+        count: '820+ Wallpapers',
+        badge: 'Katana Mist',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'samurai'
+      }
+    ]
+  },
+
+  // 2. Gaming & Esports
+  'gaming': {
+    id: 'gaming',
+    name: 'Gaming & Esports',
+    slug: 'gaming',
+    totalCount: '18,200+ Wallpapers',
+    hubUrl: '/category/gaming',
+    description: 'AAA gaming titles, competitive esports battlestations, and cinematic open-world game universes.',
+    subFolders: [
+      {
+        name: 'Cyberpunk 2077',
+        slug: 'cyberpunk-2077',
+        count: '1,650+ Wallpapers',
+        badge: 'Night City Overdrive',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'cyberpunk-2077'
+      },
+      {
+        name: 'Elden Ring & Souls',
+        slug: 'elden-ring',
+        count: '1,120+ Wallpapers',
+        badge: 'Lands Between',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'elden-ring'
+      },
+      {
+        name: 'Grand Theft Auto (GTA V/6)',
+        slug: 'grand-theft-auto-5',
+        count: '2,240+ Wallpapers',
+        badge: 'Vice City 4K',
+        thumb: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80',
+        tagQuery: 'gta'
+      },
+      {
+        name: 'God of War (Ragnarok)',
+        slug: 'god-of-war',
+        count: '1,310+ Wallpapers',
+        badge: 'Norse Realms',
+        thumb: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+        tagQuery: 'god-of-war'
+      },
+      {
+        name: 'Red Dead Redemption 2',
+        slug: 'red-dead-redemption',
+        count: '1,540+ Wallpapers',
+        badge: 'Outlaws 4K',
+        thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80',
+        tagQuery: 'red-dead'
+      },
+      {
+        name: 'Valorant & Riot',
+        slug: 'valorant',
+        count: '1,420+ Wallpapers',
+        badge: 'Radiant Agents',
+        thumb: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80',
+        tagQuery: 'valorant'
+      },
+      {
+        name: 'The Witcher 3',
+        slug: 'the-witcher',
+        count: '890+ Wallpapers',
+        badge: 'White Wolf',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'witcher'
+      },
+      {
+        name: 'Need for Speed & Racing',
+        slug: 'need-for-speed',
+        count: '980+ Wallpapers',
+        badge: 'Heat & Unbound',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'racing'
+      },
+      {
+        name: 'Minecraft Ultra Shaders',
+        slug: 'minecraft',
+        count: '1,100+ Wallpapers',
+        badge: 'RTX Shaders',
+        thumb: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&q=80',
+        tagQuery: 'minecraft'
+      },
+      {
+        name: 'Genshin Impact & Honkai',
+        slug: 'genshin-impact',
+        count: '1,720+ Wallpapers',
+        badge: 'Teyvat Scenic',
+        thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+        tagQuery: 'genshin'
+      }
+    ]
+  },
+
+  // 3. AMOLED Black & OLED
+  'amoled': {
+    id: 'amoled',
+    name: 'AMOLED Black & OLED',
+    slug: 'amoled-black',
+    totalCount: '12,000+ Wallpapers',
+    hubUrl: '/category/amoled-black',
+    description: 'True pitch black #000000 wallpapers crafted for OLED displays with maximum contrast and zero battery drain.',
+    subFolders: [
+      {
+        name: 'True OLED Black Void',
+        slug: 'amoled-black',
+        count: '3,200+ Wallpapers',
+        badge: '#000000 0% Lit',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'amoled-black'
+      },
+      {
+        name: 'Minimal Dark Waves',
+        slug: 'fluid',
+        count: '1,450+ Wallpapers',
+        badge: 'Fluid Waveform',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'waveform'
+      },
+      {
+        name: 'AMOLED Neon Lines',
+        slug: 'neon',
+        count: '1,820+ Wallpapers',
+        badge: 'HDR Glow',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'neon'
+      },
+      {
+        name: 'Golden Particle Wave',
+        slug: 'particles',
+        count: '980+ Wallpapers',
+        badge: 'Luxury Particle',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'gold'
+      },
+      {
+        name: 'Obsidian Geometric Sphere',
+        slug: 'dark-aesthetic',
+        count: '890+ Wallpapers',
+        badge: 'Minimal 3D',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'geometric'
+      },
+      {
+        name: 'Matte Black GT3 Supercar',
+        slug: 'gt3',
+        count: '1,240+ Wallpapers',
+        badge: 'Stealth Automotive',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'gt3'
+      }
+    ]
+  },
+
+  // 4. Cars & Supercars
+  'cars': {
+    id: 'cars',
+    name: 'Cars & Supercars',
+    slug: 'cars-supercars',
+    totalCount: '14,800+ Wallpapers',
+    hubUrl: '/category/cars-supercars',
+    description: 'Exotic hypercars, track-ready GT3 monsters, and high-octane luxury automotive photography.',
+    subFolders: [
+      {
+        name: 'Porsche 911 GT3 RS',
+        slug: 'porsche-911',
+        count: '1,850+ Wallpapers',
+        badge: 'Track Weapon',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'porsche'
+      },
+      {
+        name: 'Lamborghini Aventador & Revuelto',
+        slug: 'lamborghini',
+        count: '2,120+ Wallpapers',
+        badge: 'V12 Hypercar',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'lamborghini'
+      },
+      {
+        name: 'Ferrari SF90 & LaFerrari',
+        slug: 'ferrari',
+        count: '1,640+ Wallpapers',
+        badge: 'Maranello Red',
+        thumb: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
+        tagQuery: 'ferrari'
+      },
+      {
+        name: 'Nissan Skyline GT-R (R34/R35)',
+        slug: 'nissan-skyline',
+        count: '1,420+ Wallpapers',
+        badge: 'JDM Legend',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'nissan'
+      },
+      {
+        name: 'BMW M Power (M3/M4/M5)',
+        slug: 'bmw',
+        count: '1,780+ Wallpapers',
+        badge: 'Motorsport 4K',
+        thumb: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80',
+        tagQuery: 'bmw'
+      },
+      {
+        name: 'McLaren 720S & P1',
+        slug: 'mclaren',
+        count: '1,150+ Wallpapers',
+        badge: 'Carbon Aerodynamics',
+        thumb: 'https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&q=80',
+        tagQuery: 'mclaren'
+      },
+      {
+        name: 'Night Beast Hypercar',
+        slug: 'supercar',
+        count: '1,320+ Wallpapers',
+        badge: 'Midnight City Glow',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'night'
+      }
+    ]
+  },
+
+  // 5. Cyberpunk & Neon
+  'cyberpunk': {
+    id: 'cyberpunk',
+    name: 'Cyberpunk & Neon',
+    slug: 'cyberpunk-neon',
+    totalCount: '11,400+ Wallpapers',
+    hubUrl: '/category/cyberpunk-neon',
+    description: 'Neon-drenched dystopian megacities, rainy asphalt reflections, and high-octane synthwave horizons.',
+    subFolders: [
+      {
+        name: 'Tokyo Shinjuku Rain Alleys',
+        slug: 'tokyo',
+        count: '2,450+ Wallpapers',
+        badge: 'Rain Neon 4K',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'tokyo'
+      },
+      {
+        name: 'Retro 80s Synthwave Grid',
+        slug: 'synthwave',
+        count: '1,920+ Wallpapers',
+        badge: 'Outrun Sunset',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'synthwave'
+      },
+      {
+        name: 'Cyber Samurai in Mist',
+        slug: 'samurai',
+        count: '1,350+ Wallpapers',
+        badge: 'Katana Glow',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'samurai'
+      },
+      {
+        name: 'Cyber Jaguar Neon Predator',
+        slug: 'cyber-jaguar',
+        count: '680+ Wallpapers',
+        badge: 'Mecha Predator',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'cyber'
+      },
+      {
+        name: 'Futuristic Synthwave Highway',
+        slug: 'highway',
+        count: '1,240+ Wallpapers',
+        badge: 'Infinite Road',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'highway'
+      }
+    ]
+  },
+
+  // 6. Space & Cosmic
+  'space': {
+    id: 'space',
+    name: 'Space & Cosmic',
+    slug: 'space-cosmic',
+    totalCount: '9,800+ Wallpapers',
+    hubUrl: '/category/space-cosmic',
+    description: 'Deep interstellar nebulae, supermassive black holes, planetary orbits, and NASA/James Webb deep fields.',
+    subFolders: [
+      {
+        name: 'Interstellar Gargantua Event Horizon',
+        slug: 'black-hole',
+        count: '1,950+ Wallpapers',
+        badge: 'Singularity 4K',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'interstellar'
+      },
+      {
+        name: 'Deep Space Pillars of Creation',
+        slug: 'nebula',
+        count: '2,420+ Wallpapers',
+        badge: 'James Webb Deep Field',
+        thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+        tagQuery: 'nebula'
+      },
+      {
+        name: 'Orion Nebula Star Cluster',
+        slug: 'orion',
+        count: '1,680+ Wallpapers',
+        badge: 'Cosmic Dust',
+        thumb: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800&q=80',
+        tagQuery: 'orion'
+      },
+      {
+        name: 'Cosmic Horizon Planetary Orbit',
+        slug: 'planet',
+        count: '2,140+ Wallpapers',
+        badge: 'Exoplanet Vista',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'cosmic'
+      }
+    ]
+  },
+
+  // 7. Superheroes & Marvel/DC
+  'superheroes': {
+    id: 'superheroes',
+    name: 'Superheroes & Comics',
+    slug: 'superheroes',
+    totalCount: '10,200+ Wallpapers',
+    hubUrl: '/category/superheroes',
+    description: 'Spider-Man, The Dark Knight Batman, Marvel Cinematic Universe, and DC Justice League heroes.',
+    subFolders: [
+      {
+        name: 'Spider-Man Across Spider-Verse',
+        slug: 'spider-man',
+        count: '2,650+ Wallpapers',
+        badge: 'Spider-Verse Neon',
+        thumb: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&q=80',
+        tagQuery: 'spider-man'
+      },
+      {
+        name: 'The Dark Knight Gotham Rain',
+        slug: 'batman',
+        count: '2,920+ Wallpapers',
+        badge: 'Gotham Sentinel',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'batman'
+      },
+      {
+        name: 'Iron Man & Avengers MCU',
+        slug: 'marvel',
+        count: '2,240+ Wallpapers',
+        badge: 'Infinity Tech',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'marvel'
+      },
+      {
+        name: 'Deadpool & Wolverine',
+        slug: 'superhero',
+        count: '1,560+ Wallpapers',
+        badge: 'Cinematic Action',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'superhero'
+      }
+    ]
+  },
+
+  // 8. Nature & Scenery
+  'nature': {
+    id: 'nature',
+    name: 'Nature & Scenery',
+    slug: 'nature-scenery',
+    totalCount: '16,500+ Wallpapers',
+    hubUrl: '/category/nature-scenery',
+    description: 'Majestic mountain summits, serene misty pine forests, crystal alpine lakes, and arctic northern lights.',
+    subFolders: [
+      {
+        name: 'Nordic Alpine Sunset Glow',
+        slug: 'mountain',
+        count: '2,480+ Wallpapers',
+        badge: 'Alps & Dolomites',
+        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        tagQuery: 'mountain'
+      },
+      {
+        name: 'Emerald Canyon Misty River',
+        slug: 'waterfall',
+        count: '1,580+ Wallpapers',
+        badge: 'Crystal River',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'canyon'
+      },
+      {
+        name: 'Lofoten Northern Lights (Aurora)',
+        slug: 'aurora',
+        count: '1,720+ Wallpapers',
+        badge: 'Arctic Aurora',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'aurora'
+      },
+      {
+        name: 'Bavarian Alps Lake Reflection',
+        slug: 'lake',
+        count: '1,420+ Wallpapers',
+        badge: 'Serene Reflections',
+        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        tagQuery: 'lake'
+      },
+      {
+        name: 'Misty Pine Forest Autumn',
+        slug: 'forest',
+        count: '1,940+ Wallpapers',
+        badge: 'Autumn Mist',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'forest'
+      }
+    ]
+  },
+
+  // 9. Movies & TV
+  'movies': {
+    id: 'movies',
+    name: 'Movies & TV Series',
+    slug: 'movies-tv',
+    totalCount: '8,900+ Wallpapers',
+    hubUrl: '/category/movies-tv',
+    description: 'Cinematic stills, cult movie atmospheres, and legendary characters from iconic cinema.',
+    subFolders: [
+      {
+        name: 'Thomas Shelby (Peaky Blinders)',
+        slug: 'thomas-shelby',
+        count: '1,680+ Wallpapers',
+        badge: 'Vintage Noir',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'thomas-shelby'
+      },
+      {
+        name: 'Interstellar Cinematic Space',
+        slug: 'interstellar',
+        count: '1,840+ Wallpapers',
+        badge: 'Nolan Masterpiece',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: 'interstellar'
+      },
+      {
+        name: 'The Dark Knight Trilogy',
+        slug: 'gotham',
+        count: '2,100+ Wallpapers',
+        badge: 'Gotham Noir',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'dark-knight'
+      }
+    ]
+  },
+
+  // 10. Minimalist & Abstract
+  'minimalist': {
+    id: 'minimalist',
+    name: 'Minimalist & 3D Shapes',
+    slug: 'minimalist-abstract',
+    totalCount: '9,400+ Wallpapers',
+    hubUrl: '/category/minimalist-abstract',
+    description: 'Clean geometry, 3D fluid waveforms, distraction-free matte dark dunes, and modern desk aesthetics.',
+    subFolders: [
+      {
+        name: 'Minimal Monolith Dark Dunes',
+        slug: 'dunes',
+        count: '1,240+ Wallpapers',
+        badge: 'Matte Dunes',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'monolith'
+      },
+      {
+        name: 'Minimal Dark Waveform Fluid',
+        slug: 'fluid',
+        count: '1,480+ Wallpapers',
+        badge: 'Fluid 4K',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'waveform'
+      },
+      {
+        name: 'Obsidian Geometric Sphere',
+        slug: 'geometry',
+        count: '920+ Wallpapers',
+        badge: 'Pure Obsidian',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'geometric'
+      }
+    ]
+  },
+
+  // 11. 3D & Abstract Art
+  'abstract': {
+    id: 'abstract',
+    name: '3D & Abstract Art',
+    slug: '3d-abstract',
+    totalCount: '8,200+ Wallpapers',
+    hubUrl: '/category/3d-abstract',
+    description: 'Liquid chrome mercury ripples, iridescent glass prism curves, and luxury golden particle flows.',
+    subFolders: [
+      {
+        name: 'Liquid Chrome Mercury Wave',
+        slug: 'liquid',
+        count: '1,450+ Wallpapers',
+        badge: 'Liquid Metal',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'liquid'
+      },
+      {
+        name: 'Iridescent Glass Prism Curves',
+        slug: 'prism',
+        count: '1,280+ Wallpapers',
+        badge: 'Optical Prism',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'prism'
+      },
+      {
+        name: 'AMOLED Golden Particle Wave',
+        slug: 'particles',
+        count: '1,620+ Wallpapers',
+        badge: 'Gold Dust',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'particles'
+      }
+    ]
+  },
+
+  // 12. Fantasy & Mythical
+  'fantasy': {
+    id: 'fantasy',
+    name: 'Fantasy & Mythical',
+    slug: 'fantasy',
+    totalCount: '7,800+ Wallpapers',
+    hubUrl: '/category/fantasy',
+    description: 'Celestial dragons over mystic citadels, enchanted glowing ancient groves, and mythical realms.',
+    subFolders: [
+      {
+        name: 'Celestial Dragon Mystic Citadel',
+        slug: 'dragon',
+        count: '1,740+ Wallpapers',
+        badge: 'Dragon Citadel',
+        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        tagQuery: 'dragon'
+      },
+      {
+        name: 'Luminescent Enchanted Grove',
+        slug: 'enchanted',
+        count: '1,320+ Wallpapers',
+        badge: 'Glowing Flora',
+        thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+        tagQuery: 'enchanted'
+      }
+    ]
+  },
+
+  // 13. City & Architecture
+  'city': {
+    id: 'city',
+    name: 'City & Architecture',
+    slug: 'city',
+    totalCount: '9,100+ Wallpapers',
+    hubUrl: '/category/city',
+    description: 'Tokyo rain neon reflections, Manhattan midnight skyscrapers, and futuristic architectural marvels.',
+    subFolders: [
+      {
+        name: 'Tokyo Rain Shibuya Skyline',
+        slug: 'tokyo',
+        count: '2,240+ Wallpapers',
+        badge: 'Shibuya Rain',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'tokyo'
+      },
+      {
+        name: 'Manhattan Midnight Skyscrapers',
+        slug: 'manhattan',
+        count: '2,450+ Wallpapers',
+        badge: 'NYC Skyline',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'manhattan'
+      }
+    ]
+  },
+
+  // 14. Animals & Wildlife
+  'animals': {
+    id: 'animals',
+    name: 'Animals & Wildlife',
+    slug: 'animals',
+    totalCount: '6,400+ Wallpapers',
+    hubUrl: '/category/animals',
+    description: 'Cyber neon predators, sovereign snow wolves under moonlight, and majestic wildlife in 4K.',
+    subFolders: [
+      {
+        name: 'Cyber Jaguar Neon Predator',
+        slug: 'predator',
+        count: '1,280+ Wallpapers',
+        badge: 'Cyber Beast',
+        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        tagQuery: 'predator'
+      },
+      {
+        name: 'Arctic Snow Wolf Moonlight',
+        slug: 'wolf',
+        count: '1,540+ Wallpapers',
+        badge: 'Lunar Wolf',
+        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        tagQuery: 'wolf'
+      }
+    ]
+  },
+
+  // 15. 4K Ultra HD
+  '4k': {
+    id: '4k',
+    name: '4K Ultra HD Master Catalog',
+    slug: '4k-ultra-hd',
+    totalCount: '50,000+ Wallpapers',
+    hubUrl: '/topic/4k-wallpapers',
+    description: 'Native 3840×2160 lossless Ultra HD backgrounds engineered for high-DPI displays and creator workstations.',
+    subFolders: [
+      {
+        name: 'Native 4K UHD (3840×2160)',
+        slug: '4k-wallpapers',
+        count: '50,000+ Wallpapers',
+        badge: 'Lossless 4K',
+        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        tagQuery: '4k'
+      },
+      {
+        name: '8K Extreme Ultra HD',
+        slug: '8k-wallpapers',
+        count: '12,000+ Wallpapers',
+        badge: '7680×4320 8K',
+        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        tagQuery: '8k'
+      },
+      {
+        name: 'Dual Monitor & Ultrawide',
+        slug: 'dual-monitor-wallpapers',
+        count: '8,500+ Wallpapers',
+        badge: '5120×1440',
+        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        tagQuery: 'ultrawide'
+      }
+    ]
+  }
+};
+---
+
+<div id="dynamic-subfolder-container" class="w-full px-3 sm:px-6 lg:px-10 py-2">
+  
+  <!-- DEFAULT: Global Trending Topic Hubs (shown when 'all' is active) -->
+  <div id="subfolder-strip-all" class="subfolder-group-view block transition-opacity duration-300">
+    <div class="flex items-center justify-between gap-3 mb-2 px-1">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-walpix-lime/10 text-walpix-lime text-xs font-bold">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </span>
+        <span class="text-xs sm:text-sm font-bold text-white tracking-wide">Popular Screen & Resolution Hubs</span>
+        <span class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-zinc-400 font-mono">
+          50k+ Curated
+        </span>
+      </div>
+      <a
+        href="/topics"
+        class="group inline-flex items-center gap-1 text-[11px] sm:text-xs text-walpix-lime font-semibold hover:underline"
+      >
+        <span>All 18+ Topic Hubs</span>
+        <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Track -->
+    <div class="relative w-full flex items-center gap-1.5 sm:gap-2">
+      <button class="strip-left-btn hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5" aria-label="Scroll left">
+        <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <div class="strip-scroll-track flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 flex-grow min-w-0 select-none cursor-grab">
+        {TOPIC_HUBS.map((topic) => (
+          <a
+            href={`/topic/${topic.slug}`}
+            class="group relative shrink-0 h-[48px] sm:h-[52px] min-w-[150px] sm:min-w-[170px] rounded-xl overflow-hidden border border-white/10 hover:border-walpix-lime/60 hover:shadow-[0_4px_16px_rgba(194,255,6,0.2)] hover:-translate-y-0.5 transition-all duration-300 select-none flex items-center px-3 py-2"
+          >
+            <img src={topic.cover} alt={topic.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/70 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/55 transition-colors"></div>
+            <div class="relative z-10 flex flex-col justify-center min-w-0">
+              <span class="text-xs sm:text-[13px] font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                {topic.name}
+              </span>
+              <span class="text-[10px] text-zinc-300/80 font-mono truncate">
+                {topic.badge}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <button class="strip-right-btn hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5" aria-label="Scroll right">
+        <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- DYNAMIC: Category Specific Sub-Folders & Franchises (Swapped dynamically on Category Pill Click) -->
+  {Object.entries(CATEGORY_SUBFOLDERS).map(([catKey, catData]) => (
+    <div
+      id={`subfolder-strip-${catKey}`}
+      class="subfolder-group-view hidden transition-opacity duration-300"
+    >
+      <div class="flex items-center justify-between gap-3 mb-2 px-1">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-walpix-lime/10 text-walpix-lime text-xs font-bold">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </span>
+          <span class="text-xs sm:text-sm font-bold text-white tracking-wide">
+            {catData.name} Sub-Folders & Franchises
+          </span>
+          <span class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-[10px] text-walpix-lime font-mono font-semibold">
+            {catData.totalCount}
+          </span>
+        </div>
+        <a
+          href={catData.hubUrl}
+          class="group inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-walpix-lime font-semibold hover:underline"
+        >
+          <span>Explore Complete {catData.name} Hub</span>
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Track -->
+      <div class="relative w-full flex items-center gap-1.5 sm:gap-2">
+        <button class="strip-left-btn hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5" aria-label="Scroll left">
+          <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div class="strip-scroll-track flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 flex-grow min-w-0 select-none cursor-grab">
+          {catData.subFolders.map((folder) => (
+            <a
+              href={`/tag/${folder.slug}`}
+              data-subfolder-tag={folder.tagQuery || folder.slug}
+              class="subfolder-chip group relative shrink-0 h-[52px] sm:h-[56px] min-w-[170px] sm:min-w-[195px] rounded-xl overflow-hidden border border-white/10 hover:border-walpix-lime/70 hover:shadow-[0_4px_20px_rgba(194,255,6,0.25)] hover:-translate-y-0.5 transition-all duration-300 select-none flex items-center px-3 py-2 cursor-pointer"
+            >
+              <img src={folder.thumb} alt={folder.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
+              <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/75 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/65 transition-colors"></div>
+              <div class="relative z-10 flex flex-col justify-center min-w-0 w-full">
+                <div class="flex items-center justify-between gap-1 w-full">
+                  <span class="text-xs sm:text-[13px] font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {folder.name}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span class="text-[10px] text-zinc-300/90 font-medium">
+                    {folder.count}
+                  </span>
+                  {folder.badge && (
+                    <span class="text-[9px] px-1.5 py-0.2 rounded bg-walpix-lime/20 text-walpix-lime font-mono">
+                      {folder.badge}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <button class="strip-right-btn hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5" aria-label="Scroll right">
+          <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .strip-scroll-track {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    contain: paint;
+  }
+  .strip-scroll-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  // Initialize drag & scroll for all tracks
+  const tracks = document.querySelectorAll<HTMLElement>('.strip-scroll-track');
+  tracks.forEach((track) => {
+    const parent = track.closest('.relative');
+    if (!parent) return;
+    const leftBtn = parent.querySelector<HTMLButtonElement>('.strip-left-btn');
+    const rightBtn = parent.querySelector<HTMLButtonElement>('.strip-right-btn');
+
+    function updateArrowState() {
+      if (!track || !leftBtn || !rightBtn) return;
+      const scrollLeft = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (scrollLeft <= 5) {
+        leftBtn.style.opacity = '0.3';
+        leftBtn.style.pointerEvents = 'none';
+      } else {
+        leftBtn.style.opacity = '1';
+        leftBtn.style.pointerEvents = 'auto';
+      }
+
+      if (maxScroll > 0 && scrollLeft >= maxScroll - 5) {
+        rightBtn.style.opacity = '0.3';
+        rightBtn.style.pointerEvents = 'none';
+      } else {
+        rightBtn.style.opacity = '1';
+        rightBtn.style.pointerEvents = 'auto';
+      }
+    }
+
+    updateArrowState();
+    track.addEventListener('scroll', updateArrowState);
+    window.addEventListener('resize', updateArrowState);
+
+    leftBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+
+    rightBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: 320, behavior: 'smooth' });
+    });
+
+    // Mouse wheel horizontal scroll
+    track.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+
+    // Mouse drag-to-scroll
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let moved = false;
+
+    track.addEventListener('mousedown', (e) => {
+      isDown = true;
+      moved = false;
+      track.style.cursor = 'grabbing';
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      track.style.cursor = 'grab';
+    });
+
+    track.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      moved = true;
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    track.addEventListener('click', (e) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+  });
+</script>

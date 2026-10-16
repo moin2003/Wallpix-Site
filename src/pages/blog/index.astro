@@ -1,0 +1,96 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
+import { blogPosts } from '../../data/blogPosts';
+---
+
+<Layout
+  title="Wallpaper Guides, Display Tutorials & Aesthetic Trends | WALPIX Blog"
+  description="Read expert guides on 4K wallpapers, OLED display optimization, multi-monitor setups, and digital battlestation aesthetics."
+>
+  <Header currentCategory="blog" />
+
+  <main class="min-h-screen pb-16">
+    <!-- Header Section -->
+    <div class="relative w-full px-4 sm:px-8 lg:px-12 pt-10 pb-8 max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C2FF06]/10 border border-[#C2FF06]/30 text-xs font-mono font-bold text-[#C2FF06] tracking-wide uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] shadow-[0_0_6px_#C2FF06]"></span>
+          <span>Editorial & Guides</span>
+        </span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          WALPIX <span class="text-walpix-lime">Blog</span> & Guides
+        </h1>
+        <p class="text-sm sm:text-base text-[#8E949E]">
+          Deep dives into display hardware, aspect ratio cropping tutorials, and curated wallpaper rankings.
+        </p>
+      </div>
+    </div>
+
+    <!-- AdSense Top Banner -->
+    <AdSenseLeaderboard className="pb-6" variant="top" />
+
+    <!-- Blog Posts Grid -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {blogPosts.map((post) => (
+          <article class="group rounded-2xl bg-[#05070a] border border-white/[0.09] hover:border-walpix-lime/40 overflow-hidden flex flex-col transition-all duration-300 shadow-md hover:shadow-[0_0_24px_rgba(194,255,6,0.15)]">
+            <a href={`/blog/${post.slug}`} class="relative w-full aspect-[16/9] overflow-hidden bg-black block">
+              <img
+                src={post.coverImage}
+                alt={post.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div class="absolute top-3 left-3">
+                <span class="px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-walpix-lime font-bold uppercase">
+                  {post.category}
+                </span>
+              </div>
+            </a>
+
+            <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+              <div class="space-y-2.5">
+                <div class="flex items-center gap-3 text-xs text-gray-400 font-mono">
+                  <span>{post.publishDate}</span>
+                  <span>•</span>
+                  <span>{post.readTime}</span>
+                </div>
+                <h2 class="text-xl font-bold text-white group-hover:text-walpix-lime transition-colors leading-snug">
+                  <a href={`/blog/${post.slug}`}>
+                    {post.title}
+                  </a>
+                </h2>
+                <p class="text-xs sm:text-sm text-[#8E949E] leading-relaxed line-clamp-3">
+                  {post.excerpt}
+                </p>
+              </div>
+
+              <div class="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <img
+                    src={post.author.avatar}
+                    alt={post.author.name}
+                    class="w-7 h-7 rounded-full object-cover border border-white/20"
+                  />
+                  <span class="text-xs text-gray-300 font-medium">{post.author.name}</span>
+                </div>
+                <a
+                  href={`/blog/${post.slug}`}
+                  class="text-xs text-walpix-lime font-bold inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+                >
+                  <span>Read Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

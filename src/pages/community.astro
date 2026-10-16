@@ -1,0 +1,169 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+
+const featuredArtists = [
+  {
+    name: 'Kaelen Vance',
+    handle: '@kaelenvance',
+    role: 'Cyberpunk & 3D Environment Artist',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&q=80',
+    uploads: 48,
+    downloads: '182k',
+    featured: '/images/mockup_cards/card-2-neondrive.jpg',
+  },
+  {
+    name: 'Mira Thorne',
+    handle: '@mirathorne',
+    role: 'Deep Space & Planetary Illustrator',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=160&q=80',
+    uploads: 35,
+    downloads: '144k',
+    featured: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+  },
+  {
+    name: 'Soren Lindqvist',
+    handle: '@soren_nordic',
+    role: 'Alpine Scenery & Landscape Photographer',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&q=80',
+    uploads: 62,
+    downloads: '210k',
+    featured: '/images/mockup_cards/card-1-mountain.jpg',
+  },
+];
+---
+
+<Layout
+  title="Community & Creator Showcase | WALPIX 4K"
+  description="Join the WALPIX 4K creator community. Submit your original artwork, get featured, and connect with thousands of desktop enthusiasts."
+>
+  <Header currentCategory="community" />
+
+  <main class="min-h-screen pb-16">
+    <!-- Hero Banner -->
+    <div class="relative w-full px-4 sm:px-8 lg:px-12 pt-10 pb-8 max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C2FF06]/10 border border-[#C2FF06]/30 text-xs font-mono font-bold text-[#C2FF06] tracking-wide uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] shadow-[0_0_6px_#C2FF06]"></span>
+          <span>Global Creator Network</span>
+        </span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          WALPIX <span class="text-walpix-lime">Community</span> Hub
+        </h1>
+        <p class="text-xs sm:text-sm text-[#8E949E]">
+          Uncompressed 4K & 8K wallpapers from creators worldwide.
+        </p>
+      </div>
+    </div>
+
+    <!-- AdSense Top Banner -->
+    <AdSenseLeaderboard className="pb-6" variant="top" />
+
+    <!-- Community Stats -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 py-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] p-5 text-center">
+          <span class="text-2xl sm:text-3xl font-extrabold text-white font-mono block">50,000+</span>
+          <span class="text-xs text-gray-400 font-medium">Curated Wallpapers</span>
+        </div>
+        <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] p-5 text-center">
+          <span class="text-2xl sm:text-3xl font-extrabold text-walpix-lime font-mono block">1.8M+</span>
+          <span class="text-xs text-gray-400 font-medium">Monthly Downloads</span>
+        </div>
+        <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] p-5 text-center">
+          <span class="text-2xl sm:text-3xl font-extrabold text-white font-mono block">1,240+</span>
+          <span class="text-xs text-gray-400 font-medium">Featured Creators</span>
+        </div>
+        <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] p-5 text-center">
+          <span class="text-2xl sm:text-3xl font-extrabold text-walpix-lime font-mono block">100%</span>
+          <span class="text-xs text-gray-400 font-medium">Free & Lossless</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Creators -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-8 max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Featured Visual Artists</h2>
+          <p class="text-xs text-gray-400 mt-0.5">Top contributors of the week</p>
+        </div>
+        <a href="#submit" class="px-4 py-2 rounded-xl bg-walpix-lime/10 border border-walpix-lime/30 text-walpix-lime text-xs font-bold hover:bg-walpix-lime hover:text-black transition-all">
+          Submit Your Artwork →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {featuredArtists.map((artist) => (
+          <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] overflow-hidden flex flex-col shadow-md">
+            <div class="relative h-44 overflow-hidden">
+              <img
+                src={artist.featured}
+                alt={`${artist.name}'s artwork`}
+                class="w-full h-full object-cover"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#05070a] via-transparent to-black/20"></div>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between -mt-10 relative z-10">
+              <div class="flex items-center gap-3.5 mb-3">
+                <img
+                  src={artist.avatar}
+                  alt={artist.name}
+                  class="w-12 h-12 rounded-full border-2 border-walpix-lime object-cover shadow-lg"
+                />
+                <div>
+                  <h3 class="text-sm font-bold text-white">{artist.name}</h3>
+                  <span class="text-xs text-gray-400 font-mono">{artist.handle}</span>
+                </div>
+              </div>
+              <p class="text-xs text-gray-300 mb-4">{artist.role}</p>
+              <div class="pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-gray-400 font-mono">
+                <span>{artist.uploads} Uploads</span>
+                <span class="text-walpix-lime font-bold">{artist.downloads} Downloads</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Submission / Discord Box -->
+    <section id="submit" class="w-full px-4 sm:px-8 lg:px-12 py-8 max-w-7xl mx-auto">
+      <div class="rounded-3xl bg-gradient-to-br from-[#0c1218] via-[#05070a] to-[#05070a] border border-white/10 p-8 sm:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-walpix-lime/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-xl mx-auto space-y-4 relative z-10">
+          <span class="text-xs font-mono text-walpix-lime uppercase tracking-widest font-bold">
+            Creator Submissions Open
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Share Your Wallpapers With Millions
+          </h2>
+          <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+            Are you a 3D renderer, AI visual artist, or digital photographer? Submit your lossless 4K wallpapers to be featured on our homepage and indexed across Google.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <a
+              href="/contact"
+              class="px-6 py-3 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-black font-extrabold text-xs transition-all shadow-lg hover:shadow-[0_0_20px_rgba(194,255,6,0.3)]"
+            >
+              Submit Wallpaper Pack
+            </a>
+            <a
+              href="https://discord.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-6 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/15 text-white font-bold text-xs transition-all"
+            >
+              Join Creator Discord
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

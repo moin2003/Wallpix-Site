@@ -1,76 +1,545 @@
 ---
-import { LUXURY_COLORS } from '../data/wallpapers';
+import { LUXURY_COLORS, LUXURY_COLOR_CATEGORIES } from '../data/wallpapers';
 
 interface Props {
   activeColor?: string;
+  className?: string;
 }
 
-const { activeColor } = Astro.props;
+const { activeColor, className = '' } = Astro.props;
+
+// Find active color if set
+const currentColorObj = activeColor ? LUXURY_COLORS.find(c => c.slug === activeColor) : null;
+const initialCategory = currentColorObj ? currentColorObj.category : 'all';
 ---
 
-<div id="color-explorer" class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
-  <div class="glass-panel rounded-2xl p-5 sm:p-6 border border-white/5 relative overflow-hidden">
+<section id="color-explorer" class={`relative w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 ${className}`}>
+  
+  <!-- Outer Atmospheric Green-to-Black Gradients (কন্টেইনারের বাইরে - Soft Ambient Back-Glow) -->
+  <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-4/5 h-40 bg-gradient-to-r from-transparent via-walpix-lime/[0.09] to-transparent blur-3xl pointer-events-none -z-10"></div>
+  <div class="absolute top-1/4 -left-12 w-80 h-80 bg-walpix-lime/[0.06] rounded-full blur-[140px] pointer-events-none -z-10"></div>
+  <div class="absolute bottom-1/4 -right-12 w-80 h-80 bg-emerald-500/[0.05] rounded-full blur-[140px] pointer-events-none -z-10"></div>
+
+  <!-- Outer Gradient Border Frame (Black & Subtle Green Harmony) -->
+  <div class="relative w-full rounded-3xl p-[1px] bg-gradient-to-b from-walpix-lime/30 via-white/[0.08] to-emerald-500/10 shadow-[0_24px_70px_rgba(0,0,0,0.85)]">
     
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="text-neon-lime text-lg">✦</span>
-          <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">
+    <!-- Ultra-Refined Glowing Accent Line on Top Border -->
+    <div class="absolute top-0 inset-x-16 h-[1px] bg-gradient-to-r from-transparent via-walpix-lime/60 to-transparent pointer-events-none"></div>
+
+    <!-- Expansive Ultra-Luxury Command Panel (Deep Black with Subtle Dark-Green Sheen) -->
+    <div class="relative w-full rounded-[23px] bg-gradient-to-b from-[#080B08] via-[#070709] to-[#040506] p-5 sm:p-8 lg:p-10 backdrop-blur-2xl overflow-hidden">
+      
+      <!-- Subtle Ambient Green Light Sheen inside Top Rim (Very Soft, Zero Clutter) -->
+      <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-48 bg-walpix-lime/[0.035] rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Ambient Luminous Glow Accents (Static Ambient Light) -->
+      <div class="absolute -top-24 -right-24 w-80 h-80 bg-walpix-lime/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-600/[0.03] rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Header Section (Title + Subtitle + Right Dropdown & Reset Controls) -->
+    <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-7 pb-6 border-b border-white/[0.08]">
+      <div class="space-y-2 max-w-2xl text-left">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-walpix-lime/10 border border-walpix-lime/30 flex items-center justify-center text-walpix-lime shadow-[0_0_12px_rgba(194,255,6,0.2)]">
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-display font-black text-white tracking-tight">
             Aesthetic Color Explorer
           </h2>
+          <span class="text-[11px] font-mono font-bold px-3 py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-walpix-lime shadow-[0_0_10px_rgba(194,255,6,0.15)]">
+            {LUXURY_COLORS.length} Dual-Tone Palettes
+          </span>
         </div>
-        <p class="text-xs text-gray-400 mt-0.5">
-          Filter high-res wallpapers by curated luxury two-tone color palettes
+        <p class="text-xs text-[#8E949E]">
+          Curated dual-tone color harmonies and mood palettes for 4K wallpapers.
         </p>
       </div>
 
-      <!-- Quick Reset Link -->
-      {activeColor && (
-        <a
-          href="/"
-          class="text-xs text-neon-pink hover:underline font-medium inline-flex items-center gap-1 self-start md:self-auto"
-        >
-          ✕ Clear color filter
-        </a>
-      )}
+      <!-- Header Right Controls: Category Dropdown + Quick Reset Link -->
+      <div class="flex flex-wrap items-center gap-3 self-start lg:self-center">
+        <!-- Quick Category Select Menu -->
+        <div class="relative w-52 sm:w-56">
+          <select
+            id="palette-category-dropdown"
+            aria-label="Filter palette categories"
+            class="w-full h-10 px-3.5 rounded-xl bg-[#0B0C10] text-gray-200 border border-white/[0.12] text-xs font-bold focus:border-walpix-lime focus:outline-none focus:ring-1 focus:ring-walpix-lime cursor-pointer shadow-lg"
+          >
+            {LUXURY_COLOR_CATEGORIES.map((cat) => (
+              <option value={cat.key} selected={cat.key === initialCategory}>
+                {cat.label} ({cat.count})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Quick Reset Link (if filtered) -->
+        {activeColor && (
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-walpix-lime/10 border border-walpix-lime/30 text-walpix-lime hover:bg-walpix-lime hover:text-black text-xs font-bold transition-all shadow-md shrink-0"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Reset</span>
+          </a>
+        )}
+      </div>
     </div>
 
-    <!-- 10 Two-Tone Color Chips Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-      {LUXURY_COLORS.map((color) => {
-        const isSelected = activeColor === color.slug;
-        return (
-          <a
-            href={`/color/${color.slug}`}
-            class={`group relative flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-300 ${
-              isSelected
-                ? 'bg-obsidian-800 border-neon-lime shadow-glow-lime scale-[1.02]'
-                : 'bg-obsidian-850/60 border-white/5 hover:border-white/20 hover:bg-obsidian-800'
-            }`}
-          >
-            <!-- Dual Color Capsule Preview -->
-            <div class="flex items-center -space-x-1 shrink-0">
-              <span
-                class="w-5 h-5 rounded-full border border-black/40 shadow-sm"
-                style={`background-color: ${color.hexPrimary};`}
-              ></span>
-              <span
-                class="w-5 h-5 rounded-full border border-black/40 shadow-sm"
-                style={`background-color: ${color.hexAccent};`}
-              ></span>
-            </div>
+    <!-- Category Filter Strip with Smooth Slide Arrows & Drag-To-Scroll (Full Width) -->
+    <div class="palette-strip-wrapper relative z-10 w-full flex items-center gap-2 sm:gap-3 mb-7">
+      
+      <!-- Left Slide Arrow Button -->
+      <button
+        id="palette-btn-left"
+        type="button"
+        class="hidden sm:flex items-center justify-center shrink-0 w-9 h-9 rounded-xl bg-[#0B0C10] border border-white/10 hover:border-walpix-lime text-walpix-lime hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer select-none z-20"
+        aria-label="Scroll categories left"
+      >
+        <svg class="w-5 h-5 text-walpix-lime drop-shadow-[0_0_6px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
 
-            <div class="flex flex-col min-w-0">
-              <span class="text-xs font-semibold text-gray-200 group-hover:text-white truncate">
-                {color.name}
+      <!-- Category Switcher Tabs Scroll Track -->
+      <div
+        id="palette-category-tabs"
+        class="palette-category-track relative flex items-center gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 flex-grow min-w-0 select-none cursor-grab"
+      >
+        {LUXURY_COLOR_CATEGORIES.map((cat) => {
+          const isActive = cat.key === initialCategory;
+          return (
+            <button
+              type="button"
+              data-palette-category={cat.key}
+              class={`palette-cat-btn shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-200 cursor-pointer border select-none ${
+                isActive
+                  ? 'bg-walpix-lime text-black border-walpix-lime shadow-[0_0_16px_rgba(194,255,6,0.35)]'
+                  : 'bg-[#0B0C10] text-[#9EA4AD] hover:text-white border-white/[0.08] hover:border-white/20'
+              }`}
+            >
+              {/* Category Icons */}
+              {cat.icon === 'palette' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+              )}
+              {cat.icon === 'mountain' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21l6.5-13 4.5 9 3-6 4 10H3z" /></svg>
+              )}
+              {cat.icon === 'zap' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              )}
+              {cat.icon === 'moon' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+              )}
+              {cat.icon === 'orbit' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+              )}
+              {cat.icon === 'sparkles' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+              )}
+              {cat.icon === 'crown' && (
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+              )}
+              <span>{cat.label}</span>
+              <span class={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                isActive ? 'bg-black/25 text-black font-extrabold' : 'bg-white/[0.06] text-gray-400'
+              }`}>
+                {cat.count}
               </span>
-              <span class="text-[10px] font-mono text-gray-500 uppercase">
-                {color.hexAccent}
-              </span>
-            </div>
-          </a>
-        );
-      })}
+            </button>
+          );
+        })}
+      </div>
+
+      <!-- Right Slide Arrow Button -->
+      <button
+        id="palette-btn-right"
+        type="button"
+        class="hidden sm:flex items-center justify-center shrink-0 w-9 h-9 rounded-xl bg-[#0B0C10] border border-white/10 hover:border-walpix-lime text-walpix-lime hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer select-none z-20"
+        aria-label="Scroll categories right"
+      >
+        <svg class="w-5 h-5 text-walpix-lime drop-shadow-[0_0_6px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Bounded Height Scrollable Palette Cards Area (~3-4 Rows Visible Initially, Scroll Down for More) -->
+    <div class="relative w-full rounded-2xl">
+      
+      <!-- Scrollable Cards Container (Compact, Bounded Height) -->
+      <div
+        id="palette-cards-scroll-wrapper"
+        class="palette-scroll-container max-h-[460px] sm:max-h-[500px] lg:max-h-[530px] overflow-y-auto pr-1.5 sm:pr-2.5 pb-2 transition-all duration-300"
+      >
+        <!-- 26-Palette Cards Grid -->
+        <div
+          id="palette-cards-grid"
+          class="relative z-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
+        >
+          {LUXURY_COLORS.map((color) => {
+            const isSelected = activeColor === color.slug;
+            return (
+              <a
+                href={`/color/${color.slug}`}
+                data-category={color.category}
+                style={`--card-primary: ${color.hexPrimary}; --card-accent: ${color.hexAccent};`}
+                class={`palette-card-item relative flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 select-none ${
+                  isSelected ? 'is-selected' : ''
+                }`}
+              >
+                <!-- 1. Combined Dual Gradient Swatch Banner -->
+                <div
+                  class="relative w-full h-14 sm:h-16 rounded-xl overflow-hidden mb-3 shadow-inner border border-white/[0.12] flex items-end justify-between p-2"
+                  style={`background: linear-gradient(135deg, ${color.hexPrimary} 0%, ${color.hexAccent} 100%);`}
+                >
+                  <!-- Glass reflection sheen overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-white/15 pointer-events-none"></div>
+
+                  <!-- Overlapping Dual Indicator Orbs -->
+                  <div class="relative z-10 flex items-center -space-x-1.5">
+                    <span
+                      class="w-5 h-5 rounded-full border border-black/80 shadow-md"
+                      style={`background-color: ${color.hexPrimary};`}
+                      title={`Primary: ${color.hexPrimary}`}
+                    ></span>
+                    <span
+                      class="w-5 h-5 rounded-full border border-black/80 shadow-lg ring-1 ring-black/40"
+                      style={`background-color: ${color.hexAccent}; box-shadow: 0 0 8px ${color.hexAccent}80;`}
+                      title={`Accent: ${color.hexAccent}`}
+                    ></span>
+                  </div>
+
+                  <!-- Category Micro Tag Pill -->
+                  <span class="relative z-10 text-[9px] font-mono font-bold px-2 py-0.5 rounded-md bg-black/65 backdrop-blur-md border border-white/15 text-white/90 uppercase tracking-wider">
+                    {color.category}
+                  </span>
+                </div>
+
+                <!-- 2. Palette Name & Hex Codes -->
+                <div class="space-y-1 text-left min-w-0 mb-3">
+                  <h3 class="text-xs sm:text-[13px] font-bold text-gray-100 group-hover:text-white truncate transition-colors leading-tight">
+                    {color.name}
+                  </h3>
+                  
+                  <!-- Hex Codes Row -->
+                  <div class="flex items-center gap-1.5 text-[10px] font-mono font-semibold pt-0.5">
+                    <span class="palette-accent-text transition-colors">
+                      {color.hexAccent}
+                    </span>
+                    <span class="text-white/20">•</span>
+                    <span class="text-gray-400 truncate">
+                      {color.hexPrimary}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 3. Bottom Interactive CTA Bar -->
+                <div class="flex items-center justify-between pt-2.5 border-t border-white/[0.06] text-[10px] font-mono text-gray-400">
+                  <span class="palette-accent-text transition-colors">View Wallpapers</span>
+                  <span class="palette-arrow transition-all duration-200">→</span>
+                </div>
+
+                <!-- Active Indicator Pill -->
+                {isSelected && (
+                  <div
+                    class="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full shadow-lg"
+                    style={`background-color: ${color.hexAccent}; box-shadow: 0 0 10px ${color.hexAccent};`}
+                  ></div>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Subtle Bottom Scroll Hint Overlay (Only visible when scrollable content exists below) -->
+      <div
+        id="palette-scroll-indicator"
+        class="pointer-events-none absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#070709] via-[#070709]/75 to-transparent z-20 transition-opacity duration-300 rounded-b-2xl flex items-end justify-center pb-1.5"
+      >
+        <span class="text-[10px] font-mono font-bold text-gray-400 bg-black/75 px-3 py-0.5 rounded-full border border-white/10 backdrop-blur-md shadow-md flex items-center gap-1.5">
+          <span>Scroll for more palettes</span>
+          <span class="text-walpix-lime animate-bounce">↓</span>
+        </span>
+      </div>
+
+    </div>
+
     </div>
   </div>
-</div>
+</section>
+
+<style>
+  /* Category Tabs Smooth Horizontal Slide Track */
+  .palette-category-track {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    contain: paint;
+  }
+  .palette-category-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ultra-Luxury Custom Scrollbar for Bounded Palette Grid */
+  .palette-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(194, 255, 6, 0.35) rgba(255, 255, 255, 0.03);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .palette-scroll-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  .palette-scroll-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 999px;
+  }
+  .palette-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(194, 255, 6, 0.3);
+    border-radius: 999px;
+    border: 1px solid rgba(194, 255, 6, 0.15);
+    transition: background 0.25s ease;
+  }
+  .palette-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(194, 255, 6, 0.65);
+    box-shadow: 0 0 10px rgba(194, 255, 6, 0.4);
+  }
+
+  /* Palette Card Dynamic Hover Effects Driven by Palette Colors */
+  .palette-card-item {
+    background-color: #090A0D;
+    border-color: rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .palette-card-item:hover {
+    background-color: #0D0E13;
+    border-color: var(--card-accent) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -6px color-mix(in srgb, var(--card-accent) 30%, transparent),
+                0 0 16px -2px color-mix(in srgb, var(--card-accent) 22%, transparent) !important;
+  }
+
+  .palette-card-item:hover .palette-accent-text {
+    color: var(--card-accent) !important;
+  }
+
+  .palette-card-item:hover .palette-arrow {
+    color: var(--card-accent) !important;
+    transform: translateX(3px);
+  }
+
+  /* Selected Card State */
+  .palette-card-item.is-selected {
+    background-color: #0E1015;
+    border-color: var(--card-accent) !important;
+    box-shadow: 0 10px 25px -4px color-mix(in srgb, var(--card-accent) 35%, transparent) !important;
+  }
+
+  .palette-card-item.is-selected .palette-accent-text,
+  .palette-card-item.is-selected .palette-arrow {
+    color: var(--card-accent) !important;
+  }
+</style>
+
+<script>
+  function initColorExplorer() {
+    const tabs = document.querySelectorAll<HTMLButtonElement>('#palette-category-tabs .palette-cat-btn');
+    const dropdown = document.getElementById('palette-category-dropdown') as HTMLSelectElement | null;
+    const cards = document.querySelectorAll<HTMLElement>('.palette-card-item');
+    const track = document.getElementById('palette-category-tabs');
+    const btnLeft = document.getElementById('palette-btn-left') as HTMLButtonElement | null;
+    const btnRight = document.getElementById('palette-btn-right') as HTMLButtonElement | null;
+    const scrollWrapper = document.getElementById('palette-cards-scroll-wrapper') as HTMLElement | null;
+    const scrollIndicator = document.getElementById('palette-scroll-indicator') as HTMLElement | null;
+
+    if (!cards.length) return;
+
+    // --- 1. Horizontal Category Slide Controls ---
+    function updateSlideArrows() {
+      if (!track || !btnLeft || !btnRight) return;
+      const scrollLeft = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (scrollLeft <= 6) {
+        btnLeft.style.opacity = '0.25';
+        btnLeft.style.pointerEvents = 'none';
+      } else {
+        btnLeft.style.opacity = '1';
+        btnLeft.style.pointerEvents = 'auto';
+      }
+
+      if (maxScroll <= 6 || scrollLeft >= maxScroll - 6) {
+        btnRight.style.opacity = '0.25';
+        btnRight.style.pointerEvents = 'none';
+      } else {
+        btnRight.style.opacity = '1';
+        btnRight.style.pointerEvents = 'auto';
+      }
+    }
+
+    // Scroll helper that strictly bounds scroll to the category track container
+    function centerTabInTrack(tabElement: HTMLElement) {
+      if (!track) return;
+      const trackRect = track.getBoundingClientRect();
+      const tabRect = tabElement.getBoundingClientRect();
+      const currentScroll = track.scrollLeft;
+      const tabCenter = (tabRect.left - trackRect.left) + currentScroll + (tabRect.width / 2);
+      const targetScrollLeft = tabCenter - (trackRect.width / 2);
+      track.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' });
+    }
+
+    if (track && btnLeft && btnRight) {
+      btnLeft.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        track.scrollBy({ left: -240, behavior: 'smooth' });
+      });
+
+      btnRight.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        track.scrollBy({ left: 240, behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateSlideArrows, { passive: true });
+      window.addEventListener('resize', updateSlideArrows, { passive: true });
+      updateSlideArrows();
+
+      // Mouse Drag-To-Scroll support on track
+      let isDown = false;
+      let startX = 0;
+      let scrollLeftPos = 0;
+      let hasDragged = false;
+
+      track.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        isDown = true;
+        hasDragged = false;
+        startX = e.pageX;
+        scrollLeftPos = track.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove('cursor-grabbing');
+        if (hasDragged) {
+          setTimeout(() => { hasDragged = false; }, 80);
+        }
+      });
+
+      track.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const distance = e.pageX - startX;
+        if (Math.abs(distance) > 5) {
+          hasDragged = true;
+          track.classList.add('cursor-grabbing');
+          e.preventDefault();
+          track.scrollLeft = scrollLeftPos - distance;
+        }
+      });
+    }
+
+    // --- 2. Bounded Height Vertical Scroll Indicator ---
+    function updateScrollIndicator() {
+      if (!scrollWrapper || !scrollIndicator) return;
+      const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+      if (maxScroll <= 15 || scrollWrapper.scrollTop >= maxScroll - 15) {
+        scrollIndicator.style.opacity = '0';
+        scrollIndicator.style.pointerEvents = 'none';
+      } else {
+        scrollIndicator.style.opacity = '1';
+      }
+    }
+
+    scrollWrapper?.addEventListener('scroll', updateScrollIndicator, { passive: true });
+
+    // --- 3. Category Switching Logic with Smooth Animation ---
+    function applyCategory(catKey: string, shouldCenterTab: boolean = true) {
+      // A. Update Tabs Visual State & Center Active Tab strictly in track
+      tabs.forEach((tab) => {
+        const isTarget = tab.getAttribute('data-palette-category') === catKey;
+        if (isTarget) {
+          tab.classList.remove('bg-[#0B0C10]', 'text-[#9EA4AD]', 'border-white/[0.08]');
+          tab.classList.add('bg-walpix-lime', 'text-black', 'border-walpix-lime', 'shadow-[0_0_16px_rgba(194,255,6,0.35)]');
+          const badge = tab.querySelector('span:last-child');
+          if (badge) {
+            badge.className = 'text-[10px] font-mono px-1.5 py-0.2 rounded bg-black/25 text-black font-extrabold';
+          }
+          if (shouldCenterTab) {
+            centerTabInTrack(tab);
+          }
+        } else {
+          tab.classList.remove('bg-walpix-lime', 'text-black', 'border-walpix-lime', 'shadow-[0_0_16px_rgba(194,255,6,0.35)]');
+          tab.classList.add('bg-[#0B0C10]', 'text-[#9EA4AD]', 'border-white/[0.08]');
+          const badge = tab.querySelector('span:last-child');
+          if (badge) {
+            badge.className = 'text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/[0.06] text-gray-400';
+          }
+        }
+      });
+
+      // B. Synchronize Dropdown Value
+      if (dropdown && dropdown.value !== catKey) {
+        dropdown.value = catKey;
+      }
+
+      // C. Filter Cards with Smooth Animation
+      cards.forEach((card) => {
+        const cardCat = card.getAttribute('data-category');
+        const matches = catKey === 'all' || cardCat === catKey;
+        if (matches) {
+          card.style.display = 'flex';
+          card.style.opacity = '1';
+          card.style.transform = 'scale(1)';
+        } else {
+          card.style.display = 'none';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.96)';
+        }
+      });
+
+      // D. Reset Vertical Scroll to Top
+      if (scrollWrapper) {
+        scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // E. Update scroll indicators after filter reflow
+      setTimeout(() => {
+        updateScrollIndicator();
+        updateSlideArrows();
+      }, 100);
+    }
+
+    // Attach click listeners to category tabs
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', (e) => {
+        const catKey = tab.getAttribute('data-palette-category') || 'all';
+        applyCategory(catKey);
+      });
+    });
+
+    // Attach change listener to dropdown menu
+    dropdown?.addEventListener('change', () => {
+      applyCategory(dropdown.value);
+    });
+
+    // Initial evaluation
+    setTimeout(() => {
+      updateScrollIndicator();
+      updateSlideArrows();
+    }, 150);
+  }
+
+  initColorExplorer();
+  document.addEventListener('astro:page-load', initColorExplorer);
+</script>

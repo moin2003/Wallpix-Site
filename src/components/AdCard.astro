@@ -1,62 +1,41 @@
 ---
+import { ADSENSE_CONFIG } from '../config/adsense';
+
+interface Props {
+  adSlot?: string;
+  className?: string;
+}
+
+const {
+  adSlot = '1234567890',
+  className = '',
+} = Astro.props;
+
+const isLiveAdSense = ADSENSE_CONFIG.isLive;
 ---
 
-<div class="relative w-full aspect-[16/9] rounded-[15px] overflow-hidden border border-dashed border-lumina-lime bg-gradient-to-br from-[#0c0f13] to-[#030609] p-3 sm:p-3.5 flex flex-col justify-between shadow-[0_0_12px_rgba(194,246,0,0.08)] group cursor-pointer">
-  
-  <!-- Ad Header -->
-  <div class="flex items-center justify-between text-[10px] uppercase font-mono tracking-wider">
-    <span class="px-2 py-0.5 rounded-full bg-white/[0.08] text-gray-300 font-bold">
-      ADVERTISEMENT
-    </span>
-    <div class="flex items-center gap-1.5 text-white font-semibold text-xs">
-      <span class="w-3.5 h-3.5 rounded-full bg-[#E5004F] flex items-center justify-center text-[7px] font-bold text-white">LG</span>
-      <span>LG UltraGear™</span>
-      <span class="text-gray-400 text-[10px]">ⓘ</span>
+{isLiveAdSense && (
+  <div class={`relative w-full aspect-[16/10] rounded-[15px] bg-[#070A0D] border border-white/[0.08] p-3 flex flex-col justify-between overflow-hidden shadow-lg ${className}`}>
+    <div class="flex items-center justify-between text-[9px] font-mono text-gray-400">
+      <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 uppercase">
+        Advertisement
+      </span>
+      <span>Sponsored</span>
+    </div>
+    
+    <div class="w-full h-full flex items-center justify-center overflow-hidden my-auto">
+      <ins
+        class="adsbygoogle"
+        style="display:block; width:100%; height:100%;"
+        data-ad-client={ADSENSE_CONFIG.publisherId}
+        data-ad-slot={adSlot}
+        data-ad-format="fluid"
+        data-ad-layout-key="-fb+5w+4e-db+86"
+      ></ins>
+      <script is:inline>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
   </div>
+)}
 
-  <!-- Ad Main Body -->
-  <div class="grid grid-cols-12 gap-2.5 items-center my-auto">
-    <!-- Monitor Product Visual -->
-    <div class="col-span-5 relative aspect-video rounded-lg overflow-hidden bg-black/90 border border-white/10 shadow-md flex items-center justify-center">
-      <img
-        src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&q=80"
-        alt="LG UltraGear 4K Gaming Monitor"
-        class="w-full h-full object-cover"
-      />
-    </div>
-
-    <!-- Copy & Specs -->
-    <div class="col-span-7 space-y-1">
-      <h4 class="text-xs sm:text-[13px] font-display font-bold text-white leading-tight">
-        Elevate Your Visual World
-      </h4>
-      <p class="text-[10px] text-gray-400 leading-tight">
-        LG UltraGear 4K Gaming Monitor
-      </p>
-
-      <!-- Key Specs Pill Row -->
-      <div class="flex items-center gap-1.5 pt-0.5 text-[9px] font-mono text-gray-300">
-        <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">4K UHD</span>
-        <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">144Hz</span>
-        <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">1ms</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ad Footer CTA Button -->
-  <div class="flex justify-center pt-0.5">
-    <a
-      href="https://www.google.com/search?q=LG+UltraGear+4K+Gaming+Monitor"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="h-[30px] px-6 rounded-full bg-[#C2F600] hover:bg-[#C8FF00] text-[#050605] font-bold text-xs flex items-center justify-center gap-1 shadow-[0_0_10px_rgba(194,246,0,0.28)] transition-all hover:scale-105"
-    >
-      <span>Learn More</span>
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-      </svg>
-    </a>
-  </div>
-
-</div>
