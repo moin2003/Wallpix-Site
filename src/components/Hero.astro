@@ -146,35 +146,35 @@ const mobileSlides = [
   <div id="hero-text-block" class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-2 lg:pt-4">
     
     <!-- DESKTOP TEXT: Dynamic Synchronized Slideshow for Desktop (sm:block hidden) -->
-    <div class="hero-text-inner hidden sm:block relative max-w-3xl lg:pl-2 min-h-[190px] sm:min-h-[220px] lg:min-h-[260px]">
+    <div class="hero-text-inner hidden sm:block relative max-w-3xl lg:pl-2 min-h-[210px] sm:min-h-[230px] lg:min-h-[270px]">
       {mobileSlides.map((slide, idx) => (
         <div
-          class={`desktop-hero-text-slide absolute inset-0 flex flex-col justify-start space-y-3 sm:space-y-4 transition-all duration-700 ease-out ${
+          class={`desktop-hero-text-slide absolute inset-0 flex flex-col justify-start transition-opacity duration-500 ${
             idx === 0
-              ? 'active opacity-100 translate-y-0 pointer-events-auto'
-              : 'opacity-0 translate-y-3 pointer-events-none'
+              ? 'active opacity-100 pointer-events-auto'
+              : 'opacity-0 pointer-events-none'
           }`}
           data-desktop-text-slide={idx}
         >
           <!-- Eyebrow -->
-          <p class="hero-eyebrow text-xs sm:text-[13px] font-extrabold tracking-[0.18em] uppercase text-white/90">
+          <p class="desktop-hero-eyebrow text-xs sm:text-[13px] font-extrabold tracking-[0.18em] uppercase text-white/90 mb-1">
             {slide.eyebrow}
           </p>
 
-          <!-- Huge Headline -->
-          <h1 class="hero-headline text-[34px] sm:text-hero font-extrabold tracking-[-0.055em] leading-[0.95] sm:leading-[0.92] text-white">
-            {slide.titleLine1} <br />
+          <!-- Headline with 3-line clean typography matching mobile -->
+          <h1 class="desktop-hero-headline my-1">
+            <span class="desktop-title-top">{slide.titleLine1}</span> <br />
             <span
               class="desktop-hero-highlight transition-colors duration-500 inline-block"
               style={`color: ${slide.highlightColor}; filter: drop-shadow(0 0 20px ${slide.highlightGlow});`}
             >
-              {slide.titleHighlight}
+              <span class="desktop-highlight-text inline-block">{slide.titleHighlight}</span>
             </span> <br />
-            {slide.titleLine3}
+            <span class="desktop-title-bottom">{slide.titleLine3}</span>
           </h1>
 
           <!-- Subtitle -->
-          <p class="hero-subtitle text-white/80 text-xs sm:text-sm font-medium leading-relaxed max-w-[520px] pt-1">
+          <p class="desktop-hero-subtitle text-white/80 text-xs sm:text-sm font-medium leading-relaxed max-w-[520px] pt-1">
             {slide.subtitle}
           </p>
         </div>
@@ -352,15 +352,136 @@ const mobileSlides = [
       object-position: center 45%;
     }
 
-    /* Desktop Hero Middle Highlight Font: "Moon Dance", cursive (Matching Mobile) */
-    .desktop-hero-highlight {
+    /* ========================================================
+       DESKTOP HERO TEXT TYPOGRAPHY (Clean, Modern, Elegant like Mobile)
+       ======================================================== */
+    .desktop-hero-headline {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* [১] উপরের লাইন (Line 1 - e.g. "Unleash Pure", "Pure Adrenaline") */
+    .desktop-title-top {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(36px, 4vw, 54px);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      color: #ffffff;
+      display: inline-block;
+    }
+
+    /* [২] মাঝখানের কালার লাইন (Line 2 - e.g. "Visual Power", "Midnight Hypercar") */
+    .desktop-hero-highlight,
+    .desktop-highlight-text {
       font-family: "Moon Dance", cursive;
       font-style: italic;
       font-weight: 600;
-      font-size: 1.18em;
-      line-height: 1.1;
+      font-size: clamp(46px, 5vw, 68px);
+      line-height: 1.14;
       letter-spacing: 0.01em;
       display: inline-block;
+    }
+
+    /* [৩] নিচের লাইন (Line 3 - e.g. "On Your Screen", "Built For Velocity") */
+    .desktop-title-bottom {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(32px, 3.4vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      color: #ffffff;
+      display: inline-block;
+    }
+
+    /* ========================================================
+       DESKTOP STAGGERED SEQUENTIAL ANIMATIONS (Exact Mobile Parity)
+       - Eyebrow: subtle reveal
+       - Line 1: smooth slide-up
+       - Line 2: Moon Dance cursive blur-to-sharp glow reveal
+       - Line 3: smooth slide-up sequential
+       - Subtitle: soft fade-in finish
+       ======================================================== */
+    .desktop-hero-text-slide.active .desktop-hero-eyebrow {
+      animation: desktopSeqEyebrow 0.40s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
+    }
+
+    .desktop-hero-text-slide.active .desktop-title-top {
+      animation: desktopSeqLineOne 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+    }
+
+    .desktop-hero-text-slide.active .desktop-highlight-text,
+    .desktop-hero-text-slide.active .desktop-hero-highlight {
+      animation: desktopSeqHighlightBlur 0.60s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+    }
+
+    .desktop-hero-text-slide.active .desktop-title-bottom {
+      animation: desktopSeqLineThree 0.50s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
+    }
+
+    .desktop-hero-text-slide.active .desktop-hero-subtitle {
+      animation: desktopSeqSubtitle 0.52s ease-out 0.68s both;
+    }
+
+    @keyframes desktopSeqEyebrow {
+      0% {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      100% {
+        opacity: 0.9;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes desktopSeqLineOne {
+      0% {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes desktopSeqHighlightBlur {
+      0% {
+        opacity: 0;
+        filter: blur(14px);
+        transform: translateY(10px) scale(0.96);
+      }
+      60% {
+        opacity: 0.9;
+        filter: blur(3px);
+      }
+      100% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes desktopSeqLineThree {
+      0% {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes desktopSeqSubtitle {
+      0% {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      100% {
+        opacity: 0.8;
+        transform: translateY(0);
+      }
     }
   }
 </style>
@@ -429,15 +550,15 @@ const mobileSlides = [
         }
       });
 
-      // 4. Desktop Text Slides
+      // 4. Desktop Text Slides (staggered keyframe re-trigger)
       desktopTextSlides.forEach((ts, idx) => {
         if (idx === targetIndex) {
-          ts.classList.remove('active', 'opacity-0', 'translate-y-3', 'pointer-events-none');
-          void ts.offsetWidth;
-          ts.classList.add('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
+          ts.classList.remove('active', 'opacity-0', 'pointer-events-none');
+          void ts.offsetWidth; // Force reflow to replay sequential animations
+          ts.classList.add('active', 'opacity-100', 'pointer-events-auto');
         } else {
-          ts.classList.remove('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
-          ts.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+          ts.classList.remove('active', 'opacity-100', 'pointer-events-auto');
+          ts.classList.add('opacity-0', 'pointer-events-none');
         }
       });
 
