@@ -89,18 +89,23 @@ const mobileSlides = [
 <section id="hero-section" class="hero-section relative w-full overflow-hidden -mt-[96px] pt-24 sm:pt-28 lg:pt-36 pb-4 min-h-[720px] sm:min-h-[760px] lg:min-h-[840px] flex flex-col justify-between bg-[#030405]">
   
   <!-- ========================================================
-       DESKTOP BACKGROUND: 100% Static Astronaut Hero Image
-       (Protected for sm/md/lg/xl - Never shifts or animates)
+       DESKTOP BACKGROUND: Synchronized 4K Hero Slideshow (sm:block hidden)
+       Cycles smoothly through 4K wallpapers matching desktop widescreen
        ======================================================== -->
-  <img
-    id="hero-bg-img"
-    src="/images/hero-astronaut-master.webp"
-    alt="WALPIX 4K Cosmic Astronaut Master Hero"
-    loading="eager"
-    fetchpriority="high"
-    decoding="async"
-    class="hero-bg-img hidden sm:block absolute inset-0 w-full h-full object-cover object-[80%_25%] select-none pointer-events-none"
-  />
+  <div id="desktop-hero-slider" class="hidden sm:block absolute inset-0 w-full h-full overflow-hidden select-none pointer-events-none">
+    {mobileSlides.map((slide, idx) => (
+      <img
+        id={`desktop-${slide.slideId}`}
+        src={slide.image}
+        alt={slide.alt}
+        class={`desktop-hero-bg-slide desktop-${slide.slideKey} ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full object-cover select-none pointer-events-none`}
+        data-desktop-slide-index={idx}
+        loading={idx === 0 ? 'eager' : 'lazy'}
+        fetchpriority={idx === 0 ? 'high' : 'auto'}
+        decoding="async"
+      />
+    ))}
+  </div>
 
   <!-- ========================================================
        MOBILE SLIDESHOW BACKGROUND: Controlled directly via mobile-480.css
@@ -140,24 +145,40 @@ const mobileSlides = [
        ======================================================== -->
   <div id="hero-text-block" class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-2 lg:pt-4">
     
-    <!-- DESKTOP TEXT: 100% Intact & Untouched (sm:flex) -->
-    <div class="hero-text-inner hidden sm:flex max-w-3xl space-y-3 sm:space-y-4 lg:pl-2 min-h-[190px] sm:min-h-[220px] lg:min-h-[260px] flex-col justify-start">
-      <!-- Eyebrow -->
-      <p class="hero-eyebrow text-xs sm:text-[13px] font-extrabold tracking-[0.18em] uppercase text-white/90">
-        4K ULTRA HD WALLPAPERS
-      </p>
+    <!-- DESKTOP TEXT: Dynamic Synchronized Slideshow for Desktop (sm:block hidden) -->
+    <div class="hero-text-inner hidden sm:block relative max-w-3xl lg:pl-2 min-h-[190px] sm:min-h-[220px] lg:min-h-[260px]">
+      {mobileSlides.map((slide, idx) => (
+        <div
+          class={`desktop-hero-text-slide absolute inset-0 flex flex-col justify-start space-y-3 sm:space-y-4 transition-all duration-700 ease-out ${
+            idx === 0
+              ? 'active opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 translate-y-3 pointer-events-none'
+          }`}
+          data-desktop-text-slide={idx}
+        >
+          <!-- Eyebrow -->
+          <p class="hero-eyebrow text-xs sm:text-[13px] font-extrabold tracking-[0.18em] uppercase text-white/90">
+            {slide.eyebrow}
+          </p>
 
-      <!-- Huge Headline -->
-      <h1 class="hero-headline text-[34px] sm:text-hero font-extrabold tracking-[-0.055em] leading-[0.95] sm:leading-[0.92] text-white">
-        Unleash Pure <br />
-        <span class="text-[#C2FF06] drop-shadow-[0_0_20px_rgba(194,255,6,0.35)]">Visual Power</span> <br />
-        On Your Screen
-      </h1>
+          <!-- Huge Headline -->
+          <h1 class="hero-headline text-[34px] sm:text-hero font-extrabold tracking-[-0.055em] leading-[0.95] sm:leading-[0.92] text-white">
+            {slide.titleLine1} <br />
+            <span
+              class="desktop-hero-highlight transition-colors duration-500 inline-block"
+              style={`color: ${slide.highlightColor}; filter: drop-shadow(0 0 20px ${slide.highlightGlow});`}
+            >
+              {slide.titleHighlight}
+            </span> <br />
+            {slide.titleLine3}
+          </h1>
 
-      <!-- Subtitle -->
-      <p class="hero-subtitle text-white/80 text-xs sm:text-sm font-medium leading-relaxed max-w-[520px] pt-1">
-        Optimized for iPhone, Android, PC &amp; Mac
-      </p>
+          <!-- Subtitle -->
+          <p class="hero-subtitle text-white/80 text-xs sm:text-sm font-medium leading-relaxed max-w-[520px] pt-1">
+            {slide.subtitle}
+          </p>
+        </div>
+      ))}
     </div>
 
     <!-- MOBILE SLIDESHOW TEXT: Synchronized Slide-by-Slide Text (sm:hidden) -->
@@ -286,19 +307,68 @@ const mobileSlides = [
 
 </section>
 
+<style>
+  /* ========================================================
+     DESKTOP HERO SLIDESHOW: Crossfade & Framing
+     Scoped cleanly to desktop only - zero mobile effect
+     ======================================================== */
+  @media (min-width: 640px) {
+    .desktop-hero-bg-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 8s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+
+    .desktop-hero-bg-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Desktop Object Positioning for Optimal 16:9 / 21:9 Framing */
+    .desktop-slide-astronaut {
+      object-position: 80% 25%;
+    }
+
+    .desktop-slide-supercar {
+      object-position: center 60%;
+    }
+
+    .desktop-slide-nature {
+      object-position: center 48%;
+    }
+
+    .desktop-slide-scifi {
+      object-position: center 42%;
+    }
+
+    .desktop-slide-amoled {
+      object-position: center 45%;
+    }
+  }
+</style>
+
 <script>
-  function initMobileHeroSlideshow() {
+  function initHeroSlideshow() {
     const heroSection = document.getElementById('hero-section');
-    const bgSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-bg-slide');
-    const textSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-text-slide');
+    const mobileBgSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-bg-slide');
+    const desktopBgSlides = document.querySelectorAll<HTMLElement>('.desktop-hero-bg-slide');
+    const mobileTextSlides = document.querySelectorAll<HTMLElement>('.mobile-hero-text-slide');
+    const desktopTextSlides = document.querySelectorAll<HTMLElement>('.desktop-hero-text-slide');
     const ctaBtn = document.getElementById('hero-explore-cta-btn') as HTMLAnchorElement | null;
     const ctaLabel = ctaBtn?.querySelector('.hero-cta-label');
 
-    if (!bgSlides.length || bgSlides.length <= 1) return;
+    const totalSlides = Math.max(mobileBgSlides.length, desktopBgSlides.length);
+    if (!totalSlides || totalSlides <= 1) return;
 
     let currentIndex = 0;
     let timer: number | null = null;
-    const totalSlides = bgSlides.length;
     const SLIDE_DURATION = 8000; // 8 seconds per slide for relaxed viewing & reading
  
     const slideData = [
@@ -312,25 +382,35 @@ const mobileSlides = [
     function goToSlide(targetIndex: number) {
       if (targetIndex === currentIndex) return;
 
-      // 1. Previous background slide
-      const prevBg = bgSlides[currentIndex];
-      if (prevBg) {
-        prevBg.classList.remove('active');
+      // 1. Mobile Background Slide
+      const prevMobileBg = mobileBgSlides[currentIndex];
+      if (prevMobileBg) {
+        prevMobileBg.classList.remove('active');
+      }
+      const nextMobileBg = mobileBgSlides[targetIndex];
+      if (nextMobileBg) {
+        nextMobileBg.classList.remove('active');
+        void nextMobileBg.offsetWidth; // Force CSS animation restart
+        nextMobileBg.classList.add('active');
       }
 
-      // 2. Next background slide (force reflow to restart smooth pan)
-      const nextBg = bgSlides[targetIndex];
-      if (nextBg) {
-        nextBg.classList.remove('active');
-        void nextBg.offsetWidth; // Force CSS animation restart
-        nextBg.classList.add('active');
+      // 2. Desktop Background Slide
+      const prevDesktopBg = desktopBgSlides[currentIndex];
+      if (prevDesktopBg) {
+        prevDesktopBg.classList.remove('active');
+      }
+      const nextDesktopBg = desktopBgSlides[targetIndex];
+      if (nextDesktopBg) {
+        nextDesktopBg.classList.remove('active');
+        void nextDesktopBg.offsetWidth; // Force CSS animation restart
+        nextDesktopBg.classList.add('active');
       }
 
-      // 3. Update text slides (force reflow to replay sequential text animations)
-      textSlides.forEach((ts, idx) => {
+      // 3. Mobile Text Slides
+      mobileTextSlides.forEach((ts, idx) => {
         if (idx === targetIndex) {
           ts.classList.remove('active', 'opacity-0', 'translate-y-2', 'pointer-events-none');
-          void ts.offsetWidth; // Force CSS animation restart for staggered text lines
+          void ts.offsetWidth;
           ts.classList.add('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
         } else {
           ts.classList.remove('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
@@ -338,8 +418,20 @@ const mobileSlides = [
         }
       });
 
-      // 4. Update CTA button on mobile
-      if (ctaBtn && ctaLabel && slideData[targetIndex] && window.innerWidth < 640) {
+      // 4. Desktop Text Slides
+      desktopTextSlides.forEach((ts, idx) => {
+        if (idx === targetIndex) {
+          ts.classList.remove('active', 'opacity-0', 'translate-y-3', 'pointer-events-none');
+          void ts.offsetWidth;
+          ts.classList.add('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
+        } else {
+          ts.classList.remove('active', 'opacity-100', 'translate-y-0', 'pointer-events-auto');
+          ts.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+        }
+      });
+
+      // 5. Update CTA Button (href, label & glowing accent) for both Mobile & Desktop
+      if (ctaBtn && ctaLabel && slideData[targetIndex]) {
         ctaBtn.href = slideData[targetIndex].ctaHref;
         ctaLabel.textContent = slideData[targetIndex].ctaLabel;
         const iconBadge = ctaBtn.querySelector<HTMLElement>('.hero-cta-icon-badge');
@@ -357,22 +449,18 @@ const mobileSlides = [
     }
 
     function nextSlide() {
-      if (window.innerWidth >= 640) return;
       const nextIdx = (currentIndex + 1) % totalSlides;
       goToSlide(nextIdx);
     }
 
     function prevSlide() {
-      if (window.innerWidth >= 640) return;
       const prevIdx = (currentIndex - 1 + totalSlides) % totalSlides;
       goToSlide(prevIdx);
     }
 
     function startTimer() {
       stopTimer();
-      if (window.innerWidth < 640) {
-        timer = window.setInterval(nextSlide, SLIDE_DURATION);
-      }
+      timer = window.setInterval(nextSlide, SLIDE_DURATION);
     }
 
     function stopTimer() {
@@ -408,32 +496,31 @@ const mobileSlides = [
       startTimer();
     }, { passive: true });
 
-    // Start auto-advance if on mobile
+    // Desktop hover pause/resume
+    heroSection?.addEventListener('mouseenter', () => {
+      if (window.innerWidth >= 640) stopTimer();
+    });
+    heroSection?.addEventListener('mouseleave', () => {
+      if (window.innerWidth >= 640) startTimer();
+    });
+
+    // Start auto-advance
     startTimer();
 
-    // Pause on page hidden / resume when visible
+    // Pause on tab hidden / resume when visible
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         stopTimer();
-      } else if (window.innerWidth < 640) {
-        startTimer();
-      }
-    });
-
-    // Handle screen resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 640) {
-        stopTimer();
-      } else if (!timer) {
+      } else {
         startTimer();
       }
     });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileHeroSlideshow);
+    document.addEventListener('DOMContentLoaded', initHeroSlideshow);
   } else {
-    initMobileHeroSlideshow();
+    initHeroSlideshow();
   }
-  document.addEventListener('astro:page-load', initMobileHeroSlideshow);
+  document.addEventListener('astro:page-load', initHeroSlideshow);
 </script>
