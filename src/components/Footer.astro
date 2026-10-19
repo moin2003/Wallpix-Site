@@ -3,7 +3,8 @@ const currentYear = new Date().getFullYear();
 
 const categoryLinks = [
   { name: '4K Ultra HD', href: '/category/4k-ultra-hd' },
-  { name: 'Anime & Gaming', href: '/category/anime-gaming' },
+  { name: 'Anime & Manga', href: '/category/anime' },
+  { name: 'Gaming', href: '/category/gaming' },
   { name: 'AMOLED Black', href: '/category/amoled-black' },
   { name: 'Cyberpunk & Sci-Fi', href: '/category/cyberpunk-neon' },
   { name: 'Nature & Landscapes', href: '/category/nature-scenery' },
@@ -75,8 +76,12 @@ const legalLinks = [
         <div class="footer-brand-col lg:col-span-2 space-y-5">
           <a href="/" class="footer-logo-link inline-flex items-center gap-2.5 cursor-pointer" aria-label="WALPIX Home">
             <img
-              src="/images/logo/upscaled-v4-png.png"
+              src="/images/logo/logo-header.webp"
               alt="WALPIX 4K Wallpapers"
+              width="240"
+              height="68"
+              loading="lazy"
+              decoding="async"
               class="footer-brand-logo-img w-auto object-contain select-none"
             />
           </a>
@@ -225,8 +230,12 @@ const legalLinks = [
       <div class="flex flex-col items-center text-center space-y-2">
         <a href="/" class="inline-block cursor-pointer" aria-label="WALPIX Home">
           <img
-            src="/images/logo/upscaled-v4-png.png"
+            src="/images/logo/logo-header.webp"
             alt="WALPIX 4K Wallpapers"
+            width="140"
+            height="40"
+            loading="lazy"
+            decoding="async"
             class="h-10 w-auto object-contain select-none"
           />
         </a>

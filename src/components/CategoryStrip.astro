@@ -1,4 +1,6 @@
 ---
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+
 interface Props {
   activeSlug?: string;
 }
@@ -15,22 +17,22 @@ const categories = [
   {
     name: 'AMOLED Black',
     slug: 'amoled-black',
-    image: '/images/mockup_cards/cat-amoled.webp',
+    image: 'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
   },
   {
     name: 'Cyberpunk',
     slug: 'cyberpunk-neon',
-    image: '/images/mockup_cards/card-2-neondrive.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: '4K UHD',
     slug: '4k-ultra-hd',
-    image: '/images/mockup_cards/cat-4k.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'HD Wallpapers',
     slug: 'hd-wallpapers',
-    image: '/images/mockup_cards/cat-minimalist.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Movies & TV',
@@ -43,29 +45,34 @@ const categories = [
     image: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=240&q=75&auto=format&fm=webp',
   },
   {
-    name: 'Anime',
-    slug: 'anime-gaming',
-    image: '/images/mockup_cards/card-3-shadowrealm.webp',
+    name: 'Anime & Manga',
+    slug: 'anime',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+  },
+  {
+    name: 'Gaming',
+    slug: 'gaming',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Space & Cosmic',
     slug: 'space-cosmic',
-    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
+    image: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   },
   {
     name: 'Nature',
     slug: 'nature-scenery',
-    image: '/images/mockup_cards/card-1-mountain.webp',
+    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
   },
   {
     name: 'Cars & Bikes',
     slug: 'cars-supercars',
-    image: '/images/mockup_cards/card-6-nightbeast.webp',
+    image: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
   },
   {
     name: 'Cartoons',
     slug: 'cartoon',
-    image: '/images/mockup_cards/cat-anime.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'Music & Bands',
@@ -75,12 +82,12 @@ const categories = [
   {
     name: 'Minimalist',
     slug: 'minimalist-abstract',
-    image: '/images/mockup_cards/cat-minimalist.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Neon City',
     slug: 'cyberpunk-neon',
-    image: '/images/mockup_cards/cat-cyberpunk.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Dark Mystery',
@@ -90,12 +97,12 @@ const categories = [
   {
     name: 'Forest Waterfall',
     slug: 'nature-scenery',
-    image: '/images/mockup_cards/card-5-forestcalm.webp',
+    image: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
   },
   {
     name: 'Fantasy & Castle',
     slug: 'fantasy',
-    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
+    image: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   },
   {
     name: 'Animals & Cyber',
@@ -115,7 +122,7 @@ const categories = [
   {
     name: 'Comics & Heroes',
     slug: 'superheroes',
-    image: '/images/mockup_cards/cat-cyberpunk.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Holidays & Events',
@@ -186,10 +193,10 @@ const categories = [
             >
               {cat.image && (
                 <img
-                  src={cat.image}
+                  src={getOptimizedThumbUrl(cat.image, 120, 80)}
                   alt={cat.name}
-                  width="115"
-                  height="68"
+                  width="44"
+                  height="36"
                   loading="lazy"
                   decoding="async"
                   referrerpolicy="no-referrer"

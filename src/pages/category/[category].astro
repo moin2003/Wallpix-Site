@@ -12,6 +12,7 @@ import WallpaperGrid from '../../components/WallpaperGrid.astro';
 import Footer from '../../components/Footer.astro';
 import { CATEGORIES, wallpapers, getWallpapersByCategory, type Wallpaper } from '../../data/wallpapers';
 import { MAIN_CATEGORIES, getCategoryBySlug } from '../../data/taxonomy';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 export async function getStaticPaths() {
   const map = new Map<string, { name: string; slug: string; icon: string }>();
@@ -48,6 +49,8 @@ const categoryDescriptions: Record<string, string> = {
   'hd-wallpapers': 'Crisp 1080p, 2K, and 4K high-definition wallpapers curated for computer monitors, laptops, and mobile screens.',
   'movies': 'Cinematic 4K wallpapers featuring iconic movie franchises, Hollywood legends, Marvel, DC, Star Wars, and Oscar masterpieces.',
   'tv-shows': 'Captivating 4K wallpapers from iconic TV shows, Netflix series, HBO masterpieces, anime adaptations, and beloved television characters.',
+  'anime': 'Legendary shinobi sagas, Studio Ghibli sceneries, dark fantasy manga, and beloved anime icons in 4K UHD.',
+  'gaming': 'Epic 4K gaming wallpapers from AAA titles, esports tournaments, and iconic video game battlestations in 4K.',
   'anime-gaming': 'Cyberpunk warriors, legendary samurai, fantasy anime champions, and futuristic digital game aesthetics.',
   'amoled-black': 'True pitch black #000000 wallpapers crafted for OLED displays with maximum contrast and zero battery drain.',
   'cyberpunk-neon': 'Neon-drenched dystopian megacities, rainy asphalt reflections, and high-octane sci-fi atmospheres.',
@@ -76,7 +79,7 @@ const categoryDescriptions: Record<string, string> = {
 // Filter wallpapers for this category using smart semantic matcher
 const filteredWallpapers = getWallpapersByCategory(categoryInfo.slug);
 const displayWallpapers = filteredWallpapers.length > 0 ? filteredWallpapers : wallpapers.slice(0, 16);
-const categoryHeroImage = displayWallpapers[0]?.sourceCdn || '/images/hero-astronaut-master.png';
+const categoryHeroImage = displayWallpapers.find(w => w.sourceCdn && w.sourceCdn.startsWith('http'))?.sourceCdn || displayWallpapers[0]?.sourceCdn || '/images/hero-astronaut-master.png';
 const categoryDesc = categoryDescriptions[categoryInfo.slug] || `Download high quality ${categoryInfo.name} 4K Ultra HD wallpapers for desktop and mobile screens.`;
 
 const schema = {
@@ -95,6 +98,7 @@ const subTopicsList = taxonomyCat?.subTopics || [];
   title={`${categoryInfo.name} 4K Wallpapers`}
   description={categoryDesc}
   image={categoryHeroImage}
+  preloadImage={getOptimizedThumbUrl(categoryHeroImage, 400, 70)}
   schema={schema}
 >
   <!-- Active Header Navigation -->
@@ -115,10 +119,13 @@ const subTopicsList = taxonomyCat?.subTopics || [];
       <!-- Background Image Specific to This Category with Deep Overlay -->
       <div class="absolute inset-0 z-0 pointer-events-none">
         <img
-          src={categoryHeroImage}
+          src={getOptimizedThumbUrl(categoryHeroImage, 400, 70)}
           alt={`${categoryInfo.name} 4K Backdrop`}
+          width="400"
+          height="225"
           class="w-full h-full object-cover object-center opacity-25 scale-105"
           loading="eager"
+          fetchpriority="high"
           decoding="async"
         />
         <div class="absolute inset-0 bg-gradient-to-r from-[#020406] via-[#020406]/90 to-[#020406]/70"></div>
@@ -235,6 +242,9 @@ const subTopicsList = taxonomyCat?.subTopics || [];
     <!-- Category Wallpaper Grid (Filtered Wallpapers) -->
     <WallpaperGrid
       wallpapers={displayWallpapers}
+      totalCount={displayWallpapers.length}
+      maxDomCount={64}
+      initialCount={36}
       title={`${categoryInfo.name} Wallpapers`}
       subtitle={`Showing high-resolution curated ${categoryInfo.name} backgrounds in native 4K format.`}
     />

@@ -98,10 +98,12 @@ const mobileSlides = [
         id={`desktop-${slide.slideId}`}
         src={slide.image}
         alt={slide.alt}
+        width="1920"
+        height="1080"
         class={`desktop-hero-bg-slide desktop-${slide.slideKey} ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full object-cover select-none pointer-events-none`}
         data-desktop-slide-index={idx}
         loading={idx === 0 ? 'eager' : 'lazy'}
-        fetchpriority={idx === 0 ? 'high' : 'auto'}
+        fetchpriority={idx === 0 ? 'high' : 'low'}
         decoding="async"
       />
     ))}
@@ -117,10 +119,12 @@ const mobileSlides = [
         id={slide.slideId}
         src={slide.image}
         alt={slide.alt}
+        width="800"
+        height="1200"
         class={`mobile-hero-bg-slide ${slide.slideKey} ${idx === 0 ? 'hero-bg-img active' : ''} absolute inset-0 w-full h-full object-cover select-none pointer-events-none`}
         data-slide-index={idx}
         loading={idx === 0 ? 'eager' : 'lazy'}
-        fetchpriority={idx === 0 ? 'high' : 'auto'}
+        fetchpriority={idx === 0 ? 'high' : 'low'}
         decoding="async"
       />
     ))}

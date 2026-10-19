@@ -1,5 +1,6 @@
 ---
 import AdCard from './AdCard.astro';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 interface SubFolderItem {
   name: string;
@@ -12,7 +13,7 @@ interface SubFolderItem {
 interface Props {
   categorySlug: string;
   categoryName: string;
-  subTopics?: { name: string; slug: string; count: string }[];
+  subTopics?: { name: string; slug: string; count: string; cover?: string }[];
   className?: string;
 }
 
@@ -27,21 +28,21 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'porsche-911-gt3-rs',
       count: '59+ Wallpapers',
       badge: 'Track Beast',
-      thumb: '/images/mockup_cards/card-2-neondrive.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     },
     {
       name: 'Lamborghini Aventador',
       slug: 'lamborghini-aventador',
       count: '170+ Wallpapers',
       badge: 'V12 Exotic',
-      thumb: '/images/mockup_cards/card-6-nightbeast.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
     },
     {
       name: 'Nissan Skyline',
       slug: 'nissan-skyline',
       count: '95+ Wallpapers',
       badge: 'JDM Legend',
-      thumb: '/images/mockup_cards/card-2-neondrive.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     },
     {
       name: 'Ferrari',
@@ -64,21 +65,21 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'porsche-911-gt3-rs',
       count: '59+ Wallpapers',
       badge: 'Track Beast',
-      thumb: '/images/mockup_cards/card-2-neondrive.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     },
     {
       name: 'Lamborghini Aventador',
       slug: 'lamborghini-aventador',
       count: '170+ Wallpapers',
       badge: 'V12 Exotic',
-      thumb: '/images/mockup_cards/card-6-nightbeast.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
     },
     {
       name: 'Nissan Skyline',
       slug: 'nissan-skyline',
       count: '95+ Wallpapers',
       badge: 'JDM Legend',
-      thumb: '/images/mockup_cards/card-2-neondrive.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     },
     {
       name: 'Ferrari',
@@ -97,92 +98,158 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
   ],
 
   // Anime & Manga
-  'anime-gaming': [
-    {
-      name: 'Anime Girls',
-      slug: 'anime-girls',
-      count: '61+ Wallpapers',
-      badge: 'Popular',
-      thumb: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80'
-    },
-    {
-      name: 'Naruto',
-      slug: 'naruto',
-      count: '62+ Wallpapers',
-      badge: 'Shinobi 4K',
-      thumb: '/images/mockup_cards/card-3-shadowrealm.jpg'
-    },
-    {
-      name: 'Jujutsu Kaisen',
-      slug: 'jujutsu-kaisen',
-      count: '38+ Wallpapers',
-      badge: 'Cursed Realm',
-      thumb: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80'
-    },
-    {
-      name: 'Demon Slayer: Kimetsu no Yaiba',
-      slug: 'demon-slayer-kimetsu-no-yaiba',
-      count: '45+ Wallpapers',
-      badge: 'Breathing Styles',
-      thumb: '/images/mockup_cards/card-5-forestcalm.jpg'
-    },
-    {
-      name: 'Your Name',
-      slug: 'your-name',
-      count: '36+ Wallpapers',
-      badge: 'Shinkai Scenic',
-      thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
-    },
-    {
-      name: 'Studio Ghibli',
-      slug: 'studio-ghibli',
-      count: '122+ Wallpapers',
-      badge: 'Miyazaki Masterpieces',
-      thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80'
-    }
-  ],
+  // Anime & Manga
   'anime': [
     {
       name: 'Anime Girls',
       slug: 'anime-girls',
       count: '61+ Wallpapers',
-      badge: 'Popular',
-      thumb: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80'
+      badge: 'Trending Waifu',
+      thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
     },
     {
       name: 'Naruto',
       slug: 'naruto',
       count: '62+ Wallpapers',
       badge: 'Shinobi 4K',
-      thumb: '/images/mockup_cards/card-3-shadowrealm.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg'
     },
     {
       name: 'Jujutsu Kaisen',
       slug: 'jujutsu-kaisen',
       count: '38+ Wallpapers',
       badge: 'Cursed Realm',
-      thumb: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80'
+      thumb: 'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg'
     },
     {
       name: 'Demon Slayer: Kimetsu no Yaiba',
       slug: 'demon-slayer-kimetsu-no-yaiba',
       count: '45+ Wallpapers',
       badge: 'Breathing Styles',
-      thumb: '/images/mockup_cards/card-5-forestcalm.jpg'
+      thumb: 'https://wallpapercat.com/w/full/8/a/c/182832-2339x1654-desktop-hd-demon-slayer-kimetsu-no-yaiba-wallpaper-photo.jpg'
     },
     {
       name: 'Your Name',
       slug: 'your-name',
       count: '36+ Wallpapers',
       badge: 'Shinkai Scenic',
-      thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
+      thumb: 'https://wallpapercat.com/w/full/1/3/d/32654-1920x1080-desktop-1080p-your-name-wallpaper.jpg'
     },
     {
       name: 'Studio Ghibli',
       slug: 'studio-ghibli',
       count: '122+ Wallpapers',
       badge: 'Miyazaki Masterpieces',
-      thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80'
+      thumb: 'https://wallpapercat.com/w/full/1/6/d/138467-3840x2160-desktop-4k-spirited-away-wallpaper-image.jpg'
+    },
+    {
+      name: 'One Piece',
+      slug: 'one-piece',
+      count: '85+ Wallpapers',
+      badge: 'Gear 5 Joyboy',
+      thumb: 'https://wallpapercat.com/w/full/4/1/0/33422-3840x2160-desktop-4k-one-piece-background.jpg'
+    },
+    {
+      name: 'Dragon Ball Z',
+      slug: 'dragon-ball-z',
+      count: '90+ Wallpapers',
+      badge: 'Ultra Instinct',
+      thumb: 'https://wallpapercat.com/w/full/2/0/6/1215980-3840x2160-desktop-4k-goku-background-image.jpg'
+    },
+    {
+      name: 'Attack on Titan',
+      slug: 'attack-on-titan',
+      count: '75+ Wallpapers',
+      badge: 'Shingeki 4K',
+      thumb: 'https://wallpapercat.com/w/full/f/6/1/29141-3840x2160-desktop-4k-black-clover-wallpaper-image.jpg'
+    },
+    {
+      name: 'Bleach',
+      slug: 'bleach',
+      count: '65+ Wallpapers',
+      badge: 'Thousand-Year War',
+      thumb: 'https://wallpapercat.com/w/full/7/d/1/65020-2110x1500-desktop-hd-bleach-thousand-year-blood-war-background-image.jpg'
+    }
+  ],
+  'anime-gaming': [
+    {
+      name: 'Anime Girls',
+      slug: 'anime-girls',
+      count: '61+ Wallpapers',
+      badge: 'Trending Waifu',
+      thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
+    },
+    {
+      name: 'Naruto',
+      slug: 'naruto',
+      count: '62+ Wallpapers',
+      badge: 'Shinobi 4K',
+      thumb: 'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg'
+    },
+    {
+      name: 'Jujutsu Kaisen',
+      slug: 'jujutsu-kaisen',
+      count: '38+ Wallpapers',
+      badge: 'Cursed Realm',
+      thumb: 'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg'
+    },
+    {
+      name: 'Demon Slayer: Kimetsu no Yaiba',
+      slug: 'demon-slayer-kimetsu-no-yaiba',
+      count: '45+ Wallpapers',
+      badge: 'Breathing Styles',
+      thumb: 'https://wallpapercat.com/w/full/8/a/c/182832-2339x1654-desktop-hd-demon-slayer-kimetsu-no-yaiba-wallpaper-photo.jpg'
+    },
+    {
+      name: 'Your Name',
+      slug: 'your-name',
+      count: '36+ Wallpapers',
+      badge: 'Shinkai Scenic',
+      thumb: 'https://wallpapercat.com/w/full/1/3/d/32654-1920x1080-desktop-1080p-your-name-wallpaper.jpg'
+    },
+    {
+      name: 'Studio Ghibli',
+      slug: 'studio-ghibli',
+      count: '122+ Wallpapers',
+      badge: 'Miyazaki Masterpieces',
+      thumb: 'https://wallpapercat.com/w/full/1/6/d/138467-3840x2160-desktop-4k-spirited-away-wallpaper-image.jpg'
+    }
+  ],
+  'gaming': [
+    {
+      name: 'Grand Theft Auto 5',
+      slug: 'grand-theft-auto-5',
+      count: '180+ Wallpapers',
+      badge: 'Los Santos 4K',
+      thumb: 'https://wallpapercat.com/w/full/8/8/6/212852-3840x2160-desktop-4k-gta-5-wallpaper-image.jpg'
+    },
+    {
+      name: 'Red Dead Redemption 2',
+      slug: 'red-dead-redemption',
+      count: '140+ Wallpapers',
+      badge: 'Van der Linde',
+      thumb: 'https://wallpapercat.com/w/full/b/3/9/58882-3840x2160-desktop-4k-red-dead-redemption-2-wallpaper-photo.jpg'
+    },
+    {
+      name: 'Elden Ring',
+      slug: 'elden-ring',
+      count: '115+ Wallpapers',
+      badge: 'Erdtree Horizon',
+      thumb: 'https://wallpapercat.com/w/full/2/c/7/1231808-3840x2160-desktop-4k-elden-ring-shadow-of-the-erdtree-wallpaper-photo.jpg'
+    },
+    {
+      name: 'God of War',
+      slug: 'god-of-war',
+      count: '95+ Wallpapers',
+      badge: 'Ragnarok 4K',
+      thumb: 'https://wallpapercat.com/w/full/5/3/1/181512-3840x2160-desktop-4k-god-of-war-wallpaper-photo.jpg'
+    },
+    {
+      name: 'Cyberpunk 2077',
+      slug: 'cyberpunk-2077',
+      count: '160+ Wallpapers',
+      badge: 'Night City',
+      thumb: 'https://wallpapercat.com/w/full/9/7/5/1199344-3840x2160-desktop-4k-cyberpunk-2077-phantom-liberty-wallpaper-image.jpg'
     }
   ],
 
@@ -193,39 +260,24 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'amoled-dark-void',
       count: '240+ Wallpapers',
       badge: '#000000 0%',
-      thumb: '/images/mockup_cards/card-6-nightbeast.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
     },
     {
       name: 'AMOLED Neon Lines',
       slug: 'amoled-neon',
       count: '98+ Wallpapers',
       badge: 'HDR Glow',
-      thumb: '/images/mockup_cards/card-2-neondrive.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     },
     {
       name: 'Minimal Dark Waves',
       slug: 'minimal-dark-waveform-fluid-4k',
       count: '76+ Wallpapers',
       badge: 'Fluid Geometry',
-      thumb: '/images/mockup_cards/card-3-shadowrealm.jpg'
+      thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
     }
   ]
 };
-
-const fallbackImages = [
-  '/images/mockup_cards/card-3-shadowrealm.jpg',
-  '/images/mockup_cards/card-1-mountain.jpg',
-  '/images/mockup_cards/card-2-neondrive.jpg',
-  '/images/mockup_cards/card-4-cosmichorizon.jpg',
-  '/images/mockup_cards/card-5-forestcalm.jpg',
-  '/images/mockup_cards/card-6-nightbeast.jpg',
-  'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
-  'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
-  'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-  'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80',
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80'
-];
 
 // Combine curated list and all subTopics to give an exhaustive WallpaperCat-level directory
 const curatedMap = new Map<string, SubFolderItem>();
@@ -236,16 +288,17 @@ const curatedMap = new Map<string, SubFolderItem>();
 let folderList: SubFolderItem[] = [];
 
 if (subTopics.length > 0) {
-  folderList = subTopics.map((topic, i) => {
+  folderList = subTopics.map((topic) => {
     if (curatedMap.has(topic.slug)) {
       return curatedMap.get(topic.slug)!;
     }
+    const topicCover = (topic as any).cover;
     return {
       name: topic.name,
       slug: topic.slug,
       count: topic.count.includes('Wallpapers') ? topic.count : `${topic.count} Wallpapers`,
       badge: `${categoryName} Hub`,
-      thumb: fallbackImages[i % fallbackImages.length]
+      thumb: topicCover || 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
     };
   });
 } else if (CURATED_CATEGORY_FOLDERS[categorySlug]) {
@@ -279,24 +332,29 @@ if (subTopics.length > 0) {
     </div>
 
     <!-- 2-Column Mobile & 3-Column Desktop Visual Cards Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6" id="subfolder-cards-grid">
       {folderList.map((folder, index) => {
         // High-RPM Strategic In-Feed Native Ad Slots at position 6 and position 18
         const showAd = index === 5 || index === 17;
+        const isInitiallyHidden = index >= 24;
         return (
           <>
             <a
               href={`/tag/${folder.slug}`}
-              class="group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
+              class={`group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none ${isInitiallyHidden ? 'subfolder-extra hidden' : ''}`}
+              data-index={index}
             >
               <!-- Full-Bleed Image -->
               <img
-                src={folder.thumb}
+                src={getOptimizedThumbUrl(folder.thumb, 480, 80)}
                 alt={`${folder.name} 4K Wallpapers Collection`}
-                loading="lazy"
+                width="480"
+                height="270"
+                loading={index < 4 ? 'eager' : 'lazy'}
+                fetchpriority={index < 4 ? 'high' : 'low'}
                 decoding="async"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
-                onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80'"
+                onerror="this.src='/images/placeholder-wallpaper.webp'"
               />
               
               <!-- Cinematic Dark Gradient Overlay -->
@@ -345,5 +403,41 @@ if (subTopics.length > 0) {
       })}
     </div>
 
+    <!-- Progressive Expansion for Large Categories like Anime (383 Hubs) -->
+    {folderList.length > 24 && (
+      <div id="subfolder-expand-container" class="flex flex-col items-center justify-center pt-8 pb-2">
+        <button
+          id="subfolder-expand-btn"
+          type="button"
+          class="group inline-flex items-center gap-2.5 px-8 py-3 rounded-full bg-[#080B0F] hover:bg-walpix-lime text-white hover:text-[#050608] border border-white/10 hover:border-walpix-lime font-mono text-xs font-bold transition-all duration-300 shadow-lg cursor-pointer select-none active:scale-95"
+        >
+          <span>Explore All {folderList.length} Series & Collections</span>
+          <svg class="w-3.5 h-3.5 text-walpix-lime group-hover:text-[#050608] transition-transform group-hover:translate-y-0.5 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <p class="text-[11px] font-mono text-zinc-400 mt-2">
+          Showing <span id="subfolder-visible-count" class="text-walpix-lime font-bold">24</span> of <span class="text-white font-bold">{folderList.length}</span> Handpicked Series Hubs
+        </p>
+      </div>
+    )}
+
   </section>
 )}
+
+<script>
+  const expandBtn = document.getElementById('subfolder-expand-btn');
+  const expandContainer = document.getElementById('subfolder-expand-container');
+  if (expandBtn) {
+    expandBtn.addEventListener('click', () => {
+      const hiddenCards = document.querySelectorAll('.subfolder-extra');
+      hiddenCards.forEach((card) => {
+        card.classList.remove('hidden');
+        card.classList.remove('subfolder-extra');
+      });
+      if (expandContainer) {
+        expandContainer.style.display = 'none';
+      }
+    });
+  }
+</script>

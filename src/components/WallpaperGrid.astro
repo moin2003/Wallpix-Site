@@ -10,6 +10,8 @@ interface Props {
   subtitle?: string;
   gridMode?: 'all' | 'desktop' | 'phone' | 'dual';
   initialCount?: number;
+  totalCount?: number;
+  maxDomCount?: number;
 }
 
 const {
@@ -17,8 +19,13 @@ const {
   title = 'Trending Wallpapers',
   subtitle = 'Handpicked ultra HD wallpapers, updated daily.',
   gridMode = 'all',
-  initialCount = 32,
+  initialCount = 36,
+  totalCount = wallpapers.length,
+  maxDomCount = 64,
 } = Astro.props;
+
+// High-performance DOM safeguarding: Render up to maxDomCount (64) cards in DOM, with initialCount (36) visible
+const renderWallpapers = wallpapers.slice(0, maxDomCount);
 ---
 
 <section id="trending-gallery" class="w-full px-4 sm:px-8 lg:px-12 pt-6 lg:pt-8 pb-12">
@@ -32,7 +39,13 @@ const {
           <path fill-rule="evenodd" clip-rule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071-.136 9.742 9.742 0 00-3.539 6.177A7.547 7.547 0 0110.25 8a.75.75 0 01.745.834 6.046 6.046 0 00.59 3.013c.277.587.69 1.096 1.203 1.488a.75.75 0 01-.019 1.197 3.513 3.513 0 01-2.02.618 3.5 3.5 0 01-3.5-3.5c0-.655.12-1.28.34-1.854a.75.75 0 00-1.123-.836A9.74 9.74 0 004.5 13.5C4.5 17.642 7.858 21 12 21s7.5-3.358 7.5-7.5c0-3.238-1.576-6.108-4.01-7.854a.75.75 0 00-.917.067 5.972 5.972 0 01-1.61 1.573z" />
         </svg>
         <h2 class="text-base sm:text-xl font-display font-extrabold text-white tracking-tight truncate">
-          <span class="text-walpix-lime drop-shadow-[0_0_10px_rgba(194,255,6,0.35)]">Trending</span> Wallpapers
+          {title ? (
+            <span>{title}</span>
+          ) : (
+            <>
+              <span class="text-walpix-lime drop-shadow-[0_0_10px_rgba(194,255,6,0.35)]">Trending</span> Wallpapers
+            </>
+          )}
         </h2>
       </div>
       <p class="text-[11px] sm:text-[13px] text-[#858A91] mt-0.5 truncate">
@@ -59,7 +72,7 @@ const {
 
   <!-- Dynamic Responsive Grid Container (4 Columns on Desktop = 8 full rows of 32) -->
   <div id="wallpapers-grid-container" class={`grid-mode-${gridMode}`}>
-    {wallpapers.map((wp, index) => {
+    {renderWallpapers.map((wp, index) => {
       const isInitiallyHidden = index >= initialCount;
       return (
         <div
@@ -79,14 +92,15 @@ const {
   </div>
 
   <!-- Centered Interactive Load More Section -->
-  {wallpapers.length > initialCount && (
+  {totalCount > initialCount && (
     <div id="load-more-wrapper" class="flex flex-col items-center justify-center pt-10 pb-6">
       <button
         id="load-more-btn"
         class="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-[#090C10] hover:bg-[#C2FF06] text-white hover:text-[#050608] border border-white/[0.12] hover:border-[#C2FF06] font-bold text-xs tracking-wider uppercase transition-all duration-300 shadow-none hover:shadow-[0_0_24px_rgba(194,255,6,0.45)] cursor-pointer select-none active:scale-95"
         data-step="16"
         data-current={initialCount}
-        data-total={wallpapers.length}
+        data-total={renderWallpapers.length}
+        data-grand-total={totalCount}
       >
         <svg class="w-4 h-4 transition-transform group-hover:translate-y-0.5 duration-300 text-[#C2FF06] group-hover:text-[#050608]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -95,7 +109,7 @@ const {
       </button>
 
       <p class="text-[11px] font-mono text-zinc-400 mt-2.5">
-        Showing <span id="visible-count-num" class="text-walpix-lime font-bold">{Math.min(initialCount, wallpapers.length)}</span> of <span class="text-white font-bold">{wallpapers.length}</span> Handpicked Wallpapers
+        Showing <span id="visible-count-num" class="text-walpix-lime font-bold">{Math.min(initialCount, renderWallpapers.length)}</span> of <span class="text-white font-bold">{totalCount}+</span> Handpicked Wallpapers
       </p>
     </div>
   )}
