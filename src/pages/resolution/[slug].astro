@@ -39,7 +39,9 @@ interface Props {
   wallpapersList: Wallpaper[];
 }
 
-const { resInfo, wallpapersList } = Astro.props;
+const { slug } = Astro.params;
+const resInfo = (Astro.props as any).resInfo || ALL_RESOLUTIONS.find((r: any) => r.slug === slug) || ALL_RESOLUTIONS[0];
+const wallpapersList = (Astro.props as any).wallpapersList || wallpapers.slice(0, 18);
 
 const heroImage = wallpapersList[0]?.sourceCdn || '/images/hero-astronaut-master.png';
 const pageTitle = `${resInfo.label} Wallpapers (${resInfo.deviceInfo}) - 4K UHD Free Download`;

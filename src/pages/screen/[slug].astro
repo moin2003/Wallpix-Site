@@ -31,7 +31,10 @@ interface Props {
   allScreens: ScreenTypeHub[];
 }
 
-const { screenInfo, wallpapersList, allScreens } = Astro.props;
+const { slug } = Astro.params;
+const allScreens = (Astro.props as any).allScreens || SCREEN_TYPES;
+const screenInfo = (Astro.props as any).screenInfo || allScreens.find((s: any) => s.slug === slug) || allScreens[0];
+const wallpapersList = (Astro.props as any).wallpapersList || (getWallpapersByScreen(screenInfo.slug).length > 0 ? getWallpapersByScreen(screenInfo.slug) : wallpapers.slice(0, 12));
 
 const screenGridMode: 'all' | 'desktop' | 'phone' | 'dual' = screenInfo.slug === 'phone-wallpapers'
   ? 'phone'

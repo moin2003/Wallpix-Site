@@ -68,7 +68,11 @@ interface Props {
   wallpaper: Wallpaper;
 }
 
-const { wallpaper } = Astro.props;
+const { slug } = Astro.params;
+const wallpaper = (Astro.props as any).wallpaper || wallpapers.find((w) => w.slug === slug);
+if (!wallpaper) {
+  return Astro.redirect('/404');
+}
 
 // Calculate Previous and Next Wallpaper Slugs for navigation
 const currentIndex = wallpapers.findIndex((w) => w.slug === wallpaper.slug);

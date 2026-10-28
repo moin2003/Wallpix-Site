@@ -15,7 +15,9 @@ export function getStaticPaths() {
   }));
 }
 
-const { post } = Astro.props;
+const { slug } = Astro.params;
+const post = (Astro.props as any).post || blogPosts.find(b => b.slug === slug);
+if (!post) return Astro.redirect('/blog');
 
 // Related wallpapers
 const relatedWallpapers = wallpapers.filter((w) =>

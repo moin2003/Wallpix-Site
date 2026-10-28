@@ -52,7 +52,11 @@ interface Props {
   allTopics: TopicHub[];
 }
 
-const { topicInfo, wallpapersList, similarWallpapers, allTopics } = Astro.props;
+const { slug } = Astro.params;
+const allTopics = (Astro.props as any).allTopics || TOPIC_HUBS;
+const topicInfo = (Astro.props as any).topicInfo || allTopics.find((t: any) => t.slug === slug) || allTopics[0];
+const wallpapersList = (Astro.props as any).wallpapersList || wallpapers.slice(0, 18);
+const similarWallpapers = (Astro.props as any).similarWallpapers || wallpapers.slice(18, 26);
 
 const heroImage = wallpapersList[0]?.sourceCdn || topicInfo.cover;
 const pageTitle = `${topicInfo.title} | WALPIX 4K`;

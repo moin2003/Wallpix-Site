@@ -54,8 +54,8 @@ interface Props {
   tagInfo: TagHubItem;
 }
 
-const { tagInfo } = Astro.props;
-const tag = tagInfo;
+const { slug } = Astro.params;
+const tag = (Astro.props as any).tagInfo || getAllTags().find(t => t.slug === slug) || { name: (slug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), slug: slug || '', count: 0, cover: '' };
 const allTags = getAllTags();
 
 const directMatches = getWallpapersByTag(tag.slug);

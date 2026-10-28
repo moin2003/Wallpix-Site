@@ -51,7 +51,10 @@ interface Props {
   subTopicInfo: { name: string; slug: string; count: number };
 }
 
-const { categoryInfo, subTopicInfo } = Astro.props;
+const { category: catParam, slug: subSlug } = Astro.params;
+const parentCat = MAIN_CATEGORIES.find(c => c.slug === catParam || c.id === catParam);
+const categoryInfo = (Astro.props as any).categoryInfo || { id: parentCat?.id || catParam, name: parentCat?.name || catParam, slug: catParam };
+const subTopicInfo = (Astro.props as any).subTopicInfo || { name: (subSlug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), slug: subSlug || '', count: 24 };
 const subTopic = subTopicInfo;
 const allTags = getAllTags();
 

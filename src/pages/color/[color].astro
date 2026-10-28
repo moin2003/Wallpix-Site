@@ -17,7 +17,8 @@ interface Props {
   colorInfo: typeof LUXURY_COLORS[0];
 }
 
-const { colorInfo } = Astro.props;
+const { color: colorSlug } = Astro.params;
+const colorInfo = (Astro.props as any).colorInfo || LUXURY_COLORS.find(c => c.slug === colorSlug) || LUXURY_COLORS[0];
 
 const displayWallpapers = getWallpapersByColor(colorInfo.slug);
 

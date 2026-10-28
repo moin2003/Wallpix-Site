@@ -1,6 +1,7 @@
 # Build output & caches
 dist/
 .astro/
+.vercel/
 node_modules/
 
 # Environment variables

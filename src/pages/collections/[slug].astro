@@ -16,7 +16,9 @@ export function getStaticPaths() {
   }));
 }
 
-const { collection } = Astro.props;
+const { slug } = Astro.params;
+const collection = (Astro.props as any).collection || collections.find(c => c.slug === slug);
+if (!collection) return Astro.redirect('/collections');
 
 // Get wallpapers in this collection
 const packWallpapers = wallpapers.filter((w) =>

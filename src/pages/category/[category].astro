@@ -37,7 +37,8 @@ interface Props {
   categoryInfo: { name: string; slug: string; icon: string };
 }
 
-const { categoryInfo } = Astro.props;
+const categoryParam = Astro.params.category || '';
+const categoryInfo = (Astro.props as any).categoryInfo || CATEGORIES.find(c => c.slug === categoryParam) || MAIN_CATEGORIES.find(c => c.slug === categoryParam || c.id === categoryParam) || { name: categoryParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), slug: categoryParam, icon: '🖼️' };
 
 // Category descriptions
 const categoryDescriptions: Record<string, string> = {
