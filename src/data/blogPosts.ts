@@ -28,10 +28,10 @@ export const blogPosts: BlogPost[] = [
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80',
       role: 'Display Hardware & Calibration Specialist',
     },
-    coverImage: '/images/mockup_cards/card-2-neondrive.jpg',
+    coverImage: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
     category: 'Anime & Gaming',
     tags: ['Cyberpunk', 'Anime Wallpapers', 'Night City', '4K Wallpapers', 'Netflix Anime', 'Edgerunners'],
-    relatedWallpaperSlugs: ['neon-drive-cyberpunk-4k', 'night-city-rain-4k', 'cyberpunk-minimal-4k'],
+    relatedWallpaperSlugs: ['3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo-jpg-cyberpunk-2077-4k', 'cyberpunk-jel1-4k', 'cyberpunk-w533-4k'],
     content: `
       <p>Cyberpunk: Edgerunners 2 premieres on Netflix on October 20, 2026, and the fan community is already flooding wallpaper boards with Night City art ahead of launch. If you want your desktop or phone to match the season's grittier, more cinematic look, here's exactly what to grab and how to set it up right.</p>
 
@@ -157,7 +157,7 @@ export const blogPosts: BlogPost[] = [
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80',
       role: 'Display Hardware & Calibration Specialist',
     },
-    coverImage: '/images/mockup_cards/card-3-shadowrealm.jpg',
+    coverImage: 'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
     category: 'Aesthetic & Seasonal',
     tags: ['Halloween', 'Dark Academia', 'Aesthetic Wallpapers', '4K Wallpapers', 'Gothic', 'Autumn'],
     relatedWallpaperSlugs: ['haunted-forest-4k', 'gothic-castle-night-4k', 'dark-academia-study-4k'],
@@ -277,6 +277,173 @@ export const blogPosts: BlogPost[] = [
 
       <h3>How do I resize a dark academia wallpaper from portrait to landscape without losing the focal point?</h3>
       <p>Use <a href="/tool/cropper">Walpix's Wallpaper Cropper</a>, set your target device preset, and position the crop frame so the primary light source sits in one of the visual thirds — left or right — rather than centered. This creates a more natural composition on landscape monitors than a centered crop, which tends to place the light source awkwardly and cut off the atmospheric edge detail on both sides.</p>
+    `,
+  },
+  {
+    slug: 'best-4k-amoled-wallpapers-oled-calibration-guide',
+    title: "Best 4K AMOLED Wallpapers for OLED Displays: Calibration & Pure Black Guide",
+    excerpt: "Pure #000000 wallpapers do more than save battery on OLED panels \u2014 they create infinite contrast and eliminate IPS backlight glow. Here is how to configure true black HDR backgrounds.",
+    publishDate: '2026-10-14',
+    readTime: '8 min read',
+    author: {
+      name: 'Marcus Sterling',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80',
+      role: 'Senior Display Engineer & Colorist',
+    },
+    coverImage: 'https://wallpapercat.com/w/full/a/6/c/736124-3840x2160-desktop-4k-hellsing-wallpaper-photo.jpg',
+    category: 'AMOLED Black',
+    tags: ["AMOLED", "OLED Calibration", "4K Wallpapers", "HDR", "Pure Black", "Windows 11"],
+    relatedWallpaperSlugs: ["berserk-4k-ultra-wallpaper-4k", "nature-xekj-4k", "space-qrpp-4k"],
+    content: `
+      <p>If you spent good money on an OLED monitor — whether it's an LG C-series OLED, an ASUS ROG Swift PG32UCDM, or an Apple Liquid Retina XDR display — the worst thing you can do is feed it washed-out, compressed 8-bit sRGB wallpapers with elevated black levels.</p>
+
+      <h2>The Science of True Black (#000000) on OLED Pixels</h2>
+      <p>Standard LCD displays use a global or zone-based LED backlight that constantly leaks light through liquid crystal shutters. Even on dark scenes, true black never drops below 0.05 nits of luminance. On an OLED or QD-OLED display, each of the 8.3 million subpixels in a 4K panel is its own light emitter. When a pixel renders hex code <code>#000000</code>, its organic diode completely switches off, resulting in absolute zero nits of luminance.</p>
+
+      <h3>Why Sub-Pixel Contrast Ratio Matters</h3>
+      <p>Contrast is calculated as peak luminance divided by black level. Dividing 1000 nits by zero yields an infinite contrast ratio. That infinite contrast is why neon cyber accents, starlight particles, and bright UI elements appear to physically float in front of the screen rather than looking like an image printed on glass.</p>
+
+      <h2>OLED Wallpaper Calibration: 4 Steps for Zero Black-Crush</h2>
+      <p>Many users download a dark wallpaper only to find that subtle shadow gradients become blocky black patches. This is called black crush, and it usually stems from misconfigured display settings in your operating system.</p>
+
+      <h3>Step 1: Set Dynamic Range to Full (0-255)</h3>
+      <p>On Windows PCs with NVIDIA or AMD graphics, open your graphics control panel. Under display color settings, verify that the Output Dynamic Range is set to <strong>Full (0-255)</strong> rather than Limited (16-235). Limited range will crush the bottom 16 grayscale values directly into black.</p>
+
+      <h3>Step 2: Windows HDR Calibration Tool</h3>
+      <p>If running Windows 11, download the official <em>Windows HDR Calibration</em> app from the Microsoft Store. Run the 3-step test: set minimum luminance to 0.0, set maximum luminance to your monitor's peak rated nits (e.g., 1000 nits for modern QD-OLEDs), and set color saturation to neutral.</p>
+
+      <h3>Step 3: Device Resizing Without Quality Degradation</h3>
+      <p>To fit any 4K wallpaper to your phone or vertical secondary screen without pixel stretching, open <a href="/tool/cropper">Walpix's Free Wallpaper Cropper</a>. It lets you crop any wallpaper with zero image compression and exact aspect ratio locking.</p>
+
+      <h2>Display Calibration Comparison Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Panel Type</th>
+            <th>Black Level (Nits)</th>
+            <th>HDR Highlight Impact</th>
+            <th>Burn-In Mitigation Strategy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>QD-OLED (Samsung Gen 3)</td>
+            <td>0.000 nits</td>
+            <td>Supreme (Vibrant Saturation)</td>
+            <td>Dark theme + Auto-hide taskbar</td>
+          </tr>
+          <tr>
+            <td>WOLED (LG Display)</td>
+            <td>0.000 nits</td>
+            <td>Ultra (High White Peak)</td>
+            <td>Pixel cleaning after 4 hours</td>
+          </tr>
+          <tr>
+            <td>Mini-LED IPS</td>
+            <td>0.020 nits</td>
+            <td>High (Subtle Halo Bloom)</td>
+            <td>None required</td>
+          </tr>
+          <tr>
+            <td>Standard IPS LCD</td>
+            <td>0.120 nits</td>
+            <td>Muted (Grayish Blacks)</td>
+            <td>None required</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Frequently Asked Questions</h2>
+      <h3>Does a black wallpaper really save battery on OLED phones?</h3>
+      <p>Yes. Rigorous battery benchmarking confirms that using a true #000000 background on an iPhone OLED or Samsung Galaxy saves between 8% to 15% daily battery consumption compared to bright white or colorful backgrounds.</p>
+
+      <h3>How do I test if my wallpaper is true black?</h3>
+      <p>Turn off all room lights. If you cannot see where the monitor bezel ends and where the wallpaper screen begins, your wallpaper is delivering true zero-nit black.</p>
+    `,
+  },
+  {
+    slug: 'dual-monitor-ultrawide-wallpaper-setup-guide',
+    title: "Ultimate Dual-Monitor & 32:9 Ultrawide Wallpaper Setup Guide",
+    excerpt: "Tired of stretched, blurry backgrounds spanning across your multi-monitor setup? Here is how to configure seamless 3840\u00d71080 and 7680\u00d72160 panoramic wallpapers with zero bezel distortion.",
+    publishDate: '2026-10-15',
+    readTime: '9 min read',
+    author: {
+      name: 'Elena Rostova',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&q=80',
+      role: 'Multi-Display Architect & Ergonomics Consultant',
+    },
+    coverImage: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
+    category: '4K Ultra HD',
+    tags: ["Dual Monitor", "Ultrawide", "32:9", "21:9", "Multi-Screen", "Windows 11", "macOS"],
+    relatedWallpaperSlugs: ["space-qrpp-4k", "nature-xekj-4k", "cyberpunk-jel1-4k"],
+    content: `
+      <p>A dual-monitor desk setup can elevate your daily productivity, but spanning an ordinary 16:9 wallpaper across two screens is guaranteed to make your desktop look sloppy. The center of the image gets chopped in half by your display bezels, and the horizontal pixel density gets stretched into pixelated blur.</p>
+
+      <h2>Understanding Multi-Monitor Aspect Ratios</h2>
+      <p>Before downloading a superwide wallpaper, you must know your combined desktop canvas resolution:</p>
+      <ul>
+        <li><strong>Dual 1080p FHD:</strong> 3840 × 1080 pixels (Aspect Ratio: 32:9)</li>
+        <li><strong>Dual 1440p QHD:</strong> 5120 × 1440 pixels (Aspect Ratio: 32:9 Super Ultrawide)</li>
+        <li><strong>Dual 4K UHD:</strong> 7680 × 2160 pixels (Aspect Ratio: 32:9 8K Panoramic)</li>
+        <li><strong>Single Ultrawide Monitor:</strong> 3440 × 1440 pixels (Aspect Ratio: 21:9)</li>
+      </ul>
+
+      <h2>How to Set Seamless Panoramic Wallpapers in Windows 11</h2>
+      <p>Windows 11 has native support for spanning multi-monitor backgrounds without needing third-party paid software like DisplayFusion.</p>
+
+      <h3>Step 1: Download Native Panoramic Resolution</h3>
+      <p>Browse our <a href="/screen/dual-screen-wallpapers">Dual Monitor & Ultrawide Hub</a> on Walpix. Always pick an image rendered natively in 21:9 or 32:9. Never attempt to stretch a 16:9 image horizontally.</p>
+
+      <h3>Step 2: Use Windows 'Span' Fit Mode</h3>
+      <p>Right-click your desktop and choose <strong>Personalize &gt; Background</strong>. Under <em>Choose a fit for your desktop image</em>, select <strong>Span</strong>. Windows will automatically stretch the panoramic image across both displays based on your virtual monitor arrangement.</p>
+
+      <h3>Step 3: Bezel Compensation</h3>
+      <p>If your two physical monitors have thick plastic borders, straight lines (like horizon lines or roads) will appear offset between the screens. If you use NVIDIA graphics, enable <em>Bezel Correction</em> inside the NVIDIA Control Panel under Surround Configuration.</p>
+
+      <h2>Recommended Superwide Wallpapers by Setup</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Monitor Configuration</th>
+            <th>Ideal Resolution</th>
+            <th>Recommended Art Style</th>
+            <th>Focal Anchor Placement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dual 27-inch 1440p (Side by Side)</td>
+            <td>5120 × 1440</td>
+            <td>Continuous Space & Nebula</td>
+            <td>Outer thirds (avoids center bezel)</td>
+          </tr>
+          <tr>
+            <td>49-inch Curved Super Ultrawide (32:9)</td>
+            <td>5120 × 1440</td>
+            <td>Cyberpunk Highway / Mountain Range</td>
+            <td>Panoramic continuous sweep</td>
+          </tr>
+          <tr>
+            <td>34-inch Curved Ultrawide (21:9)</td>
+            <td>3440 × 1440</td>
+            <td>Architectural Skyline / Nature Fjord</td>
+            <td>Centered or rule-of-thirds</td>
+          </tr>
+          <tr>
+            <td>Stacked Dual (One Top, One Bottom)</td>
+            <td>3840 × 4320</td>
+            <td>Vertical Tower / Waterfall</td>
+            <td>Vertical column rhythm</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Frequently Asked Questions</h2>
+      <h3>Can I have different wallpapers on each of my dual monitors?</h3>
+      <p>Yes. In Windows 11, go to <em>Settings &gt; Personalization &gt; Background</em>. Right-click on any image thumbnail in your recent history and select <em>Set for monitor 1</em> or <em>Set for monitor 2</em>.</p>
+
+      <h3>Where can I resize any wallpaper to fit my exact multi-monitor width?</h3>
+      <p>You can use the built-in <a href="/tool/cropper">Walpix Cropper Tool</a> to input custom width and height and download lossless PNG or WebP files instantly.</p>
     `,
   },
 ];

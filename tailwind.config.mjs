@@ -5,6 +5,16 @@ export default {
   theme: {
     extend: {
       colors: {
+        'walpix-lime': '#C2FF06',
+        'walpix-lime-bright': '#D0FF00',
+        'walpix-lime-soft': '#B8F52A',
+        'walpix-magenta': '#F91ACF',
+        'walpix-pink': '#FF3FAF',
+        'lumina-lime': '#C2FF06',
+        'lumina-lime-bright': '#D0FF00',
+        'lumina-lime-soft': '#B8F52A',
+        'lumina-magenta': '#F91ACF',
+        'lumina-pink': '#FF3FAF',
         lumina: {
           bg: '#030405',
           secondary: '#07090B',
@@ -18,7 +28,28 @@ export default {
           'lime-soft': '#B8F52A',
 
           magenta: '#F91ACF',
-          pink: '#FF3FAE',
+          pink: '#FF3FAF',
+
+          primary: '#FFFFFF',
+          'text-secondary': '#D7D9DC',
+          'text-tertiary': '#92979E',
+          muted: '#656A72',
+          disabled: '#44484E',
+        },
+        walpix: {
+          bg: '#030405',
+          secondary: '#07090B',
+          tertiary: '#0C0F12',
+          surface: '#0B0D0F',
+          elevated: '#121417',
+          card: '#080A0C',
+
+          lime: '#C2FF06',
+          'lime-bright': '#D0FF00',
+          'lime-soft': '#B8F52A',
+
+          magenta: '#F91ACF',
+          pink: '#FF3FAF',
 
           primary: '#FFFFFF',
           'text-secondary': '#D7D9DC',

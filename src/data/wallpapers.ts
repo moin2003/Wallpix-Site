@@ -83,7 +83,8 @@ export const CATEGORIES = [
   { name: 'HD Wallpapers', slug: 'hd-wallpapers', icon: 'sparkles' },
   { name: 'Movies & TV', slug: 'movies', icon: 'film' },
   { name: 'TV Shows', slug: 'tv-shows', icon: 'tv' },
-  { name: 'Anime & Gaming', slug: 'anime-gaming', icon: 'gamepad' },
+  { name: 'Anime & Manga', slug: 'anime', icon: 'anime' },
+  { name: 'Gaming', slug: 'gaming', icon: 'gamepad' },
   { name: 'AMOLED Black', slug: 'amoled-black', icon: 'moon' },
   { name: 'Cyberpunk & Neon', slug: 'cyberpunk-neon', icon: 'zap' },
   { name: 'Nature & Scenery', slug: 'nature-scenery', icon: 'mountain' },
@@ -189,116 +190,20 @@ export const SCREEN_TYPES: ScreenTypeHub[] = [
   }
 ];
 
-// Exact 6 Featured Cards from the Master Mockup (Ultra-light WebP)
-const FEATURED_MASTER_MOCKUP: Wallpaper[] = [
-  {
-    id: 'walpix-featured-1',
-    title: 'Mountain Serenity',
-    slug: 'mountain-serenity-4k',
-    category: 'Nature',
-    sourceCdn: '/images/mockup_cards/card-1-mountain.webp',
-    isHotlink: false,
-    views: 124000,
-    downloads: 6888,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Sunset Gold & Slate',
-    colorHex: '#4A6B82',
-    tags: ['mountain', 'nature', 'sunset', '4k', 'serenity', 'alpine', 'landscape'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'dual-monitor', 'ultrawide']
-  },
-  {
-    id: 'walpix-featured-2',
-    title: 'Neon Drive',
-    slug: 'neon-drive-cyberpunk-4k',
-    category: 'Cyberpunk',
-    sourceCdn: '/images/mockup_cards/card-2-neondrive.webp',
-    isHotlink: false,
-    views: 281000,
-    downloads: 15611,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Cyan & Magenta Neon',
-    colorHex: '#00F0FF',
-    tags: ['cyberpunk', 'car', 'neon', 'city', 'night', '4k', 'cyberpunk-city', 'synthwave'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'dual-monitor', 'ultrawide']
-  },
-  {
-    id: 'walpix-featured-3',
-    title: 'Shadow Realm',
-    slug: 'shadow-realm-anime-4k',
-    category: 'Anime',
-    sourceCdn: '/images/mockup_cards/card-3-shadowrealm.webp',
-    isHotlink: false,
-    views: 317000,
-    downloads: 17611,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Crimson & Obsidian',
-    colorHex: '#E63946',
-    tags: ['anime', 'character', 'dark', 'shadow', 'fantasy', '4k', 'dark-aesthetic'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'amoled-black']
-  },
-  {
-    id: 'walpix-featured-4',
-    title: 'Cosmic Horizon',
-    slug: 'cosmic-horizon-space-4k',
-    category: 'Space',
-    sourceCdn: '/images/mockup_cards/card-4-cosmichorizon.webp',
-    isHotlink: false,
-    views: 193000,
-    downloads: 10722,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Deep Purple & Nebula Pink',
-    colorHex: '#9D4EDD',
-    tags: ['space', 'cosmic', 'planet', 'nebula', 'galaxy', '4k', 'interstellar'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'dual-monitor', 'amoled-black', 'ultrawide']
-  },
-  {
-    id: 'walpix-featured-5',
-    title: 'Forest Calm',
-    slug: 'forest-calm-waterfall-4k',
-    category: 'Nature',
-    sourceCdn: '/images/mockup_cards/card-5-forestcalm.webp',
-    isHotlink: false,
-    views: 149000,
-    downloads: 8277,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Emerald Forest Green',
-    colorHex: '#2A9D8F',
-    tags: ['forest', 'waterfall', 'nature', 'green', 'calm', '4k', 'landscape'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'dual-monitor', 'ultrawide']
-  },
-  {
-    id: 'walpix-featured-6',
-    title: 'Night Beast',
-    slug: 'night-beast-supercar-4k',
-    category: 'Cars',
-    sourceCdn: '/images/mockup_cards/card-6-nightbeast.webp',
-    isHotlink: false,
-    views: 226000,
-    downloads: 12555,
-    aspectRatio: '16:9',
-    resolution: '3840×2160',
-    colorName: 'Matte Obsidian & Red LED',
-    colorHex: '#E71D36',
-    tags: ['car', 'supercar', 'matte black', 'night', 'beast', '4k', 'porsche-911', 'dark-aesthetic'],
-    screenTypes: ['desktop-4k', 'phone-iphone', 'amoled-black']
-  }
-];
+// 100% Authentic 4K Wallpapers Catalog (Zero mockups, zero dummy cards)
+export const FEATURED_MASTER_MOCKUP: Wallpaper[] = [];
 
-export const wallpapers: Wallpaper[] = [
-  ...FEATURED_MASTER_MOCKUP,
-  ...(catalogData as Wallpaper[]).filter(w => !FEATURED_MASTER_MOCKUP.some(f => f.slug === w.slug))
-];
+export const wallpapers: Wallpaper[] = (catalogData as Wallpaper[]).filter(
+  w => w.sourceCdn && w.sourceCdn.startsWith('http') && !w.sourceCdn.includes('mockup')
+);
 
 const CATEGORY_SYNONYMS: Record<string, string[]> = {
   '4k-ultra-hd': ['4k', 'uhd', 'ultra', 'desktop', 'wallpaper', '3840'],
   'hd-wallpapers': ['hd', 'high-definition', '1080p', 'fhd', '4k', 'wallpaper', 'background'],
   'movies': ['movie', 'movies', 'cinema', 'hollywood', 'marvel', 'batman', 'spider-man', 'interstellar', 'film', 'actor', 'actress'],
   'tv-shows': ['tv', 'show', 'series', 'netflix', 'hbo', 'stranger-things', 'breaking-bad', 'game-of-thrones', 'peaky-blinders', 'the-boys', 'vikings', 'supernatural', 'friends', 'witcher', 'wednesday', 'dorama'],
+  'anime': ['anime', 'manga', 'naruto', 'ghibli', 'jujutsu-kaisen', 'demon-slayer', 'one-piece', 'dragon-ball', 'your-name', 'anime-girls', 'bleach', 'attack-on-titan', 'berserk', 'tokyo-ghoul', 'goku', 'shinobi', 'anime-gaming'],
+  'gaming': ['gaming', 'game', 'games', 'gamer', 'gta', 'cyberpunk-2077', 'witcher', 'god-of-war', 'red-dead-redemption', 'elden-ring', 'minecraft', 'call-of-duty', 'assassins-creed', 'forza', 'esports', 'steam', 'playstation', 'xbox'],
   'anime-gaming': ['anime', 'gaming', 'game', 'samurai', 'naruto', 'cyber', 'manga', 'shadow'],
   'amoled-black': ['amoled', 'black', 'oled', 'dark', 'void', 'pitch', 'matte'],
   'cyberpunk-neon': ['cyberpunk', 'neon', 'synthwave', 'city', 'futuristic', 'night', 'drive'],
@@ -306,6 +211,7 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'minimalist-abstract': ['minimalist', 'minimal', 'abstract', 'geometry', 'waveform', 'fluid', '3d', 'render', 'shapes'],
   'cars-supercars': ['car', 'cars', 'supercar', 'porsche', 'lamborghini', 'ferrari', 'speed', 'jdm', 'drive', 'beast', 'bike', 'bikes', 'motorcycle', 'superbike', 'ducati', 'kawasaki', 'yamaha', 'harley-davidson', 'ktm', 'triumph', 'bmw-m1000rr', 'ninja', 'hayabusa'],
   'cartoon': ['cartoon', 'cartoons', 'animation', 'disney', 'pixar', 'spongebob', 'rick-and-morty', 'simpsons', 'shrek', 'minions', 'spider-verse', 'animated', 'anime'],
+  'cartoons': ['cartoon', 'cartoons', 'animation', 'disney', 'pixar', 'spongebob', 'rick-and-morty', 'simpsons', 'shrek', 'minions', 'spider-verse', 'animated', 'anime'],
   'music': ['music', 'musician', 'singer', 'band', 'rock', 'guitar', 'kpop', 'metal', 'hip-hop', 'concert', 'rap', 'album', 'blackpink', 'bts', 'linkin-park', 'beatles', 'queen', 'metallica', 'nirvana', 'hard-rock'],
   'space-cosmic': ['space', 'cosmic', 'galaxy', 'nebula', 'planet', 'planets', 'astronaut', 'astronauts', 'orbit', 'universe', 'celestial', 'earth', 'moon', 'black-hole', 'black-holes', 'nasa', 'spacex', 'hubble', 'james-webb', 'mars', 'saturn', 'jupiter', 'aurora', 'milky-way', 'iss'],
   'dark-mode': ['dark', 'amoled', 'shadow', 'night', 'black', 'mystery', 'void'],
@@ -332,15 +238,23 @@ export function getWallpapersByCategory(slug: string): Wallpaper[] {
     const title = (wp.title || '').toLowerCase();
     const tags = (wp.tags || []).map(t => t.toLowerCase());
     
+    // Strict category boundaries: Do NOT leak Anime into Gaming, Cars, or Nature
+    if (cleanSlug === 'gaming' && cat.includes('anime') && !cat.includes('gaming')) {
+      return false;
+    }
+    if (cleanSlug === 'anime' && (cat.includes('cars') || cat.includes('nature'))) {
+      return false;
+    }
+    
     // Direct category match
     if (cat.includes(cleanSlug) || cleanSlug.includes(cat)) return true;
     
-    // Synonym check against tags, title, category
-    return synonyms.some(syn => 
-      cat.includes(syn) || 
-      title.includes(syn) || 
-      tags.some(t => t.includes(syn) || syn.includes(t))
-    );
+    // Synonym check with exact token matching (prevents 'game' from matching 'gilgamesh')
+    return synonyms.some(syn => {
+      if (cat.includes(syn)) return true;
+      if (title.split(/[-_\s]+/).includes(syn)) return true;
+      return tags.some(t => t === syn || t.split(/[-_\s]+/).includes(syn));
+    });
   });
 }
 
@@ -362,38 +276,61 @@ import { getAllTags as getTaxonomyTags } from './taxonomy';
 
 export function getAllTags(): TagHubItem[] {
   const tagCountMap = new Map<string, { name: string; slug: string; count: number }>();
-  
-  // 1. Seed from verified taxonomy database (275+ top searched entities)
+  const taxonomyMap = new Map<string, string>();
   getTaxonomyTags().forEach((t) => {
-    const rawCount = parseInt(t.count.replace(/[^0-9]/g, '')) || 45;
-    tagCountMap.set(t.slug, {
-      name: t.name,
-      slug: t.slug,
-      count: rawCount,
-    });
+    taxonomyMap.set(t.slug, t.name);
   });
 
-  // 2. Aggregate from live wallpapers in catalog
+  // Calculate authentic live counts from catalog wallpapers
   wallpapers.forEach((wp) => {
+    const seenInWp = new Set<string>();
     (wp.tags || []).forEach((rawTag) => {
       const trimmed = rawTag.trim();
       if (!trimmed) return;
       const slug = slugifyTag(trimmed);
-      if (!slug) return;
+      if (!slug || seenInWp.has(slug)) return;
+      seenInWp.add(slug);
+
       const existing = tagCountMap.get(slug);
       if (existing) {
-        existing.count += 5;
+        existing.count += 1;
       } else {
-        const formattedName = trimmed
+        const formattedName = taxonomyMap.get(slug) || trimmed
           .split(/[-_\s]+/)
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
           .join(' ');
-        tagCountMap.set(slug, { name: formattedName, slug, count: 12 });
+        tagCountMap.set(slug, { name: formattedName, slug, count: 1 });
       }
     });
   });
 
   return Array.from(tagCountMap.values()).sort((a, b) => b.count - a.count);
+}
+
+// Lazy-indexed live tag counts cache for ultra-fast module loading
+let liveTagCountMap: Map<string, number> | null = null;
+function getLiveTagCountMap(): Map<string, number> {
+  if (liveTagCountMap) return liveTagCountMap;
+  liveTagCountMap = new Map<string, number>();
+  for (let i = 0; i < wallpapers.length; i++) {
+    const wp = wallpapers[i];
+    const seen = new Set<string>();
+    const tags = wp.tags || [];
+    for (let j = 0; j < tags.length; j++) {
+      const norm = slugifyTag(tags[j]);
+      if (norm && !seen.has(norm)) {
+        seen.add(norm);
+        liveTagCountMap.set(norm, (liveTagCountMap.get(norm) || 0) + 1);
+      }
+    }
+  }
+  return liveTagCountMap;
+}
+
+export function getLiveSubTopicCount(slug: string): number {
+  if (!slug) return 0;
+  const norm = slugifyTag(slug);
+  return getLiveTagCountMap().get(norm) || 0;
 }
 
 export function getAllScreenTypes(): ScreenTypeHub[] {
@@ -418,83 +355,203 @@ export function getWallpapersByScreen(screenSlugOrKey: string): Wallpaper[] {
   return wallpapers.filter((wp) => (wp.screenTypes || []).includes(hub.key));
 }
 
-const COLOR_PALETTE_KEYWORDS: Record<string, string[]> = {
-  // Nature & Earth
-  'forest-sage': ['forest', 'sage', 'green', 'nature', 'landscape', 'mountain', 'trees', 'jungle', 'waterfall'],
-  'sunset-gold': ['sunset', 'gold', 'golden', 'mountain', 'alpine', 'peak', 'warm', 'dusk', 'sunlight'],
-  'emerald-canyon': ['emerald', 'canyon', 'river', 'water', 'mist', 'stream', 'valley', 'forest', 'nature'],
-  'autumn-amber': ['autumn', 'amber', 'pine', 'leaves', 'morning', 'fog', 'trees', 'bavarian', 'fall'],
-  'nordic-fjord': ['nordic', 'fjord', 'glacial', 'lake', 'crystal', 'snow', 'frozen', 'arctic', 'ice'],
+interface ColorPaletteRule {
+  cat?: string;
+  tags: string[];
+  hexes: string[];
+}
 
-  // Cyberpunk & Neon
-  'charcoal-teal': ['charcoal', 'black', 'amoled', 'dark', 'neon teal', 'cyberpunk', 'synthwave', 'shinjuku'],
-  'synthwave-pink': ['synthwave', 'pink', 'magenta', '80s', 'retro', 'grid', 'highway', 'sun', 'horizon'],
-  'tokyo-violet': ['tokyo', 'violet', 'purple', 'neon', 'alley', 'rain', 'umbrella', 'city', 'night'],
-  'electric-lime': ['lime', 'matrix', 'electric', 'cyber', 'neon', 'jaguar', 'predator', 'glow', 'walpix'],
-  'cyber-amber': ['amber', 'streetlight', 'cyberpunk', 'neon', 'city', 'urban', 'skyline', 'traffic'],
+const COLOR_PALETTE_RULES: Record<string, ColorPaletteRule> = {
+  // 1. Nature & Earth
+  'forest-sage': {
+    cat: 'nature',
+    tags: ['forest', 'sage', 'green', 'tree', 'trees', 'nature', 'landscape', 'mountain', 'lake', 'wood', 'valley', 'jungle', 'leaf'],
+    hexes: ['#1b4332', '#00ff88', '#a7c957', '#c2ff06'],
+  },
+  'sunset-gold': {
+    cat: 'nature',
+    tags: ['sunset', 'gold', 'golden', 'dusk', 'sunrise', 'sun', 'autumn', 'orange', 'warm', 'alpine', 'peak'],
+    hexes: ['#ffb800', '#f59e0b', '#d97706'],
+  },
+  'emerald-canyon': {
+    cat: 'nature',
+    tags: ['emerald', 'canyon', 'river', 'water', 'stream', 'valley', 'nature', 'waterfall', 'green', 'moss'],
+    hexes: ['#1b4332', '#00ff88', '#10b981', '#064e3b'],
+  },
+  'autumn-amber': {
+    cat: 'nature',
+    tags: ['autumn', 'amber', 'fall', 'leaves', 'fog', 'orange', 'brown', 'warm', 'forest', 'pine'],
+    hexes: ['#ffb800', '#663300', '#d97706', '#451a03'],
+  },
+  'nordic-fjord': {
+    cat: 'nature',
+    tags: ['nordic', 'fjord', 'glacial', 'snow', 'ice', 'winter', 'lake', 'cold', 'blue', 'mountain', 'arctic'],
+    hexes: ['#38bdf8', '#00e5ff', '#0c2340'],
+  },
 
-  // AMOLED & Pure Dark
-  'obsidian-void': ['obsidian', 'void', 'pure black', 'amoled', 'black', 'oled', 'sphere', 'dark', 'waves'],
-  'golden-particle': ['golden', 'particle', 'wave', 'amoled', 'gold', 'dust', 'sparkle', 'black', 'oled'],
-  'minimal-monolith': ['monolith', 'dune', 'minimal', 'minimalist', 'clean', 'matte', 'dark', 'geometry'],
-  'luminous-ring': ['ring', 'geometry', 'luminous', 'amoled', 'neon ring', 'void', 'pure', 'minimal'],
+  // 2. Cyberpunk & Neon
+  'charcoal-teal': {
+    cat: 'cyberpunk',
+    tags: ['cyberpunk', 'teal', 'neon', 'dark', 'matrix', 'synthwave', 'night-city', 'shinjuku', 'cyan'],
+    hexes: ['#00e5ff', '#0a1118', '#1c1c1c', '#00c2cb'],
+  },
+  'synthwave-pink': {
+    cat: 'cyberpunk',
+    tags: ['synthwave', 'pink', 'magenta', 'retro', '80s', 'neon', 'grid', 'vaporwave', 'horizon'],
+    hexes: ['#f91acf', '#ff2e54', '#ff007f'],
+  },
+  'tokyo-violet': {
+    cat: 'cyberpunk',
+    tags: ['tokyo', 'violet', 'purple', 'neon', 'rain', 'alley', 'city', 'night', 'cyber', 'shinjuku'],
+    hexes: ['#a855f7', '#1e1035'],
+  },
+  'electric-lime': {
+    cat: 'cyberpunk',
+    tags: ['lime', 'matrix', 'electric', 'cyber', 'neon', 'glow', 'green', 'walpix'],
+    hexes: ['#c2ff06', '#00ff88'],
+  },
+  'cyber-amber': {
+    cat: 'cyberpunk',
+    tags: ['amber', 'cyberpunk', 'neon', 'yellow', 'gold', 'city', 'urban', 'skyline', 'traffic', 'streetlight'],
+    hexes: ['#ffb800', '#fbbf24'],
+  },
 
-  // Space & Cosmic
-  'royal-purple': ['purple', 'lilac', 'violet', 'cosmic', 'horizon', 'space', 'saturn', 'planetary'],
-  'orion-nebula': ['orion', 'nebula', 'star', 'cluster', 'space', 'galaxy', 'james-webb', 'carina'],
-  'deep-space': ['deep space', 'pillars', 'creation', 'earth', 'astronomy', 'stars', 'cosmos', 'satellite'],
-  'aurora-emerald': ['aurora', 'borealis', 'northern lights', 'arctic', 'green', 'fjord', 'night sky'],
+  // 3. AMOLED & Pure Dark
+  'obsidian-void': {
+    cat: 'amoled',
+    tags: ['amoled', 'pure black', 'black', 'void', 'dark', 'shadow', 'oled', 'dark-mode'],
+    hexes: ['#000000', '#0a1118', '#1c1c1c'],
+  },
+  'golden-particle': {
+    cat: 'amoled',
+    tags: ['gold', 'particle', 'amoled', 'wave', 'dust', 'sparkle', 'black', 'oled'],
+    hexes: ['#ffb800', '#f5d061', '#000000'],
+  },
+  'minimal-monolith': {
+    cat: 'amoled',
+    tags: ['minimalist', 'minimal', 'monolith', 'clean', 'matte', 'dark', 'geometry', 'black', 'onyx'],
+    hexes: ['#000000', '#1c1c1c', '#424153', '#0a0a0a'],
+  },
+  'luminous-ring': {
+    cat: 'amoled',
+    tags: ['ring', 'geometry', 'neon', 'amoled', 'glow', 'void', 'minimal', 'black', 'luminous'],
+    hexes: ['#000000', '#00ff88', '#00e5ff', '#34d399'],
+  },
 
-  // Anime & Aesthetics
-  'midnight-pink': ['midnight', 'pink', 'neon', 'magenta', 'anime', 'shadow realm', 'spider-man', 'verse'],
-  'samurai-crimson': ['samurai', 'crimson', 'blade', 'mist', 'red', 'cherry blossom', 'sakura', 'duel'],
-  'ghibli-meadow': ['ghibli', 'lush', 'countryside', 'dream', 'meadow', 'grass', 'nature', 'studio'],
-  'shinobi-gold': ['naruto', 'sage', 'shinobi', 'moon', 'ninja', 'golden', 'anime', 'ronin', 'tsushima'],
+  // 4. Space & Cosmic
+  'royal-purple': {
+    cat: 'space',
+    tags: ['space', 'cosmic', 'violet', 'purple', 'saturn', 'horizon', 'galaxy', 'planetary', 'lilac'],
+    hexes: ['#a855f7', '#4b0082', '#e6d6ff'],
+  },
+  'orion-nebula': {
+    cat: 'space',
+    tags: ['space', 'nebula', 'orion', 'star', 'cluster', 'pink', 'magenta', 'james-webb', 'starlight'],
+    hexes: ['#f91acf', '#ff2e54', '#ec4899'],
+  },
+  'deep-space': {
+    cat: 'space',
+    tags: ['space', 'cosmos', 'universe', 'stars', 'earth', 'astronomy', 'blue', 'deep space', 'satellite'],
+    hexes: ['#38bdf8', '#00e5ff', '#0a1118', '#60a5fa'],
+  },
+  'aurora-emerald': {
+    cat: 'space',
+    tags: ['space', 'aurora', 'borealis', 'green', 'northern-lights', 'fjord', 'night-sky'],
+    hexes: ['#00ff88', '#1b4332', '#4ade80'],
+  },
 
-  // Luxury & Supercars
-  'navy-gold': ['navy', 'gold', 'royal', 'luxury', 'supercar', 'celestial', 'citadel', 'palace'],
-  'rosso-corsa': ['ferrari', 'daytona', 'rosso corsa', 'speed', 'supercar', 'red', 'racing', 'gt3'],
-  'stealth-matte': ['matte black', 'stealth', 'porsche', 'lamborghini', 'gt3 rs', 'revuelto', 'supercar'],
-  'liquid-chrome': ['liquid', 'chrome', 'mercury', 'wave', 'silver', '3d', 'abstract', 'metallic', 'prism'],
+  // 5. Anime & Aesthetics
+  'midnight-pink': {
+    cat: 'anime',
+    tags: ['anime', 'pink', 'magenta', 'night', 'girl', 'neon', 'sakura', 'midnight'],
+    hexes: ['#f91acf', '#ff2e54', '#ff2e88'],
+  },
+  'samurai-crimson': {
+    cat: 'anime',
+    tags: ['anime', 'samurai', 'crimson', 'red', 'blade', 'sakura', 'cherry blossom', 'blood', 'duel'],
+    hexes: ['#e63946', '#ff2e54', '#ef4444'],
+  },
+  'ghibli-meadow': {
+    cat: 'anime',
+    tags: ['anime', 'ghibli', 'meadow', 'green', 'sky', 'grass', 'nature', 'countryside', 'dream', 'lush'],
+    hexes: ['#00ff88', '#1b4332', '#86efac'],
+  },
+  'shinobi-gold': {
+    cat: 'anime',
+    tags: ['anime', 'naruto', 'ninja', 'gold', 'yellow', 'sage', 'moon', 'shinobi', 'ronin'],
+    hexes: ['#ffb800', '#eab308'],
+  },
+
+  // 6. Luxury & Supercars
+  'navy-gold': {
+    cat: 'cars',
+    tags: ['car', 'cars', 'supercar', 'luxury', 'gold', 'royal', 'palace', 'navy'],
+    hexes: ['#ffb800', '#0a1118', '#f4b400'],
+  },
+  'rosso-corsa': {
+    cat: 'cars',
+    tags: ['car', 'cars', 'ferrari', 'supercar', 'red', 'speed', 'racing', 'gt3', 'rosso'],
+    hexes: ['#e63946', '#ff2e54', '#dc2626'],
+  },
+  'stealth-matte': {
+    cat: 'cars',
+    tags: ['car', 'cars', 'matte', 'black', 'porsche', 'lamborghini', 'gt3', 'stealth'],
+    hexes: ['#000000', '#1c1c1c', '#121212'],
+  },
+  'liquid-chrome': {
+    cat: 'cars',
+    tags: ['car', 'cars', 'silver', 'chrome', 'liquid', 'mercury', 'metallic', 'gray', 'abstract'],
+    hexes: ['#999999', '#424153', '#cbd5e1'],
+  },
 };
 
 export function getWallpapersByColor(colorSlug: string): Wallpaper[] {
-  const colorInfo = LUXURY_COLORS.find(c => c.slug === colorSlug);
-  if (!colorInfo) return wallpapers.slice(0, 16);
+  const colorInfo = LUXURY_COLORS.find((c) => c.slug === colorSlug);
+  if (!colorInfo) return wallpapers.slice(0, 24);
 
-  const keywords = COLOR_PALETTE_KEYWORDS[colorSlug] || [colorSlug.replace(/-/g, ' ')];
-  
-  const directMatches = wallpapers.filter((wp) => {
-    // 1. Direct hex match
-    if (wp.colorHex && (
-      wp.colorHex.toLowerCase() === colorInfo.hexAccent.toLowerCase() ||
-      wp.colorHex.toLowerCase() === colorInfo.hexPrimary.toLowerCase()
-    )) return true;
+  const rule = COLOR_PALETTE_RULES[colorSlug] || {
+    cat: colorInfo.category,
+    tags: [colorSlug.replace(/-/g, ' ')],
+    hexes: [colorInfo.hexAccent.toLowerCase(), colorInfo.hexPrimary.toLowerCase()],
+  };
 
-    // 2. Color name match
+  const matches = wallpapers.filter((wp) => {
+    const wpHex = (wp.colorHex || '').toLowerCase();
+    const wpTags = (wp.tags || []).map((t) => t.toLowerCase());
+    const wpTitle = (wp.title || '').toLowerCase();
+    const wpCat = (wp.category || '').toLowerCase();
+
+    // 1. Match compatible hexes
+    if (wpHex && rule.hexes.some((h) => h.toLowerCase() === wpHex)) {
+      if (wpHex === '#000000') {
+        // If pure black, ensure it matches dark/amoled theme or tags
+        if (rule.cat === 'amoled' || wpCat.includes('amoled') || wpCat.includes('dark') || rule.tags.some((t) => wpTags.includes(t) || wpTitle.includes(t))) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
+
+    // 2. Direct color name match
     if (wp.colorName && (
       wp.colorName.toLowerCase().includes(colorInfo.name.toLowerCase()) ||
-      keywords.some(k => wp.colorName?.toLowerCase().includes(k))
-    )) return true;
+      rule.tags.some((t) => wp.colorName?.toLowerCase().includes(t))
+    )) {
+      return true;
+    }
 
-    // 3. Tags or category or title match
-    const title = (wp.title || '').toLowerCase();
-    const cat = (wp.category || '').toLowerCase();
-    const tags = (wp.tags || []).map(t => t.toLowerCase());
-
-    return keywords.some(k => 
-      tags.some(t => t.includes(k) || k.includes(t)) ||
-      title.includes(k) ||
-      cat.includes(k)
-    );
+    // 3. Relevant tags & title keywords
+    return rule.tags.some((t) => wpTags.includes(t) || wpTitle.includes(t));
   });
 
-  if (directMatches.length >= 8) {
-    return directMatches;
+  if (matches.length >= 8) {
+    return matches;
   }
 
-  // Fallback to fill with rich wallpapers
-  const combined = Array.from(new Set([...directMatches, ...wallpapers]));
-  return combined.slice(0, 16);
+  // If few matches, backfill strictly with wallpapers matching the palette's parent category
+  const categoryWallpapers = rule.cat ? getWallpapersByCategory(rule.cat) : wallpapers;
+  const combined = Array.from(new Set([...matches, ...categoryWallpapers]));
+  return combined.slice(0, 24);
 }
 

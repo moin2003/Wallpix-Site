@@ -22,6 +22,9 @@ const {
   preloadImage,
 } = Astro.props;
 
+const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION || '';
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '';
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://walpix.site');
 
 const defaultWebsiteSchema = {
@@ -67,6 +70,24 @@ const activeSchema = schema || defaultWebsiteSchema;
     <link rel="canonical" href={canonicalURL} />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#030405" />
+
+    <!-- Google Search Console Verification Slot -->
+    {gscVerification && (
+      <meta name="google-site-verification" content={gscVerification} />
+    )}
+
+    <!-- Google Analytics 4 (GA4) Slot -->
+    {gaMeasurementId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+        <script is:inline define:vars={{ gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId);
+        </script>
+      </>
+    )}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />

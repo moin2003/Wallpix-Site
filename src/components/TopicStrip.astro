@@ -1,5 +1,6 @@
 ---
 import { TOPIC_HUBS } from '../data/topics';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 interface Props {
   activeSlug?: string;
@@ -11,24 +12,8 @@ const { activeSlug = '', className = '', cardSize = 'normal' } = Astro.props;
 const isLarge = cardSize === 'large';
 
 function getTopicCover(rawUrl: string): string {
-  if (!rawUrl) return '/images/mockup_cards/card-1-mountain.webp';
-  if (rawUrl.startsWith('/images/mockup_cards/') && rawUrl.endsWith('.jpg')) {
-    return rawUrl.replace('.jpg', '.webp');
-  }
-  if (rawUrl.includes('images.unsplash.com')) {
-    try {
-      const u = new URL(rawUrl);
-      u.searchParams.set('w', '360');
-      u.searchParams.set('q', '75');
-      u.searchParams.set('auto', 'format');
-      u.searchParams.set('fit', 'crop');
-      u.searchParams.set('fm', 'webp');
-      return u.toString();
-    } catch {
-      return rawUrl;
-    }
-  }
-  return rawUrl;
+  if (!rawUrl) return 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg';
+  return getOptimizedThumbUrl(rawUrl, isLarge ? 360 : 280, 80);
 }
 ---
 

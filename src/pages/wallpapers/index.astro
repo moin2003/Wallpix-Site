@@ -4,7 +4,6 @@ import Header from '../../components/Header.astro';
 import GalleryFilterToolbar from '../../components/GalleryFilterToolbar.astro';
 import TopicStrip from '../../components/TopicStrip.astro';
 import OrientationToggle from '../../components/OrientationToggle.astro';
-import CategoryFolderView from '../../components/CategoryFolderView.astro';
 import GalleryGrid from '../../components/GalleryGrid.astro';
 import Footer from '../../components/Footer.astro';
 import { wallpapers } from '../../data/wallpapers';
@@ -56,9 +55,6 @@ const lcpImage = wallpapers && wallpapers.length > 0 ? wallpapers[0].sourceCdn :
       <div id="gallery-orientation-wrapper">
         <OrientationToggle />
       </div>
-
-      <!-- Category Sub-Folder & Franchise Card Grids (Appears when any Category is selected) -->
-      <CategoryFolderView />
 
       <!-- 4-Column 16:9 Gallery Grid for All Wallpapers with Strategic In-Feed Ads -->
       <GalleryGrid wallpapers={wallpapers} />

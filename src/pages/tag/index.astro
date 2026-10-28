@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
 import { getAllTags, wallpapers } from '../../data/wallpapers';
 import { MAIN_CATEGORIES } from '../../data/taxonomy';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 const rawAllTags = getAllTags();
 
@@ -13,19 +14,19 @@ const tagThumbMap = new Map<string, string>();
 wallpapers.forEach((wp) => {
   (wp.tags || []).forEach((t) => {
     const s = t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
-    if (!tagThumbMap.has(s) && wp.sourceCdn) {
+    if (!tagThumbMap.has(s) && wp.sourceCdn?.startsWith('http')) {
       tagThumbMap.set(s, wp.sourceCdn);
     }
   });
 });
 
 const DEFAULT_FALLBACKS = [
-  '/images/mockup_cards/card-3-shadowrealm.webp',
-  '/images/mockup_cards/card-1-mountain.webp',
-  '/images/mockup_cards/card-2-neondrive.webp',
-  '/images/mockup_cards/card-4-cosmichorizon.webp',
-  '/images/mockup_cards/card-5-forestcalm.webp',
-  '/images/mockup_cards/card-6-nightbeast.webp',
+  'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+  'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-image.jpg',
+  'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-background-photo.jpg',
+  'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+  'https://wallpapercat.com/w/full/2/0/6/1215980-3840x2160-desktop-4k-goku-background-image.jpg',
+  'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
 ];
 
 function getThumb(slug: string, index: number): string {
@@ -192,12 +193,12 @@ const alphabetList = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
             >
               <!-- Background Thumbnail -->
               <img
-                src={tag.thumb}
+                src={getOptimizedThumbUrl(tag.thumb, 240, 75)}
                 alt={`${tag.name} Wallpapers`}
                 loading={idx < 18 ? 'eager' : 'lazy'}
                 decoding="async"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out opacity-65 group-hover:opacity-80"
-                onerror="this.src='/images/mockup_cards/card-3-shadowrealm.webp'"
+                onerror="this.src='https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'"
               />
 
               <!-- Solid Deep Black Shade Overlay for High Contrast -->

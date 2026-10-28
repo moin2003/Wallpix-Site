@@ -7,8 +7,36 @@ node_modules/
 .env
 .env.production
 .env.local
+.env.*
 
 # OS files
 .DS_Store
 Thumbs.db
 *.log
+
+# Scratch & Temporary Testing Scripts/Files
+scratch/
+__pycache__/
+*.pyc
+*.psd
+Wallpix/
+.agent/reports/
+.agent/scripts/
+.agent/data/
+*.py
+
+
+# Root Level Testing Screenshots & Lighthouse Audits
+*.png
+!public/**/*.png
+*.jpg
+!public/**/*.jpg
+*.webp
+!public/**/*.webp
+*.jsonl
+lh_*.json
+lighthouse_*.json
+
+# Temporary root python test scripts
+capture_*.py
+test_*.py

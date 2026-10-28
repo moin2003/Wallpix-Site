@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 const featuredArtists = [
   {
@@ -12,7 +13,7 @@ const featuredArtists = [
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&q=80',
     uploads: 48,
     downloads: '182k',
-    featured: '/images/mockup_cards/card-2-neondrive.jpg',
+    featured: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Mira Thorne',
@@ -21,7 +22,7 @@ const featuredArtists = [
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=160&q=80',
     uploads: 35,
     downloads: '144k',
-    featured: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    featured: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   },
   {
     name: 'Soren Lindqvist',
@@ -30,7 +31,7 @@ const featuredArtists = [
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&q=80',
     uploads: 62,
     downloads: '210k',
-    featured: '/images/mockup_cards/card-1-mountain.jpg',
+    featured: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
   },
 ];
 ---
@@ -100,7 +101,7 @@ const featuredArtists = [
           <div class="rounded-2xl bg-[#05070a] border border-white/[0.08] overflow-hidden flex flex-col shadow-md">
             <div class="relative h-44 overflow-hidden">
               <img
-                src={artist.featured}
+                src={getOptimizedThumbUrl(artist.featured, 480, 80)}
                 alt={`${artist.name}'s artwork`}
                 class="w-full h-full object-cover"
               />

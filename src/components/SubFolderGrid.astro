@@ -1,6 +1,7 @@
 ---
 import AdCard from './AdCard.astro';
 import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+import { getLiveSubTopicCount } from '../data/wallpapers';
 
 interface SubFolderItem {
   name: string;
@@ -28,35 +29,35 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'porsche-911-gt3-rs',
       count: '59+ Wallpapers',
       badge: 'Track Beast',
-      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg'
     },
     {
-      name: 'Lamborghini Aventador',
-      slug: 'lamborghini-aventador',
-      count: '170+ Wallpapers',
-      badge: 'V12 Exotic',
-      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
-    },
-    {
-      name: 'Nissan Skyline',
-      slug: 'nissan-skyline',
+      name: 'Nissan Skyline GTR',
+      slug: 'fast-and-furious-skyline',
       count: '95+ Wallpapers',
       badge: 'JDM Legend',
-      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg'
     },
     {
-      name: 'Ferrari',
-      slug: 'ferrari',
-      count: '58+ Wallpapers',
-      badge: 'Maranello Hypercar',
+      name: 'BMW M Motorsport',
+      slug: 'bmw',
+      count: '88+ Wallpapers',
+      badge: 'M Power Performance',
+      thumb: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'
+    },
+    {
+      name: 'Bugatti Hypercar',
+      slug: 'bugatti',
+      count: '64+ Wallpapers',
+      badge: 'W16 Hypercar',
       thumb: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80'
     },
     {
-      name: 'BMW M Power',
-      slug: 'bmw-m-power',
-      count: '88+ Wallpapers',
-      badge: 'Motorsport Performance',
-      thumb: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'
+      name: 'Dodge Challenger SRT',
+      slug: 'dodge-challenger',
+      count: '52+ Wallpapers',
+      badge: 'American Muscle',
+      thumb: 'https://wallpapercat.com/w/full/d/7/1/4147-3840x2160-desktop-4k-porsche-wallpaper.jpg'
     }
   ],
   'cars': [
@@ -65,39 +66,31 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'porsche-911-gt3-rs',
       count: '59+ Wallpapers',
       badge: 'Track Beast',
-      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg'
     },
     {
-      name: 'Lamborghini Aventador',
-      slug: 'lamborghini-aventador',
-      count: '170+ Wallpapers',
-      badge: 'V12 Exotic',
-      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
-    },
-    {
-      name: 'Nissan Skyline',
-      slug: 'nissan-skyline',
+      name: 'Nissan Skyline GTR',
+      slug: 'fast-and-furious-skyline',
       count: '95+ Wallpapers',
       badge: 'JDM Legend',
-      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg'
     },
     {
-      name: 'Ferrari',
-      slug: 'ferrari',
-      count: '58+ Wallpapers',
-      badge: 'Maranello Hypercar',
-      thumb: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80'
-    },
-    {
-      name: 'BMW M Power',
-      slug: 'bmw-m-power',
+      name: 'BMW M Motorsport',
+      slug: 'bmw',
       count: '88+ Wallpapers',
-      badge: 'Motorsport Performance',
+      badge: 'M Power Performance',
       thumb: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'
+    },
+    {
+      name: 'Bugatti Hypercar',
+      slug: 'bugatti',
+      count: '64+ Wallpapers',
+      badge: 'W16 Hypercar',
+      thumb: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80'
     }
   ],
 
-  // Anime & Manga
   // Anime & Manga
   'anime': [
     {
@@ -221,96 +214,422 @@ const CURATED_CATEGORY_FOLDERS: Record<string, SubFolderItem[]> = {
       slug: 'grand-theft-auto-5',
       count: '180+ Wallpapers',
       badge: 'Los Santos 4K',
-      thumb: 'https://wallpapercat.com/w/full/8/8/6/212852-3840x2160-desktop-4k-gta-5-wallpaper-image.jpg'
+      thumb: 'https://wallpapercat.com/w/full/f/d/e/130742-2560x1440-desktop-hd-grand-theft-auto-5-background-photo.jpg'
     },
     {
       name: 'Red Dead Redemption 2',
       slug: 'red-dead-redemption',
       count: '140+ Wallpapers',
       badge: 'Van der Linde',
-      thumb: 'https://wallpapercat.com/w/full/b/3/9/58882-3840x2160-desktop-4k-red-dead-redemption-2-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg'
     },
     {
       name: 'Elden Ring',
       slug: 'elden-ring',
       count: '115+ Wallpapers',
       badge: 'Erdtree Horizon',
-      thumb: 'https://wallpapercat.com/w/full/2/c/7/1231808-3840x2160-desktop-4k-elden-ring-shadow-of-the-erdtree-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/6/1/b/12229-3840x2160-desktop-4k-elden-ring-wallpaper.jpg'
     },
     {
       name: 'God of War',
       slug: 'god-of-war',
       count: '95+ Wallpapers',
       badge: 'Ragnarok 4K',
-      thumb: 'https://wallpapercat.com/w/full/5/3/1/181512-3840x2160-desktop-4k-god-of-war-wallpaper-photo.jpg'
+      thumb: 'https://wallpapercat.com/w/full/6/0/4/114059-3840x2160-desktop-4k-god-of-war-background-photo.jpg'
     },
     {
       name: 'Cyberpunk 2077',
       slug: 'cyberpunk-2077',
       count: '160+ Wallpapers',
       badge: 'Night City',
-      thumb: 'https://wallpapercat.com/w/full/9/7/5/1199344-3840x2160-desktop-4k-cyberpunk-2077-phantom-liberty-wallpaper-image.jpg'
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     }
   ],
 
-  // AMOLED
+  // AMOLED Black
   'amoled-black': [
     {
       name: 'True OLED Black Void',
-      slug: 'amoled-dark-void',
-      count: '240+ Wallpapers',
-      badge: '#000000 0%',
-      thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
+      slug: 'true-oled-black-void',
+      count: '140+ Wallpapers',
+      badge: '#000000 Pitch Black',
+      thumb: 'https://wallpapercat.com/w/full/0/6/0/2105114-3840x2160-desktop-4k-black-background-image.jpg'
     },
     {
-      name: 'AMOLED Neon Lines',
-      slug: 'amoled-neon',
-      count: '98+ Wallpapers',
-      badge: 'HDR Glow',
-      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
-    },
-    {
-      name: 'Minimal Dark Waves',
-      slug: 'minimal-dark-waveform-fluid-4k',
+      name: 'AMOLED Dark Knight (Batman)',
+      slug: 'amoled-dark-knight-batman',
       count: '76+ Wallpapers',
-      badge: 'Fluid Geometry',
-      thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
+      badge: 'Gotham Hero',
+      thumb: 'https://wallpapercat.com/w/full/2/1/a/329417-3840x2160-desktop-4k-the-dark-knight-rises-background.jpg'
+    },
+    {
+      name: 'AMOLED Dark Spider-Man',
+      slug: 'amoled-dark-spider-man',
+      count: '72+ Wallpapers',
+      badge: 'Black Suit Symbiote',
+      thumb: 'https://wallpapercat.com/w/full/4/8/9/479586-2160x3840-mobile-4k-dark-spider-man-wallpaper-image.jpg'
+    },
+    {
+      name: 'AMOLED Black Hole Cosmic',
+      slug: 'amoled-black-hole-cosmic',
+      count: '66+ Wallpapers',
+      badge: 'Singularity Void',
+      thumb: 'https://wallpapercat.com/w/full/7/0/6/26427-3840x2160-desktop-4k-black-hole-wallpaper-image.jpg'
+    },
+    {
+      name: 'AMOLED Black Panther',
+      slug: 'amoled-black-panther',
+      count: '80+ Wallpapers',
+      badge: 'Wakanda Forever',
+      thumb: 'https://wallpapercat.com/w/full/2/1/6/9289-3840x2160-desktop-4k-black-panther-wakanda-forever-background-image.jpg'
+    },
+    {
+      name: 'AMOLED Venom Symbiote',
+      slug: 'amoled-venom-symbiote',
+      count: '54+ Wallpapers',
+      badge: 'Lethal Protector',
+      thumb: 'https://wallpapercat.com/w/full/8/1/a/170859-3500x1969-desktop-hd-venom-background-photo.jpg'
+    },
+    {
+      name: 'AMOLED Neon Lines & Glow',
+      slug: 'amoled-neon-lines',
+      count: '156+ Wallpapers',
+      badge: 'HDR Luminescence',
+      thumb: 'https://wallpapercat.com/w/full/0/e/e/40995-3840x2160-desktop-4k-neon-background.jpg'
+    },
+    {
+      name: 'AMOLED Geometric Abstract',
+      slug: 'amoled-geometric-abstract',
+      count: '292+ Wallpapers',
+      badge: '3D Dark Render',
+      thumb: 'https://wallpapercat.com/w/full/0/c/6/2106493-1920x1358-desktop-hd-black-wallpaper-image.jpg'
+    }
+  ],
+
+  // Movies
+  'movies': [
+    {
+      name: 'Interstellar',
+      slug: 'interstellar',
+      count: '42+ Wallpapers',
+      badge: 'Sci-Fi Legend',
+      thumb: 'https://wallpapercat.com/w/full/5/a/0/306069-3840x2160-desktop-4k-interstellar-wallpaper.jpg'
+    },
+    {
+      name: 'The Dark Knight',
+      slug: 'batman',
+      count: '70+ Wallpapers',
+      badge: 'Gotham 4K',
+      thumb: 'https://wallpapercat.com/w/full/e/9/d/2103691-3840x2160-desktop-4k-batman-background-photo.jpg'
+    },
+    {
+      name: 'Spider-Man MCU',
+      slug: 'spider-man',
+      count: '65+ Wallpapers',
+      badge: 'Marvel Universe',
+      thumb: 'https://wallpapercat.com/w/full/a/e/9/309524-3840x2160-desktop-4k-spider-man-background.jpg'
+    },
+    {
+      name: 'Star Wars Saga',
+      slug: 'star-wars',
+      count: '80+ Wallpapers',
+      badge: 'Galactic Force',
+      thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+    }
+  ],
+
+  // Superheroes & Comics
+  'superheroes': [
+    {
+      name: 'Batman',
+      slug: 'batman',
+      count: '70+ Wallpapers',
+      badge: 'DC Knight',
+      thumb: 'https://wallpapercat.com/w/full/e/9/d/2103691-3840x2160-desktop-4k-batman-background-photo.jpg'
+    },
+    {
+      name: 'Deadpool',
+      slug: 'deadpool',
+      count: '55+ Wallpapers',
+      badge: 'Merc 4K',
+      thumb: 'https://wallpapercat.com/w/full/c/e/0/51723-1920x1080-desktop-1080p-deadpool-wallpaper.jpg'
+    },
+    {
+      name: 'Marvel Heroes MCU',
+      slug: 'marvel-heroes',
+      count: '65+ Wallpapers',
+      badge: 'Avengers Assemble',
+      thumb: 'https://wallpapercat.com/w/full/a/e/9/309524-3840x2160-desktop-4k-spider-man-background.jpg'
+    }
+  ],
+
+  // Nature
+  'nature-scenery': [
+    {
+      name: 'Alpine Mountain Peaks',
+      slug: 'mountains',
+      count: '95+ Wallpapers',
+      badge: '8K Summit',
+      thumb: 'https://w.wallhaven.cc/full/xe/wallhaven-xekje3.png'
+    },
+    {
+      name: 'Serene Coastal Sunsets',
+      slug: 'sunsets',
+      count: '85+ Wallpapers',
+      badge: 'Golden Hour',
+      thumb: 'https://w.wallhaven.cc/full/5y/wallhaven-5ypz57.png'
+    },
+    {
+      name: 'Deep Green Forests',
+      slug: 'green-forests',
+      count: '70+ Wallpapers',
+      badge: 'Wilderness',
+      thumb: 'https://w.wallhaven.cc/full/je/wallhaven-jelye5.jpg'
+    }
+  ],
+
+  // Space
+  'space-cosmic': [
+    {
+      name: 'Gargantua Black Holes',
+      slug: 'black-holes',
+      count: '90+ Wallpapers',
+      badge: 'Event Horizon',
+      thumb: 'https://wallpapercat.com/w/full/5/a/0/306069-3840x2160-desktop-4k-interstellar-wallpaper.jpg'
+    },
+    {
+      name: 'Milky Way Galaxy',
+      slug: 'milky-way',
+      count: '80+ Wallpapers',
+      badge: 'Deep Space Dust',
+      thumb: 'https://w.wallhaven.cc/full/qr/wallhaven-qrppoq.png'
+    },
+    {
+      name: 'Outer Space Nebula',
+      slug: 'outer-space',
+      count: '75+ Wallpapers',
+      badge: 'James Webb 4K',
+      thumb: 'https://w.wallhaven.cc/full/21/wallhaven-2166jg.png'
+    },
+    {
+      name: 'Astronauts in Orbit',
+      slug: 'astronauts',
+      count: '60+ Wallpapers',
+      badge: 'Cosmic Spacewalk',
+      thumb: 'https://w.wallhaven.cc/full/ml/wallhaven-mloml9.jpg'
+    }
+  ],
+
+  // Cartoons
+  'cartoon': [
+    {
+      name: 'Rick and Morty',
+      slug: 'rick-and-morty',
+      count: '60+ Wallpapers',
+      badge: 'Multiverse 4K',
+      thumb: 'https://wallpapercat.com/w/full/1/f/5/46701-3840x2160-desktop-4k-rick-and-morty-background-image.jpg'
+    },
+    {
+      name: 'Spider-Verse',
+      slug: 'spider-man-into-the-spider-verse',
+      count: '55+ Wallpapers',
+      badge: 'Miles Morales',
+      thumb: 'https://wallpapercat.com/w/full/a/e/9/309524-3840x2160-desktop-4k-spider-man-background.jpg'
+    },
+    {
+      name: 'Tom and Jerry',
+      slug: 'tom-and-jerry',
+      count: '45+ Wallpapers',
+      badge: 'Classic Toon',
+      thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
     }
   ]
 };
 
+// High-resolution thematic category fallback images to ensure category relevance
+const CATEGORY_FALLBACK_IMAGES: Record<string, string[]> = {
+  'cars-supercars': [
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
+    'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg',
+    'https://wallpapercat.com/w/full/d/7/1/4147-3840x2160-desktop-4k-porsche-wallpaper.jpg',
+    'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'
+  ],
+  'cars': [
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
+    'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg',
+    'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80'
+  ],
+  'gaming': [
+    'https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg',
+    'https://wallpapercat.com/w/full/4/e/d/96565-3840x2160-desktop-4k-need-for-speed-background.jpg',
+    'https://wallpapercat.com/w/full/f/d/e/130742-2560x1440-desktop-hd-grand-theft-auto-5-background-photo.jpg',
+    'https://wallpapercat.com/w/full/6/0/4/114059-3840x2160-desktop-4k-god-of-war-background-photo.jpg',
+    'https://wallpapercat.com/w/full/8/c/e/1142-3840x2160-desktop-4k-minecraft-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+  ],
+  'anime': [
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+    'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg',
+    'https://wallpapercat.com/w/full/8/a/c/182832-2339x1654-desktop-hd-demon-slayer-kimetsu-no-yaiba-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/4/1/0/33422-3840x2160-desktop-4k-one-piece-background.jpg',
+    'https://wallpapercat.com/w/full/1/6/d/138467-3840x2160-desktop-4k-spirited-away-wallpaper-image.jpg'
+  ],
+  'anime-gaming': [
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+    'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/9/7/5/1199344-3840x2160-desktop-4k-cyberpunk-2077-phantom-liberty-wallpaper-image.jpg'
+  ],
+  'movies': [
+    'https://wallpapercat.com/w/full/5/a/0/306069-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
+    'https://wallpapercat.com/w/full/a/e/9/309524-3840x2160-desktop-4k-spider-man-background.jpg',
+    'https://wallpapercat.com/w/full/e/9/d/2103691-3840x2160-desktop-4k-batman-background-photo.jpg',
+    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80'
+  ],
+  'tv-shows': [
+    'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg',
+    'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=800&q=80'
+  ],
+  'superheroes': [
+    'https://wallpapercat.com/w/full/e/9/d/2103691-3840x2160-desktop-4k-batman-background-photo.jpg',
+    'https://wallpapercat.com/w/full/2/6/b/2104646-3840x2015-desktop-hd-batman-background-image.jpg',
+    'https://wallpapercat.com/w/full/c/e/0/51723-1920x1080-desktop-1080p-deadpool-wallpaper.jpg',
+    'https://wallpapercat.com/w/full/a/e/9/309524-3840x2160-desktop-4k-spider-man-background.jpg'
+  ],
+  'comics': [
+    'https://wallpapercat.com/w/full/e/9/d/2103691-3840x2160-desktop-4k-batman-background-photo.jpg',
+    'https://wallpapercat.com/w/full/c/e/0/51723-1920x1080-desktop-1080p-deadpool-wallpaper.jpg'
+  ],
+  'nature-scenery': [
+    'https://w.wallhaven.cc/full/xe/wallhaven-xekje3.png',
+    'https://w.wallhaven.cc/full/5y/wallhaven-5ypz57.png',
+    'https://w.wallhaven.cc/full/je/wallhaven-jelye5.jpg',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80'
+  ],
+  'space-cosmic': [
+    'https://w.wallhaven.cc/full/qr/wallhaven-qrppoq.png',
+    'https://w.wallhaven.cc/full/21/wallhaven-2166jg.png',
+    'https://w.wallhaven.cc/full/ml/wallhaven-mloml9.jpg',
+    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80'
+  ],
+  'cyberpunk-neon': [
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/9/7/5/1199344-3840x2160-desktop-4k-cyberpunk-2077-phantom-liberty-wallpaper-image.jpg',
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80'
+  ],
+  'amoled-black': [
+    'https://wallpapercat.com/w/full/0/6/0/2105114-3840x2160-desktop-4k-black-background-image.jpg',
+    'https://wallpapercat.com/w/full/0/c/6/2106493-1920x1358-desktop-hd-black-wallpaper-image.jpg',
+    'https://wallpapercat.com/w/full/4/1/b/2105305-3840x2160-desktop-4k-black-wallpaper.jpg'
+  ],
+  'cartoon': [
+    'https://wallpapercat.com/w/full/1/f/5/46701-3840x2160-desktop-4k-rick-and-morty-background-image.jpg',
+    'https://wallpapercat.com/w/full/8/e/f/46710-3840x2160-desktop-4k-rick-and-morty-wallpaper-photo.jpg',
+    'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
+  ],
+  'cartoons': [
+    'https://wallpapercat.com/w/full/1/f/5/46701-3840x2160-desktop-4k-rick-and-morty-background-image.jpg',
+    'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
+  ],
+  'city': [
+    'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200&q=80',
+    'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=800&q=80'
+  ],
+  'fantasy': [
+    'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
+    'https://wallpapercat.com/w/full/2/c/7/1231808-3840x2160-desktop-4k-elden-ring-shadow-of-the-erdtree-wallpaper-photo.jpg'
+  ],
+  'minimalist-abstract': [
+    'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&q=80',
+    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80'
+  ],
+  'dark-mode': [
+    'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80',
+    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80'
+  ],
+  'sports': [
+    'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80',
+    'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?w=800&q=80'
+  ],
+  'music': [
+    'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80',
+    'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80'
+  ],
+  'animals': [
+    'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&q=80',
+    'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=800&q=80'
+  ],
+  'celebrities': [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80'
+  ]
+};
+
+const defaultUniversalFallbacks = [
+  'https://wallpapercat.com/w/full/7/c/2/180013-3840x2160-desktop-4k-porsche-wallpaper.jpg',
+  'https://wallpapercat.com/w/full/5/a/0/306069-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
+  'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+  'https://w.wallhaven.cc/full/xe/wallhaven-xekje3.png',
+  'https://w.wallhaven.cc/full/qr/wallhaven-qrppoq.png'
+];
+
+const categoryFallbacks = CATEGORY_FALLBACK_IMAGES[categorySlug] || defaultUniversalFallbacks;
+
 // Combine curated list and all subTopics to give an exhaustive WallpaperCat-level directory
 const curatedMap = new Map<string, SubFolderItem>();
 (CURATED_CATEGORY_FOLDERS[categorySlug] || []).forEach(item => {
-  curatedMap.set(item.slug, item);
+  const liveCount = getLiveSubTopicCount(item.slug);
+  curatedMap.set(item.slug, {
+    ...item,
+    count: liveCount > 0 ? `${liveCount} Wallpapers` : item.count
+  });
 });
 
 let folderList: SubFolderItem[] = [];
 
 if (subTopics.length > 0) {
-  folderList = subTopics.map((topic) => {
-    if (curatedMap.has(topic.slug)) {
-      return curatedMap.get(topic.slug)!;
-    }
+  folderList = subTopics.map((topic, i) => {
+    const liveCount = getLiveSubTopicCount(topic.slug);
+    const countDisplay = liveCount > 0 
+      ? `${liveCount} Wallpapers` 
+      : (topic.count.includes('Wallpapers') ? topic.count : `${topic.count} Wallpapers`);
+
     const topicCover = (topic as any).cover;
+    if (curatedMap.has(topic.slug)) {
+      const cur = curatedMap.get(topic.slug)!;
+      return {
+        ...cur,
+        count: countDisplay,
+        thumb: topicCover || cur.thumb
+      };
+    }
     return {
       name: topic.name,
       slug: topic.slug,
-      count: topic.count.includes('Wallpapers') ? topic.count : `${topic.count} Wallpapers`,
+      count: countDisplay,
       badge: `${categoryName} Hub`,
-      thumb: topicCover || 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
+      thumb: topicCover || categoryFallbacks[i % categoryFallbacks.length]
     };
   });
 } else if (CURATED_CATEGORY_FOLDERS[categorySlug]) {
-  folderList = CURATED_CATEGORY_FOLDERS[categorySlug];
+  folderList = (CURATED_CATEGORY_FOLDERS[categorySlug] || []).map(item => {
+    const liveCount = getLiveSubTopicCount(item.slug);
+    return {
+      ...item,
+      count: liveCount > 0 ? `${liveCount} Wallpapers` : item.count
+    };
+  });
 }
+
+const INITIAL_DISPLAY = 36;
 ---
 
 {folderList.length > 0 && (
   <section class={`w-full px-4 sm:px-8 lg:px-12 pt-4 sm:pt-6 pb-6 sm:pb-8 ${className}`}>
     
-    <!-- Section Header -->
-    <div class="flex items-center justify-between mb-4 sm:mb-6 pb-2.5 sm:pb-3 border-b border-white/[0.08]">
+    <!-- Section Header with Live Search Filter -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 pb-2.5 sm:pb-3 border-b border-white/[0.08]">
       <div class="flex items-center gap-2.5 sm:gap-3">
         <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-walpix-lime/10 border border-walpix-lime/30 flex items-center justify-center text-walpix-lime text-sm sm:text-base shrink-0">
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,29 +639,51 @@ if (subTopics.length > 0) {
         <div>
           <h2 class="text-sm sm:text-lg font-bold text-white tracking-wide font-display flex items-center gap-2">
             <span>{categoryName} Series & Collections</span>
-            <span class="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded-full bg-white/10 text-walpix-lime font-bold">
+            <span class="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded-full bg-white/10 text-walpix-lime font-bold" id="subfolder-total-badge">
               {folderList.length} Hubs
             </span>
           </h2>
           <p class="text-[11px] sm:text-xs text-[#8E949E] mt-0.5 line-clamp-1 sm:line-clamp-none">
-            Click any series or character card to explore all dedicated 4K wallpapers
+            Click any series or character card to explore dedicated 4K wallpapers
           </p>
         </div>
       </div>
+
+      <!-- Live Search Filter for Subfolders -->
+      {folderList.length > 12 && (
+        <div class="relative w-full sm:w-64 shrink-0">
+          <input
+            type="text"
+            id="subfolder-search-input"
+            placeholder={`Filter ${categoryName} series...`}
+            class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-walpix-lime/50 transition-all font-mono"
+          />
+          <svg class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      )}
     </div>
 
     <!-- 2-Column Mobile & 3-Column Desktop Visual Cards Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6" id="subfolder-cards-grid">
+    <div
+      class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"
+      id="subfolder-cards-grid"
+      data-category-slug={categorySlug}
+    >
       {folderList.map((folder, index) => {
         // High-RPM Strategic In-Feed Native Ad Slots at position 6 and position 18
         const showAd = index === 5 || index === 17;
-        const isInitiallyHidden = index >= 24;
+        const isInitiallyHidden = index >= INITIAL_DISPLAY;
         return (
           <>
             <a
-              href={`/tag/${folder.slug}`}
-              class={`group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none ${isInitiallyHidden ? 'subfolder-extra hidden' : ''}`}
+              href={`/category/${categorySlug}/${folder.slug}`}
+              class={`subfolder-card group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none ${isInitiallyHidden ? 'hidden' : ''}`}
               data-index={index}
+              data-name={folder.name.toLowerCase()}
+              data-hidden={isInitiallyHidden ? 'true' : 'false'}
+              style={isInitiallyHidden ? 'display: none;' : ''}
             >
               <!-- Full-Bleed Image -->
               <img
@@ -353,6 +694,7 @@ if (subTopics.length > 0) {
                 loading={index < 4 ? 'eager' : 'lazy'}
                 fetchpriority={index < 4 ? 'high' : 'low'}
                 decoding="async"
+                referrerpolicy="no-referrer"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 onerror="this.src='/images/placeholder-wallpaper.webp'"
               />
@@ -403,22 +745,30 @@ if (subTopics.length > 0) {
       })}
     </div>
 
-    <!-- Progressive Expansion for Large Categories like Anime (383 Hubs) -->
-    {folderList.length > 24 && (
-      <div id="subfolder-expand-container" class="flex flex-col items-center justify-center pt-8 pb-2">
+    <!-- Progressive Load More & Show All Controls -->
+    {folderList.length > INITIAL_DISPLAY && (
+      <div class="mt-6 sm:mt-8 flex items-center justify-center gap-3" id="subfolder-actions-wrap">
         <button
-          id="subfolder-expand-btn"
           type="button"
-          class="group inline-flex items-center gap-2.5 px-8 py-3 rounded-full bg-[#080B0F] hover:bg-walpix-lime text-white hover:text-[#050608] border border-white/10 hover:border-walpix-lime font-mono text-xs font-bold transition-all duration-300 shadow-lg cursor-pointer select-none active:scale-95"
+          id="subfolder-load-more-btn"
+          class="px-5 py-2.5 rounded-xl bg-white/[0.06] hover:bg-walpix-lime/15 border border-white/15 hover:border-walpix-lime/40 text-xs sm:text-sm font-bold text-white hover:text-walpix-lime transition-all flex items-center gap-2 shadow-lg cursor-pointer"
         >
-          <span>Explore All {folderList.length} Series & Collections</span>
-          <svg class="w-3.5 h-3.5 text-walpix-lime group-hover:text-[#050608] transition-transform group-hover:translate-y-0.5 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
+          <span>Load More Series (+24)</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-gray-300" id="subfolder-remaining-count">
+            {folderList.length - INITIAL_DISPLAY} Remaining
+          </span>
         </button>
-        <p class="text-[11px] font-mono text-zinc-400 mt-2">
-          Showing <span id="subfolder-visible-count" class="text-walpix-lime font-bold">24</span> of <span class="text-white font-bold">{folderList.length}</span> Handpicked Series Hubs
-        </p>
+
+        <button
+          type="button"
+          id="subfolder-show-all-btn"
+          class="px-4 py-2.5 rounded-xl bg-transparent hover:bg-white/[0.04] border border-white/10 text-xs font-mono text-gray-400 hover:text-white transition-all cursor-pointer"
+        >
+          Show All ({folderList.length})
+        </button>
       </div>
     )}
 
@@ -426,18 +776,100 @@ if (subTopics.length > 0) {
 )}
 
 <script>
-  const expandBtn = document.getElementById('subfolder-expand-btn');
-  const expandContainer = document.getElementById('subfolder-expand-container');
-  if (expandBtn) {
-    expandBtn.addEventListener('click', () => {
-      const hiddenCards = document.querySelectorAll('.subfolder-extra');
-      hiddenCards.forEach((card) => {
-        card.classList.remove('hidden');
-        card.classList.remove('subfolder-extra');
-      });
-      if (expandContainer) {
-        expandContainer.style.display = 'none';
+  function setupSubFolderControls() {
+    const grid = document.getElementById('subfolder-cards-grid');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.subfolder-card')) as HTMLElement[];
+    const loadMoreBtn = document.getElementById('subfolder-load-more-btn');
+    const showAllBtn = document.getElementById('subfolder-show-all-btn');
+    const remainingSpan = document.getElementById('subfolder-remaining-count');
+    const searchInput = document.getElementById('subfolder-search-input') as HTMLInputElement | null;
+    const actionsWrap = document.getElementById('subfolder-actions-wrap');
+
+    let currentlyShown = 36;
+    const BATCH_SIZE = 24;
+
+    function updateRemaining() {
+      const hiddenCount = cards.filter(c => c.getAttribute('data-hidden') === 'true').length;
+      if (remainingSpan) {
+        remainingSpan.textContent = `${hiddenCount} Remaining`;
       }
-    });
+      if (hiddenCount === 0 && actionsWrap) {
+        actionsWrap.style.display = 'none';
+      }
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.onclick = () => {
+        let revealed = 0;
+        for (const card of cards) {
+          if (card.getAttribute('data-hidden') === 'true') {
+            card.setAttribute('data-hidden', 'false');
+            card.classList.remove('hidden');
+            card.style.display = '';
+            revealed++;
+            if (revealed >= BATCH_SIZE) break;
+          }
+        }
+        currentlyShown += revealed;
+        updateRemaining();
+      };
+    }
+
+    if (showAllBtn) {
+      showAllBtn.onclick = () => {
+        for (const card of cards) {
+          card.setAttribute('data-hidden', 'false');
+          card.classList.remove('hidden');
+          card.style.display = '';
+        }
+        currentlyShown = cards.length;
+        updateRemaining();
+      };
+    }
+
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
+        if (!query) {
+          cards.forEach((card, idx) => {
+            if (idx < currentlyShown) {
+              card.setAttribute('data-hidden', 'false');
+              card.classList.remove('hidden');
+              card.style.display = '';
+            } else {
+              card.setAttribute('data-hidden', 'true');
+              card.classList.add('hidden');
+              card.style.display = 'none';
+            }
+          });
+          if (actionsWrap && currentlyShown < cards.length) {
+            actionsWrap.style.display = 'flex';
+          }
+          updateRemaining();
+          return;
+        }
+
+        cards.forEach((card) => {
+          const name = card.getAttribute('data-name') || '';
+          if (name.includes(query)) {
+            card.classList.remove('hidden');
+            card.style.display = '';
+          } else {
+            card.classList.add('hidden');
+            card.style.display = 'none';
+          }
+        });
+
+        if (actionsWrap) {
+          actionsWrap.style.display = 'none';
+        }
+      };
+    }
   }
+
+  // Initialize immediately and on view transitions
+  setupSubFolderControls();
+  document.addEventListener('astro:page-load', setupSubFolderControls);
 </script>

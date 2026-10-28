@@ -1,4 +1,6 @@
 ---
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+
 interface Props {
   className?: string;
 }
@@ -22,97 +24,97 @@ const categoryList: CategoryItem[] = [
   {
     name: 'AMOLED Black',
     slug: 'amoled-black',
-    image: '/images/mockup_cards/cat-amoled.webp',
+    image: 'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
   },
   {
     name: 'Cyberpunk',
     slug: 'cyberpunk-neon',
-    image: '/images/mockup_cards/card-2-neondrive.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: '4K UHD',
     slug: '4k-ultra-hd',
-    image: '/images/mockup_cards/cat-4k.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'HD Wallpapers',
     slug: 'hd-wallpapers',
-    image: '/images/mockup_cards/cat-minimalist.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Movies & TV',
     slug: 'movies',
-    image: '/images/mockup_cards/card-3-shadowrealm.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'TV Shows',
     slug: 'tv-shows',
-    image: '/images/mockup_cards/card-2-neondrive.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Anime',
-    slug: 'anime-gaming',
-    image: '/images/mockup_cards/card-3-shadowrealm.webp',
+    slug: 'anime',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'Space & Cosmic',
     slug: 'space-cosmic',
-    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
+    image: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   },
   {
     name: 'Nature',
     slug: 'nature-scenery',
-    image: '/images/mockup_cards/card-1-mountain.webp',
+    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
   },
   {
     name: 'Cars & Bikes',
     slug: 'cars-supercars',
-    image: '/images/mockup_cards/card-6-nightbeast.webp',
+    image: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
   },
   {
     name: 'Cartoons',
     slug: 'cartoon',
-    image: '/images/mockup_cards/cat-anime.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'Music & Bands',
     slug: 'music',
-    image: '/images/mockup_cards/card-2-neondrive.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Minimalist',
     slug: 'minimalist-abstract',
-    image: '/images/mockup_cards/cat-minimalist.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Animals',
     slug: 'animals-wildlife',
-    image: '/images/mockup_cards/card-5-forestcalm.webp',
+    image: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
   },
   {
     name: 'Cityscapes',
     slug: 'city-architecture',
-    image: '/images/mockup_cards/cat-cyberpunk.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Gaming',
     slug: 'gaming',
-    image: '/images/mockup_cards/cat-cyberpunk.webp',
+    image: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
   },
   {
     name: 'Sports',
     slug: 'sports',
-    image: '/images/mockup_cards/cat-cars.webp',
+    image: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
   },
   {
     name: 'Superheroes',
     slug: 'superheroes',
-    image: '/images/mockup_cards/card-3-shadowrealm.webp',
+    image: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   },
   {
     name: 'AI Art',
     slug: 'ai-generated',
-    image: '/images/mockup_cards/card-4-cosmichorizon.webp',
+    image: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   },
 ];
 ---
@@ -208,7 +210,7 @@ const categoryList: CategoryItem[] = [
             <!-- Image Category Card -->
             <div class="w-16 h-16 rounded-2xl overflow-hidden bg-[#090C10] border border-white/10 group-hover:border-walpix-lime/60 shadow-lg relative group-hover:scale-105 transition-transform duration-200">
               <img
-                src={cat.image || '/images/mockup_cards/cat-minimalist.webp'}
+                src={getOptimizedThumbUrl(cat.image || 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg', 160, 80)}
                 alt={cat.name}
                 width="64"
                 height="64"

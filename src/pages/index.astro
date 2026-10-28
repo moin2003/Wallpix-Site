@@ -13,6 +13,14 @@ import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
 import Footer from '../components/Footer.astro';
 import { wallpapers } from '../data/wallpapers';
 
+// Iconic 16:9 Desktop Showcase (First 36 items - 100% pure original desktop wallpapers)
+const desktopWps = wallpapers.filter(w => w.aspectRatio === '16:9').slice(0, 36);
+
+// Authentic 9:16 Mobile Phone Showcase (Next 36 items - 100% pure vertical phone wallpapers)
+const mobileWps = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical').slice(0, 36);
+
+const trendingWallpapers: typeof wallpapers = [...desktopWps, ...mobileWps];
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -59,7 +67,9 @@ const schema = {
 
     <!-- 3. Trending 4K Wallpapers Grid (4 Columns with In-Grid Native Ad) -->
     <WallpaperGrid
-      wallpapers={wallpapers}
+      wallpapers={trendingWallpapers}
+      maxDomCount={72}
+      totalCount={wallpapers.length}
       title="Trending Wallpapers"
       subtitle="Handpicked ultra HD wallpapers, updated daily."
     />

@@ -6,6 +6,7 @@ import ResolutionDeviceSidebar from '../../components/ResolutionDeviceSidebar.as
 import Footer from '../../components/Footer.astro';
 import { ALL_RESOLUTIONS, type ResolutionItem } from '../../data/resolutions';
 import { wallpapers, type Wallpaper } from '../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 export async function getStaticPaths() {
   return ALL_RESOLUTIONS.map((res) => {
@@ -86,7 +87,7 @@ const schema = {
       <!-- Backdrop Glow -->
       <div class="absolute inset-0 z-0 pointer-events-none">
         <img
-          src={heroImage}
+          src={getOptimizedThumbUrl(heroImage, 400, 70)}
           alt={resInfo.label}
           class="w-full h-full object-cover object-center opacity-20 filter blur-md scale-105"
         />
@@ -152,7 +153,7 @@ const schema = {
                     <!-- Main 16:9 Immersive Wallpaper Visual -->
                     <a href={`/wallpapers/${wp.slug}`} class="block relative aspect-[16/9] w-full overflow-hidden bg-black/60 cursor-pointer">
                       <img
-                        src={wp.sourceCdn}
+                        src={getOptimizedThumbUrl(wp.sourceCdn, 1200, 85)}
                         alt={wp.title}
                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                         loading={index < 2 ? "eager" : "lazy"}
@@ -253,7 +254,7 @@ const schema = {
                   class="group relative block aspect-[16/9] w-full rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_8px_25px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                 >
                   <img
-                    src={wp.sourceCdn}
+                    src={getOptimizedThumbUrl(wp.sourceCdn, 400, 80)}
                     alt={wp.title}
                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"

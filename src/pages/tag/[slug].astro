@@ -9,35 +9,37 @@ import Footer from '../../components/Footer.astro';
 import { ADSENSE_CONFIG } from '../../config/adsense';
 import { MAIN_CATEGORIES, type SubTopic } from '../../data/taxonomy';
 import { getAllTags, getWallpapersByTag, wallpapers, type TagHubItem, type Wallpaper } from '../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
-// High-reliability thumbnail resolver with 100% verified WebP fallbacks
+// High-reliability thumbnail resolver with 100% verified 4K covers
 function getTagThumbnail(tagSlug: string, parentCatSlug = '', index = 0): string {
   const norm = tagSlug.toLowerCase();
   
-  // 1. Direct tag match in catalog
+  // 1. Check if the subtopic has a curated 4K cover in taxonomyData
+  for (const cat of MAIN_CATEGORIES) {
+    const sub = (cat.subTopics || []).find(s => s.slug === norm);
+    if (sub && (sub as any).cover) {
+      return (sub as any).cover;
+    }
+  }
+
+  // 2. Direct tag match in catalog (strictly genuine 4K CDN wallpapers)
   const match = wallpapers.find(w => 
+    w.sourceCdn?.startsWith('http') &&
     (w.tags || []).some(t => t.toLowerCase() === norm || t.toLowerCase().includes(norm))
   );
   if (match?.sourceCdn) return match.sourceCdn;
 
-  // 2. Diversified parent category matches (different wallpaper per index)
+  // 3. Diversified parent category matches (strictly genuine 4K CDN wallpapers)
   if (parentCatSlug) {
-    const catMatches = wallpapers.filter(w => (w.category || '').toLowerCase().includes(parentCatSlug.toLowerCase()));
+    const catMatches = wallpapers.filter(w => w.sourceCdn?.startsWith('http') && (w.category || '').toLowerCase().includes(parentCatSlug.toLowerCase()));
     if (catMatches.length > 0) {
       return catMatches[index % catMatches.length].sourceCdn;
     }
   }
 
-  // 3. Guaranteed verified WebP mockups
-  const SAFE_FALLBACKS = [
-    '/images/mockup_cards/card-1-mountain.webp',
-    '/images/mockup_cards/card-2-neondrive.webp',
-    '/images/mockup_cards/card-3-shadowrealm.webp',
-    '/images/mockup_cards/card-4-cosmichorizon.webp',
-    '/images/mockup_cards/card-5-forestcalm.webp',
-    '/images/mockup_cards/card-6-nightbeast.webp',
-  ];
-  return SAFE_FALLBACKS[index % SAFE_FALLBACKS.length];
+  // 4. Guaranteed verified 4K fallback
+  return 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg';
 }
 
 export async function getStaticPaths() {
@@ -70,7 +72,14 @@ const relatedMatches = wallpapers.filter(w => {
   return tagMatch || catMatch;
 });
 
-const wallpapersList = Array.from(new Set([...directMatches, ...relatedMatches, ...wallpapers])).slice(0, 18);
+// Ensure fallback wallpapers come ONLY from the same parent category (never cross-polluting anime with cars/nature)
+const sameCategoryWallpapers = parentCat
+  ? wallpapers.filter(w => (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase()) || (w.category || '').toLowerCase().includes((parentCat.slug || '').toLowerCase()))
+  : wallpapers;
+
+const wallpapersList = directMatches.length > 0
+  ? directMatches
+  : Array.from(new Set([...directMatches, ...relatedMatches, ...sameCategoryWallpapers])).slice(0, 18);
 
 // Similar wallpapers for bottom multi-column grid
 const streamIds = new Set(wallpapersList.slice(0, 8).map(w => w.id));
@@ -78,14 +87,47 @@ const potentialSimilar = wallpapers.filter(w => !streamIds.has(w.id) && (
   (parentCat && (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase())) ||
   (w.tags && w.tags.some(t => t.toLowerCase().includes(tag.slug) || tag.slug.includes(t.toLowerCase())))
 ));
-const similarWallpapers = Array.from(new Set([...potentialSimilar, ...wallpapers.filter(w => !streamIds.has(w.id))])).slice(0, 8);
+const similarWallpapers = Array.from(new Set([...potentialSimilar, ...sameCategoryWallpapers.filter(w => !streamIds.has(w.id))])).slice(0, 8);
 
 // Truly intelligent related tags:
+const GENERIC_FILTER_TAGS = new Set([
+  'desktop',
+  'phone',
+  'mobile',
+  '4k',
+  '8k',
+  'hd',
+  'uhd',
+  'ultra-hd',
+  '1080p',
+  'wallpaper',
+  'wallpapers',
+  'background',
+  'backgrounds',
+  'image',
+  'images',
+  'photo',
+  'photos',
+  'anime',
+  'manga',
+  'aesthetic',
+  'dark',
+  'oled',
+  'free',
+  'download',
+  'curated',
+  'lossless',
+  'vertical',
+  'horizontal',
+  'amoled',
+  'minimal'
+]);
+
 const coOccurringMap = new Map<string, number>();
 directMatches.forEach(w => {
   (w.tags || []).forEach(t => {
     const s = t.toLowerCase().trim();
-    if (s && s !== tag.slug) {
+    if (s && s !== tag.slug && !GENERIC_FILTER_TAGS.has(s)) {
       coOccurringMap.set(s, (coOccurringMap.get(s) || 0) + 1);
     }
   });
@@ -99,7 +141,7 @@ if (parentCat && parentCat.subTopics && parentCat.subTopics.length > 0) {
   const currIdx = parentCat.subTopics.findIndex(s => s.slug === tag.slug);
   const tagWords = tag.slug.split(/[-_\s]+/);
   siblingSubTopics = parentCat.subTopics
-    .filter(s => s.slug !== tag.slug)
+    .filter(s => s.slug !== tag.slug && !GENERIC_FILTER_TAGS.has(s.slug))
     .sort((a, b) => {
       const aWords = a.slug.split(/[-_\s]+/);
       const bWords = b.slug.split(/[-_\s]+/);
@@ -117,27 +159,34 @@ if (parentCat && parentCat.subTopics && parentCat.subTopics.length > 0) {
 }
 
 const relatedTagsMap = new Map<string, TagHubItem>();
-for (const cSlug of coOccurringSlugs) {
-  const found = allTags.find(t => t.slug === cSlug);
-  if (found && !relatedTagsMap.has(found.slug)) {
-    relatedTagsMap.set(found.slug, found);
-  }
-}
 
+// 1. Sibling series from the same parent category FIRST (e.g. Naruto, Bleach, One Piece)
 for (const sib of siblingSubTopics) {
-  if (!relatedTagsMap.has(sib.slug)) {
+  if (!relatedTagsMap.has(sib.slug) && !GENERIC_FILTER_TAGS.has(sib.slug)) {
+    const liveCount = getWallpapersByTag(sib.slug).length;
     relatedTagsMap.set(sib.slug, {
       name: sib.name,
       slug: sib.slug,
-      count: parseInt(sib.count.replace(/[^0-9]/g, '')) || 45,
+      count: liveCount > 0 ? liveCount : parseInt(sib.count.replace(/[^0-9]/g, '')) || 24,
     });
+  }
+  if (relatedTagsMap.size >= 16) break;
+}
+
+// 2. Co-occurring non-generic tags SECOND
+for (const cSlug of coOccurringSlugs) {
+  if (GENERIC_FILTER_TAGS.has(cSlug)) continue;
+  const found = allTags.find(t => t.slug === cSlug);
+  if (found && !relatedTagsMap.has(found.slug) && !GENERIC_FILTER_TAGS.has(found.slug)) {
+    relatedTagsMap.set(found.slug, found);
   }
   if (relatedTagsMap.size >= 18) break;
 }
 
+// 3. Fallback to non-generic catalog tags
 if (relatedTagsMap.size < 8) {
   for (const t of allTags) {
-    if (t.slug !== tag.slug && !relatedTagsMap.has(t.slug)) {
+    if (t.slug !== tag.slug && !relatedTagsMap.has(t.slug) && !GENERIC_FILTER_TAGS.has(t.slug)) {
       relatedTagsMap.set(t.slug, t);
     }
     if (relatedTagsMap.size >= 18) break;
@@ -162,7 +211,7 @@ const mostDownloadedRankings = [...wallpapersList]
   .slice(0, 5);
 const lsiSemanticLinks = relatedTagsWithThumbs.slice(12, 20);
 
-// Bottom Discovery Runway: 4 Split-Collage Collections (Verified WebP images)
+// Bottom Discovery Runway: 4 Split-Collage Collections (Verified 4K images)
 const runwayCollections = [
   {
     title: 'Cyberpunk & Night City',
@@ -170,7 +219,7 @@ const runwayCollections = [
     count: 142,
     href: '/collections/cyberpunk-night-city-pack',
     images: [
-      '/images/mockup_cards/card-2-neondrive.webp',
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
       'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
       'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?w=800&q=80'
     ]
@@ -181,9 +230,9 @@ const runwayCollections = [
     count: 215,
     href: '/tag/naruto',
     images: [
-      '/images/mockup_cards/card-3-shadowrealm.webp',
-      'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
-      'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+      'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg',
+      'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg'
     ]
   },
   {
@@ -192,9 +241,9 @@ const runwayCollections = [
     count: 185,
     href: '/tag/porsche-911',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.webp',
+      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
       'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800&q=80',
-      '/images/mockup_cards/card-2-neondrive.webp'
+      'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80'
     ]
   },
   {
@@ -203,9 +252,9 @@ const runwayCollections = [
     count: 280,
     href: '/collections/amoled-dark-void-pack',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.webp',
+      'https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg',
       'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-      '/images/mockup_cards/card-3-shadowrealm.webp'
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     ]
   }
 ];
@@ -249,7 +298,7 @@ const schema = {
       <!-- Subtle Background Ambient Glow -->
       <div class="absolute inset-0 z-0 pointer-events-none">
         <img
-          src={heroImage}
+          src={getOptimizedThumbUrl(heroImage, 400, 70)}
           alt={`${tagInfo.name} Backdrop Preview`}
           class="w-full h-full object-cover object-center opacity-20 filter blur-md scale-105"
         />
@@ -258,21 +307,21 @@ const schema = {
 
       <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 text-left">
         
-        <!-- Breadcrumbs (Clean, hierarchical, no hashtag) -->
+        <!-- Breadcrumbs (Clean, hierarchical tag taxonomy route) -->
         <nav class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#8E949E] font-mono mb-2.5 sm:mb-3 text-left overflow-x-auto no-scrollbar whitespace-nowrap">
           <a href="/" class="hover:text-white transition-colors">Home</a>
           <span>/</span>
-          <a href="/categories" class="hover:text-white transition-colors">Categories</a>
-          {parentCategory && parentCategory !== 'Curated' && (
+          <a href="/tags" class="hover:text-white transition-colors">Tags</a>
+          {parentCat && (
             <>
               <span>/</span>
-              <a href={`/category/${parentCategory.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-')}`} class="hover:text-white transition-colors">
-                {parentCategory}
+              <a href={`/category/${parentCat.slug || parentCat.id}`} class="hover:text-white transition-colors">
+                {parentCat.name}
               </a>
             </>
           )}
           <span>/</span>
-          <span class="text-walpix-lime font-bold">{tagInfo.name}</span>
+          <span class="text-walpix-lime font-bold">#{tagInfo.name}</span>
         </nav>
 
         <!-- Main Title & Editor's Note -->
@@ -317,7 +366,7 @@ const schema = {
                 >
                   <!-- Background Image -->
                   <img
-                    src={rTag.thumb}
+                    src={getOptimizedThumbUrl(rTag.thumb, 320, 80)}
                     alt={rTag.name}
                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                     loading="lazy"
@@ -384,7 +433,7 @@ const schema = {
                 >
                   <!-- Background Image -->
                   <img
-                    src={sub.thumb}
+                    src={getOptimizedThumbUrl(sub.thumb, 400, 80)}
                     alt={sub.name}
                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"
@@ -460,7 +509,7 @@ const schema = {
                     <!-- Main 16:9 Immersive Wallpaper Visual (Clickable anywhere) -->
                     <a href={`/wallpapers/${wp.slug}`} class="block relative aspect-[16/9] w-full overflow-hidden bg-black/60 cursor-pointer">
                       <img
-                        src={wp.sourceCdn}
+                        src={getOptimizedThumbUrl(wp.sourceCdn, 1200, 85)}
                         alt={wp.title}
                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                         loading={index < 2 ? "eager" : "lazy"}
@@ -488,7 +537,7 @@ const schema = {
                     </a>
 
                     <!-- Bottom Action & Meta Bar (WallpaperCat Standard) -->
-                    <div class="p-4 sm:p-5 bg-[#070b12] flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-white/[0.08]">
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-[#040609] via-[#080d14] to-[#040609] flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/[0.08]">
                       <!-- Title and Tag Info -->
                       <div class="min-w-0">
                         <a href={`/wallpapers/${wp.slug}`}>
@@ -511,28 +560,52 @@ const schema = {
                       </div>
 
                       <!-- Action Buttons -->
-                      <div class="flex items-center gap-2.5 shrink-0">
-                        <!-- Direct Instant 4K Download CTA -->
+                      <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 sm:gap-2.5 shrink-0 justify-between sm:justify-end">
+                        <!-- Creative Tools (Simulation, Resizer, Cropper) -->
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                          <a
+                            href={`/wallpapers/${wp.slug}#simulation`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Live Screen Simulation"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="hidden xl:inline">Simulation</span>
+                          </a>
+
+                          <a
+                            href={`/tool/resizer?url=${encodeURIComponent(wp.sourceCdn)}`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Canvas Resizer"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            </svg>
+                            <span class="hidden xl:inline">Resizer</span>
+                          </a>
+
+                          <a
+                            href={`/tool/cropper?url=${encodeURIComponent(wp.sourceCdn)}`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Custom Crop & Aspect Ratio"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z" />
+                            </svg>
+                            <span class="hidden xl:inline">Crop</span>
+                          </a>
+                        </div>
+
+                        <!-- Primary Download Button on Far Right -->
                         <a
                           href={`/wallpapers/${wp.slug}`}
-                          class="h-11 px-6 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-[#050608] font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_16px_rgba(194,255,6,0.3)] hover:shadow-[0_0_24px_rgba(194,255,6,0.5)] active:scale-95"
+                          class="h-10 px-5 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-[#050608] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_16px_rgba(194,255,6,0.3)] hover:shadow-[0_0_24px_rgba(194,255,6,0.5)] active:scale-95 shrink-0"
                         >
                           <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                           </svg>
-                          <span>Download</span>
-                        </a>
-
-                        <!-- Live Canvas Resizer / Crop Button -->
-                        <a
-                          href={`/tool/cropper?url=${encodeURIComponent(wp.sourceCdn)}`}
-                          class="h-11 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.14] border border-white/15 hover:border-white/30 text-xs font-bold text-white flex items-center gap-1.5 transition-all"
-                          title="Custom Crop & Resize"
-                        >
-                          <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z" />
-                          </svg>
-                          <span class="hidden sm:inline">Crop</span>
+                          <span>Download 4K</span>
                         </a>
                       </div>
                     </div>
@@ -587,7 +660,7 @@ const schema = {
                 >
                   <!-- Background Image -->
                   <img
-                    src={wp.sourceCdn}
+                    src={getOptimizedThumbUrl(wp.sourceCdn, 400, 80)}
                     alt={wp.title}
                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"

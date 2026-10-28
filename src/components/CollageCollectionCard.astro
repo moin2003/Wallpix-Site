@@ -1,4 +1,6 @@
 ---
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+
 interface Props {
   title: string;
   count: number;
@@ -19,14 +21,14 @@ const {
 
 // Ensure 3 images with fallback defaults
 const defaultFallbacks = [
-  '/images/mockup_cards/card-2-neondrive.jpg',
-  '/images/mockup_cards/card-1-mountain.jpg',
-  '/images/mockup_cards/card-6-nightbeast.jpg',
+  'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+  'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+  'https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg',
 ];
 
-const img1 = images[0] || defaultFallbacks[0];
-const img2 = images[1] || defaultFallbacks[1];
-const img3 = images[2] || defaultFallbacks[2];
+const img1 = getOptimizedThumbUrl(images[0] || defaultFallbacks[0], 480, 80);
+const img2 = getOptimizedThumbUrl(images[1] || defaultFallbacks[1], 360, 80);
+const img3 = getOptimizedThumbUrl(images[2] || defaultFallbacks[2], 360, 80);
 ---
 
 <a
@@ -43,7 +45,7 @@ const img3 = images[2] || defaultFallbacks[2];
         alt={`${title} Preview 1`}
         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
         loading="lazy"
-        onerror="this.src='/images/mockup_cards/card-2-neondrive.jpg'"
+        onerror="this.src='https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'"
       />
       <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
     </div>
@@ -55,7 +57,7 @@ const img3 = images[2] || defaultFallbacks[2];
         alt={`${title} Preview 2`}
         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
         loading="lazy"
-        onerror="this.src='/images/mockup_cards/card-1-mountain.jpg'"
+        onerror="this.src='https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'"
       />
       <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
     </div>
@@ -67,7 +69,7 @@ const img3 = images[2] || defaultFallbacks[2];
         alt={`${title} Preview 3`}
         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
         loading="lazy"
-        onerror="this.src='/images/mockup_cards/card-6-nightbeast.jpg'"
+        onerror="this.src='https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg'"
       />
       <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
     </div>

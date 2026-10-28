@@ -393,15 +393,23 @@ const formats = [
             const tags = card.getAttribute('data-tags') || '';
             const cat = card.getAttribute('data-category') || '';
 
+            const is916 = aspect === '9:16' || aspect.includes('9:16') || aspect.includes('vertical');
+            const is169 = aspect === '16:9' || aspect.includes('16:9') || (!is916 && !aspect.includes('32:9'));
+            const is329 = aspect.includes('32:9') || screens.includes('dual') || screens.includes('ultrawide');
+
             let match = false;
             if (formatKey === 'all') {
-              match = true;
+              if (window.innerWidth < 640) {
+                match = is916;
+              } else {
+                match = is169;
+              }
             } else if (formatKey === 'desktop') {
-              match = screens.includes('desktop') || aspect.includes('16:9') || tags.includes('desktop') || tags.includes('pc') || cat.includes('4k') || (!aspect.includes('9:16') && !aspect.includes('vertical'));
+              match = is169;
             } else if (formatKey === 'phone') {
-              match = screens.includes('phone') || screens.includes('mobile') || aspect.includes('9:16') || tags.includes('phone') || tags.includes('iphone') || tags.includes('amoled') || cat.includes('amoled') || !screens.includes('desktop-only');
+              match = is916;
             } else if (formatKey === 'dual') {
-              match = screens.includes('dual') || screens.includes('ultrawide') || aspect.includes('32:9') || tags.includes('dual') || tags.includes('ultrawide') || cat.includes('space');
+              match = is329;
             }
 
             if (match) {

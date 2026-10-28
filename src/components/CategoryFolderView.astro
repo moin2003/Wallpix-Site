@@ -3,6 +3,8 @@ import { MAIN_CATEGORIES } from '../data/taxonomy';
 import { CATEGORY_SUBFOLDERS, type SubFolderItem } from './CategorySubFolderStrip.astro';
 import AdCard from './AdCard.astro';
 import { ADSENSE_CONFIG } from '../config/adsense';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+import { getLiveSubTopicCount } from '../data/wallpapers';
 
 interface Props {
   className?: string;
@@ -13,71 +15,71 @@ const { className = '' } = Astro.props;
 // Curated high quality themed fallback covers for subtopics
 const fallbackThemedCovers: Record<string, string[]> = {
   'anime': [
-    '/images/mockup_cards/card-3-shadowrealm.jpg',
-    'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
-    'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-    '/images/mockup_cards/card-5-forestcalm.jpg',
-    '/images/mockup_cards/card-4-cosmichorizon.jpg',
-    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-    '/images/mockup_cards/card-3-shadowrealm.webp',
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+    'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-image.jpg',
+    'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-background-photo.jpg',
+    'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+    'https://wallpapercat.com/w/full/2/0/6/1215980-3840x2160-desktop-4k-goku-background-image.jpg',
+    'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
+    'https://wallpapercat.com/w/full/4/1/0/33422-3840x2160-desktop-4k-one-piece-background.jpg',
+    'https://wallpapercat.com/w/full/1/7/0/25940-3840x2160-desktop-4k-attack-on-titan-the-final-season-background.jpg',
   ],
   'gaming': [
-    '/images/mockup_cards/card-2-neondrive.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
     'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80',
     'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
     'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80',
     'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80',
-    '/images/mockup_cards/card-1-mountain.jpg',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
     'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&q=80',
-    '/images/mockup_cards/card-6-nightbeast.jpg',
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
   ],
   'cars': [
-    '/images/mockup_cards/card-1-mountain.jpg',
-    '/images/mockup_cards/card-6-nightbeast.jpg',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
     'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
-    '/images/mockup_cards/card-2-neondrive.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
     'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80',
     'https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&q=80',
   ],
   'amoled': [
-    '/images/mockup_cards/card-6-nightbeast.jpg',
-    '/images/mockup_cards/card-3-shadowrealm.jpg',
-    '/images/mockup_cards/card-2-neondrive.jpg',
-    '/images/mockup_cards/card-5-forestcalm.jpg',
-    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+    'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   ],
   'cyberpunk': [
-    '/images/mockup_cards/card-2-neondrive.jpg',
-    '/images/mockup_cards/card-4-cosmichorizon.jpg',
-    '/images/mockup_cards/card-3-shadowrealm.jpg',
-    '/images/mockup_cards/card-6-nightbeast.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
   ],
   'space': [
-    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
     'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
     'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800&q=80',
   ],
   'nature': [
-    '/images/mockup_cards/card-1-mountain.jpg',
-    '/images/mockup_cards/card-5-forestcalm.jpg',
-    '/images/mockup_cards/card-4-cosmichorizon.jpg',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
+    'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+    'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
   ],
   'superheroes': [
     'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&q=80',
-    '/images/mockup_cards/card-6-nightbeast.jpg',
-    '/images/mockup_cards/card-2-neondrive.jpg',
-    '/images/mockup_cards/card-3-shadowrealm.jpg',
+    'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
+    'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+    'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
   ],
 };
 
 const defaultFallbacks = [
-  '/images/mockup_cards/card-1-mountain.jpg',
-  '/images/mockup_cards/card-2-neondrive.jpg',
-  '/images/mockup_cards/card-3-shadowrealm.jpg',
-  '/images/mockup_cards/card-4-cosmichorizon.jpg',
-  '/images/mockup_cards/card-5-forestcalm.jpg',
-  '/images/mockup_cards/card-6-nightbeast.jpg',
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
+  'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+  'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+  'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
+  'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+  'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
 ];
 
 const ALL_CATEGORY_KEYS = [
@@ -121,12 +123,14 @@ const categoryFolderCatalog = ALL_CATEGORY_KEYS.map((catKey) => {
     const sub = taxSubtopics[i];
     if (!existingSlugs.has(sub.slug)) {
       existingSlugs.add(sub.slug);
+      const liveCount = getLiveSubTopicCount(sub.slug);
+      const countDisplay = liveCount > 0 ? `${liveCount} Wallpapers` : (sub.count.includes('Wallpapers') ? sub.count : `${sub.count} Wallpapers`);
       mergedFolders.push({
         name: sub.name,
         slug: sub.slug,
-        count: sub.count.includes('Wallpapers') ? sub.count : `${sub.count} Wallpapers`,
+        count: countDisplay,
         badge: `${catName} Hub`,
-        thumb: fallbackList[i % fallbackList.length],
+        thumb: (sub as any).cover || fallbackList[i % fallbackList.length],
         tagQuery: sub.slug
       });
     }
@@ -145,24 +149,8 @@ const categoryFolderCatalog = ALL_CATEGORY_KEYS.map((catKey) => {
 
 // High-Speed Thumbnail Optimizer
 function getFolderThumb(rawUrl: string): string {
-  if (!rawUrl) return '/images/mockup_cards/card-1-mountain.webp';
-  if (rawUrl.startsWith('/images/mockup_cards/') && rawUrl.endsWith('.jpg')) {
-    return rawUrl.replace('.jpg', '.webp');
-  }
-  if (rawUrl.includes('images.unsplash.com')) {
-    try {
-      const u = new URL(rawUrl);
-      u.searchParams.set('w', '440');
-      u.searchParams.set('q', '70');
-      u.searchParams.set('auto', 'format');
-      u.searchParams.set('fit', 'crop');
-      u.searchParams.set('fm', 'webp');
-      return u.toString();
-    } catch {
-      return rawUrl;
-    }
-  }
-  return rawUrl;
+  if (!rawUrl) return 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg';
+  return getOptimizedThumbUrl(rawUrl, 440, 80);
 }
 ---
 
@@ -180,7 +168,7 @@ function getFolderThumb(rawUrl: string): string {
           return (
             <>
               <a
-                href={`/tag/${folder.slug}`}
+                href={`/category/${catGroup.slug}/${folder.slug}`}
                 class="group relative block aspect-[16/9] w-full rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/70 shadow-xl hover:shadow-[0_10px_35px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
               >
                 <!-- Full-Bleed 16:9 Thumbnail -->
@@ -190,7 +178,7 @@ function getFolderThumb(rawUrl: string): string {
                   loading="lazy"
                   decoding="async"
                   class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
-                  onerror="this.src='/images/mockup_cards/card-1-mountain.webp'"
+                  onerror="this.src='https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'"
                 />
 
                 <!-- Cinematic Dark Vignette Overlay -->

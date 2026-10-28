@@ -1,0 +1,725 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import WallpaperCard from '../../../components/WallpaperCard.astro';
+import GalleryWallpaperCard from '../../../components/GalleryWallpaperCard.astro';
+import AdSenseLeaderboard from '../../../components/AdSenseLeaderboard.astro';
+import CollageCollectionCard from '../../../components/CollageCollectionCard.astro';
+import Footer from '../../../components/Footer.astro';
+import { ADSENSE_CONFIG } from '../../../config/adsense';
+import { MAIN_CATEGORIES } from '../../../data/taxonomy';
+import { getAllTags, getWallpapersByTag, slugifyTag, wallpapers, getLiveSubTopicCount } from '../../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../../utils/imageOptimizer';
+
+export async function getStaticPaths() {
+  const tagCounts = new Map<string, number>();
+  wallpapers.forEach((w) => {
+    const seen = new Set<string>();
+    (w.tags || []).forEach((t) => {
+      const s = slugifyTag(t);
+      if (s && !seen.has(s)) {
+        seen.add(s);
+        tagCounts.set(s, (tagCounts.get(s) || 0) + 1);
+      }
+    });
+  });
+
+  const paths: any[] = [];
+  MAIN_CATEGORIES.forEach((cat) => {
+    const catSlug = cat.slug || cat.id;
+    const subs = cat.subTopics || [];
+    subs.forEach((sub) => {
+      const sSlug = slugifyTag(sub.slug);
+      const directCount = tagCounts.get(sSlug) || 0;
+      const parsedCount = parseInt(String(sub.count).replace(/[^0-9]/g, '')) || 24;
+      const count = directCount > 0 ? directCount : parsedCount;
+      paths.push({
+        params: { category: catSlug, slug: sSlug },
+        props: {
+          categoryInfo: { id: cat.id, name: cat.name, slug: catSlug },
+          subTopicInfo: { name: sub.name, slug: sSlug, count },
+        },
+      });
+    });
+  });
+
+  return paths;
+}
+
+interface Props {
+  categoryInfo: { id: string; name: string; slug: string };
+  subTopicInfo: { name: string; slug: string; count: number };
+}
+
+const { categoryInfo, subTopicInfo } = Astro.props;
+const subTopic = subTopicInfo;
+const allTags = getAllTags();
+
+// Fetch direct matching wallpapers from catalog
+const directMatches = getWallpapersByTag(subTopic.slug);
+
+// Parent category details
+const parentCategory = categoryInfo.name;
+
+// Find related wallpapers within the same parent category
+const sameCategoryWallpapers = wallpapers.filter(
+  (w) =>
+    (w.category || '').toLowerCase().includes(categoryInfo.id.toLowerCase()) ||
+    (w.category || '').toLowerCase().includes(categoryInfo.slug.toLowerCase())
+);
+
+// Fallback stream if direct matches are fewer than 6
+const wallpapersList =
+  directMatches.length > 0
+    ? directMatches
+    : sameCategoryWallpapers.slice(0, 18);
+
+// Similar wallpapers for bottom multi-column grid
+const streamIds = new Set(wallpapersList.slice(0, 8).map((w) => w.id));
+const potentialSimilar = wallpapers.filter(
+  (w) =>
+    !streamIds.has(w.id) &&
+    ((categoryInfo && (w.category || '').toLowerCase().includes(categoryInfo.id.toLowerCase())) ||
+      (w.tags && w.tags.some((t) => t.toLowerCase().includes(subTopic.slug) || subTopic.slug.includes(t.toLowerCase()))))
+);
+const similarWallpapers = Array.from(
+  new Set([...potentialSimilar, ...sameCategoryWallpapers.filter((w) => !streamIds.has(w.id))])
+).slice(0, 8);
+
+// Intelligent related sibling subtopics from same category
+const siblingSubTopics = (MAIN_CATEGORIES.find((c) => c.id === categoryInfo.id)?.subTopics || [])
+  .filter((s) => s.slug !== subTopic.slug)
+  .slice(0, 18);
+
+function getThumbnailForSub(sSlug: string, index = 0): string {
+  const match = wallpapers.find(
+    (w) =>
+      w.sourceCdn?.startsWith('http') &&
+      (w.tags || []).some((t) => slugifyTag(t) === sSlug)
+  );
+  if (match?.sourceCdn) return match.sourceCdn;
+  if (sameCategoryWallpapers[index % sameCategoryWallpapers.length]?.sourceCdn) {
+    return sameCategoryWallpapers[index % sameCategoryWallpapers.length].sourceCdn;
+  }
+  return 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg';
+}
+
+const relatedTagsWithThumbs = siblingSubTopics.map((sib, i) => {
+  const liveCount = getLiveSubTopicCount(sib.slug);
+  return {
+    name: sib.name,
+    slug: sib.slug,
+    count: liveCount > 0 ? liveCount : (parseInt((sib as any).count?.replace(/[^0-9]/g, '')) || 24),
+    thumb: getThumbnailForSub(sib.slug, i),
+  };
+});
+
+const discoverMoreSubEntities = relatedTagsWithThumbs.slice(0, 4);
+const categorySiblingLinks = relatedTagsWithThumbs.slice(4, 12);
+const mostDownloadedRankings = [...wallpapersList]
+  .sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
+  .slice(0, 5);
+const lsiSemanticLinks = relatedTagsWithThumbs.slice(12, 20);
+
+const heroImage = wallpapersList[0]?.sourceCdn || '/images/hero-astronaut-master.png';
+const pageTitle = `${subTopic.name} Wallpapers (4K UHD Free Download) - ${categoryInfo.name} | WALPIX 4K`;
+const metaDescription = `Download ultra-high definition 4K ${subTopic.name} wallpapers for Windows 11, Mac, iPhone, Android, and dual-monitor battlestations. Curated ultra-resolution collection from ${categoryInfo.name}, 100% free with no watermark.`;
+
+// Runway Collections
+const runwayCollections = [
+  {
+    title: 'Cyberpunk & Night City',
+    category: 'Cyberpunk',
+    count: 142,
+    href: '/collections/cyberpunk-night-city-pack',
+    images: [
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+      'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?w=800&q=80',
+    ],
+  },
+  {
+    title: 'Anime Legends & Samurai',
+    category: 'Anime',
+    count: 215,
+    href: '/category/anime/naruto',
+    images: [
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
+      'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-photo.jpg',
+      'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-tv-series-background-photo.jpg',
+    ],
+  },
+  {
+    title: 'Track Beasts & Supercars',
+    category: 'Cars',
+    count: 185,
+    href: '/category/cars/nissan-skyline',
+    images: [
+      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
+      'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800&q=80',
+      'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
+    ],
+  },
+  {
+    title: 'Pure Black OLED Void',
+    category: 'AMOLED',
+    count: 280,
+    href: '/collections/amoled-dark-void-pack',
+    images: [
+      'https://wallpapercat.com/w/full/2/0/9/71103-3840x2160-desktop-4k-red-dead-redemption-wallpaper-image.jpg',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
+    ],
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${subTopic.name} 4K Wallpapers - ${categoryInfo.name}`,
+  description: metaDescription,
+  url: `https://walpix.site/category/${categoryInfo.slug}/${subTopic.slug}`,
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://walpix.site/' },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://walpix.site/categories' },
+      { '@type': 'ListItem', position: 3, name: categoryInfo.name, item: `https://walpix.site/category/${categoryInfo.slug}` },
+      { '@type': 'ListItem', position: 4, name: subTopic.name, item: `https://walpix.site/category/${categoryInfo.slug}/${subTopic.slug}` },
+    ],
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: wallpapersList.slice(0, 12).map((wp, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'ImageObject',
+        name: wp.title,
+        contentUrl: wp.sourceCdn,
+        url: `https://walpix.site/wallpapers/${wp.slug}`,
+      },
+    })),
+  },
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={metaDescription}
+  image={heroImage}
+  schema={schema}
+>
+  <!-- Global Navigation Header -->
+  <Header />
+
+  <main class="min-h-screen bg-[#020406] text-left">
+    <!-- Top Header & Breadcrumbs Section -->
+    <section class="relative w-full overflow-hidden bg-[#030508] border-b border-white/[0.08] pt-6 pb-6">
+      <!-- Subtle Background Ambient Glow -->
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src={getOptimizedThumbUrl(heroImage, 400, 70)}
+          alt={`${subTopic.name} Backdrop Preview`}
+          class="w-full h-full object-cover object-center opacity-20 filter blur-md scale-105"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#020406] via-[#020406]/95 to-[#020406]/85"></div>
+      </div>
+
+      <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 text-left">
+        <!-- Breadcrumbs (Clean, hierarchical silo, 100% matched to URL) -->
+        <nav class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#8E949E] font-mono mb-2.5 sm:mb-3 text-left overflow-x-auto no-scrollbar whitespace-nowrap">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <a href="/categories" class="hover:text-white transition-colors">Categories</a>
+          <span>/</span>
+          <a href={`/category/${categoryInfo.slug}`} class="hover:text-white transition-colors">
+            {categoryInfo.name}
+          </a>
+          <span>/</span>
+          <span class="text-walpix-lime font-bold">{subTopic.name}</span>
+        </nav>
+
+        <!-- Main Title & Editor's Note -->
+        <div class="space-y-1.5 sm:space-y-2 text-left">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 class="text-xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+              {subTopic.name} <span class="text-walpix-lime">Wallpapers</span>
+            </h1>
+            <span class="px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full bg-walpix-lime/10 border border-walpix-lime/30 text-[10px] sm:text-xs font-mono text-walpix-lime font-bold">
+              {wallpapersList.length} 4K Assets
+            </span>
+          </div>
+
+          <p class="text-[11px] sm:text-sm text-gray-400 max-w-3xl leading-relaxed line-clamp-2 sm:line-clamp-none">
+            <span class="text-gray-300 font-semibold">Editor's note:</span> Handpicked ultra HD lossless 4K backgrounds and mobile wallpapers for {subTopic.name}. Free instant download with zero watermarks.
+          </p>
+        </div>
+
+        <!-- Luxury Interactive Sibling Sub-Topics Carousel -->
+        {relatedTagsWithThumbs.length > 0 && (
+          <div class="mt-3 sm:mt-5 pt-2.5 sm:pt-4 border-t border-white/[0.08]">
+            <div class="tag-strip-wrapper relative w-full flex items-center gap-1.5 sm:gap-2">
+              <button
+                class="tag-btn-left hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5"
+                aria-label="Scroll left"
+              >
+                <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div class="tag-scroll-track flex items-center gap-2 sm:gap-3.5 overflow-x-auto no-scrollbar scroll-smooth py-1 sm:py-1.5 px-0.5 sm:px-1 flex-grow min-w-0 select-none cursor-grab">
+                {relatedTagsWithThumbs.map((rTag) => (
+                  <a
+                    href={`/category/${categoryInfo.slug}/${rTag.slug}`}
+                    class={`group relative shrink-0 h-[38px] sm:h-[52px] min-w-[125px] sm:min-w-[190px] rounded-lg sm:rounded-xl overflow-hidden border transition-all duration-300 select-none flex items-center px-2.5 sm:px-3 py-1.5 sm:py-2 cursor-pointer ${
+                      rTag.slug === subTopic.slug
+                        ? 'border-walpix-lime ring-1 sm:ring-2 ring-walpix-lime/30 shadow-[0_0_14px_rgba(194,255,6,0.3)]'
+                        : 'border-white/10 hover:border-walpix-lime/70 hover:shadow-[0_4px_20px_rgba(194,255,6,0.25)] hover:-translate-y-0.5'
+                    }`}
+                  >
+                    <img
+                      src={getOptimizedThumbUrl(rTag.thumb, 320, 80)}
+                      alt={rTag.name}
+                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/75 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/65 transition-colors"></div>
+
+                    <div class="relative z-10 flex flex-col justify-center min-w-0 w-full">
+                      <span class="text-[11px] sm:text-[13px] font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        {rTag.name}
+                      </span>
+                      <span class="text-[9px] sm:text-[10px] text-zinc-300/90 font-mono mt-0.5">
+                        {rTag.count} Wallpapers
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              <button
+                class="tag-btn-right hidden sm:flex items-center justify-center shrink-0 select-none z-20 hover:scale-110 transition-all duration-200 cursor-pointer text-walpix-lime p-0.5"
+                aria-label="Scroll right"
+              >
+                <svg class="w-6 h-6 text-walpix-lime drop-shadow-[0_0_8px_rgba(194,255,6,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Tri-Link Architecture Main Content Area -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 py-6 sm:py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[290px_minmax(0,1fr)_290px] xl:grid-cols-[320px_minmax(0,1fr)_320px] gap-6 xl:gap-8 items-start">
+        
+        <!-- LEFT SIDEBAR -->
+        <aside class="space-y-6 order-2 lg:order-1 sticky top-24">
+          <!-- Discover More -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-walpix-lime uppercase tracking-wider pb-1">
+              <svg class="w-3.5 h-3.5 text-walpix-lime" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z" />
+              </svg>
+              <span>Discover More</span>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2.5 lg:gap-3.5">
+              {discoverMoreSubEntities.map((sub) => (
+                <a
+                  href={`/category/${categoryInfo.slug}/${sub.slug}`}
+                  class="group relative block aspect-[16/10] lg:aspect-[16/9] w-full rounded-xl lg:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_8px_25px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                >
+                  <img
+                    src={getOptimizedThumbUrl(sub.thumb, 400, 80)}
+                    alt={sub.name}
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  <div class="absolute inset-x-0 bottom-0 p-2.5 lg:p-3.5 z-10">
+                    <h4 class="text-xs lg:text-sm font-bold text-white group-hover:text-walpix-lime truncate transition-colors leading-tight">
+                      {sub.name}
+                    </h4>
+                    <span class="text-[10px] lg:text-[11px] font-mono text-gray-300 group-hover:text-white block mt-0.5">
+                      {sub.count} Wallpapers
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Top in Category -->
+          <div class="p-3.5 sm:p-4 rounded-xl lg:rounded-2xl bg-[#070a0f]/90 border border-white/[0.10] space-y-2.5 shadow-lg">
+            <div class="pb-2 border-b border-white/[0.08]">
+              <h3 class="text-xs font-mono font-bold text-gray-200 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
+                <span>More in {categoryInfo.name}</span>
+              </h3>
+            </div>
+
+            <div class="flex flex-wrap lg:flex-col gap-1.5 lg:space-y-1.5 text-xs">
+              {categorySiblingLinks.map((sib) => (
+                <a
+                  href={`/category/${categoryInfo.slug}/${sib.slug}`}
+                  class="flex items-center justify-between py-1.5 px-2 rounded-lg bg-white/[0.03] lg:bg-transparent text-gray-300 hover:text-walpix-lime hover:bg-white/[0.06] transition-all group font-medium"
+                >
+                  <span class="group-hover:translate-x-1 transition-transform truncate">
+                    {sib.name}
+                  </span>
+                  <span class="text-[10px] font-mono text-gray-500 group-hover:text-walpix-lime shrink-0 pl-1">
+                    {sib.count}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <!-- CENTER COLUMN: Responsive Stream -->
+        <section class="order-1 lg:order-2 min-w-0">
+          <!-- MOBILE & TABLET (< lg): 2-Column Responsive Wallpaper Grid -->
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 lg:hidden">
+            {wallpapersList.map((wp, index) => (
+              <WallpaperCard wallpaper={wp} priority={index < 4} />
+            ))}
+          </div>
+
+          <!-- DESKTOP (>= lg): 1-Per-Row Large Immersive Stream -->
+          <div class="hidden lg:block space-y-8">
+            {wallpapersList.map((wp, index) => {
+              const showStreamAd = ADSENSE_CONFIG.isLive && (index === 3 || index === 8);
+              return (
+                <>
+                  <div class="group relative rounded-3xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-2xl transition-all duration-300">
+                    <a href={`/wallpapers/${wp.slug}`} class="block relative aspect-[16/9] w-full overflow-hidden bg-black/60 cursor-pointer">
+                      <img
+                        src={getOptimizedThumbUrl(wp.sourceCdn, 1200, 85)}
+                        alt={wp.title}
+                        class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                        loading={index < 2 ? 'eager' : 'lazy'}
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-[#070b12] via-transparent to-black/20 opacity-70 group-hover:opacity-30 transition-opacity"></div>
+                      <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-walpix-lime/40 text-xs font-mono font-bold text-walpix-lime shadow-lg">
+                          4K UHD
+                        </span>
+                        <span class="px-2.5 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 text-xs font-mono text-gray-200 shadow-lg">
+                          16:9
+                        </span>
+                      </div>
+                      <div class="absolute bottom-4 left-4 z-10">
+                        <span class="px-3 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 text-xs font-mono text-white font-semibold shadow-lg">
+                          3840 × 2160
+                        </span>
+                      </div>
+                    </a>
+
+                    <div class="p-4 sm:p-5 bg-gradient-to-r from-[#040609] via-[#080d14] to-[#040609] flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/[0.08]">
+                      <div class="min-w-0">
+                        <a href={`/wallpapers/${wp.slug}`}>
+                          <h3 class="text-base sm:text-lg font-bold text-white group-hover:text-walpix-lime transition-colors truncate">
+                            {wp.title}
+                          </h3>
+                        </a>
+                        <div class="flex items-center gap-2 text-xs text-gray-400 font-mono mt-1">
+                          <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            {wp.downloads?.toLocaleString() || '18.4K'} downloads
+                          </span>
+                          <span>•</span>
+                          <span>{wp.views?.toLocaleString() || '45K'} views</span>
+                          <span>•</span>
+                          <span class="text-walpix-lime font-bold">100% Free 4K</span>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 sm:gap-2.5 shrink-0 justify-between sm:justify-end">
+                        <!-- Creative Tools (Simulation, Resizer, Cropper) -->
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                          <a
+                            href={`/wallpapers/${wp.slug}#simulation`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Live Screen Simulation"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="hidden xl:inline">Simulation</span>
+                          </a>
+
+                          <a
+                            href={`/tool/resizer?url=${encodeURIComponent(wp.sourceCdn)}`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Canvas Resizer"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            </svg>
+                            <span class="hidden xl:inline">Resizer</span>
+                          </a>
+
+                          <a
+                            href={`/tool/cropper?url=${encodeURIComponent(wp.sourceCdn)}`}
+                            class="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 hover:border-walpix-lime/40 text-xs font-semibold text-white/80 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Custom Crop & Aspect Ratio"
+                          >
+                            <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.242 4.243 3 3 0 004.242-4.243zm0-5.758a3 3 0 10-4.242-4.243 3 3 0 004.242 4.243z" />
+                            </svg>
+                            <span class="hidden xl:inline">Crop</span>
+                          </a>
+                        </div>
+
+                        <!-- Primary Download Button on Far Right -->
+                        <a
+                          href={`/wallpapers/${wp.slug}`}
+                          class="h-10 px-5 rounded-xl bg-walpix-lime hover:bg-walpix-lime-bright text-[#050608] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_16px_rgba(194,255,6,0.3)] hover:shadow-[0_0_24px_rgba(194,255,6,0.5)] active:scale-95 shrink-0"
+                        >
+                          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                          </svg>
+                          <span>Download 4K</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {showStreamAd && (
+                    <div class="p-6 rounded-3xl bg-[#05070a] border border-white/[0.09] shadow-xl text-center flex flex-col justify-between min-h-[140px] relative overflow-hidden select-none">
+                      <div class="flex items-center justify-between text-[10px] font-mono mb-2">
+                        <span class="text-walpix-lime uppercase tracking-widest font-bold">FOR ADVERTISEMENT</span>
+                        <span class="px-2 py-0.5 rounded bg-walpix-lime/10 border border-walpix-lime/25 text-walpix-lime font-bold uppercase text-[9px]">IN-FEED SPONSOR</span>
+                      </div>
+                      <div class="my-auto py-2">
+                        <h4 class="text-base font-bold text-white">Targeted High-RPM 4K Ad Unit</h4>
+                        <p class="text-xs text-[#8E949E] mt-0.5">Native in-feed placement viewed by high-intent desktop and mobile wallpaper downloaders</p>
+                      </div>
+                      <div class="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                        <span>AdSense In-Feed Standard</span>
+                        <a href="/contact" class="text-walpix-lime hover:underline font-bold inline-flex items-center gap-1">
+                          <span>Advertise Here</span>
+                          <span>→</span>
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })}
+          </div>
+        </section>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="space-y-6 order-3 sticky top-24">
+          <!-- Most Downloaded -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-walpix-lime uppercase tracking-wider pb-1">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.527.82-1.144 2.08-1.533 3.486-.39 1.408-.574 2.822-.574 3.966 0 1.07.25 2.062.707 2.894.453.824 1.11 1.48 1.884 1.904a5.006 5.006 0 002.393.596c.928 0 1.777-.258 2.493-.728a5.003 5.003 0 001.764-1.898c.45-.828.693-1.815.693-2.868 0-.91-.184-1.92-.516-2.956-.33-1.037-.84-2.023-1.442-2.842a1 1 0 00-.776-.394 1 1 0 00-.818.423c-.34.46-.714.887-1.113 1.272a7.001 7.001 0 01-.743-1.345z" clip-rule="evenodd" />
+              </svg>
+              <span>Most Downloaded</span>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2.5 lg:gap-3.5">
+              {mostDownloadedRankings.map((wp, idx) => (
+                <a
+                  href={`/wallpapers/${wp.slug}`}
+                  class="group relative block aspect-[16/10] lg:aspect-[16/9] w-full rounded-xl lg:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_8px_25px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                >
+                  <img
+                    src={getOptimizedThumbUrl(wp.sourceCdn, 400, 80)}
+                    alt={wp.title}
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  <div class="absolute top-2 left-2 z-10">
+                    <span class={`w-5 h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center text-[10px] lg:text-[11px] font-black shadow-md ${
+                      idx === 0 ? 'bg-amber-400 text-black' : idx === 1 ? 'bg-slate-200 text-black' : idx === 2 ? 'bg-amber-600 text-white' : 'bg-neutral-800 text-white/80'
+                    }`}>
+                      {idx + 1}
+                    </span>
+                  </div>
+                  <div class="absolute inset-x-0 bottom-0 p-2.5 lg:p-3.5 z-10">
+                    <h4 class="text-xs lg:text-sm font-bold text-white group-hover:text-walpix-lime truncate transition-colors leading-tight">
+                      {wp.title}
+                    </h4>
+                    <span class="text-[10px] lg:text-[11px] font-mono text-walpix-lime font-bold flex items-center gap-1 mt-0.5">
+                      <svg class="w-3 h-3 text-walpix-lime inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      {wp.downloads?.toLocaleString() || '18.4K'}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Semantic Links -->
+          <div class="p-4 rounded-2xl bg-[#070a0f]/90 border border-white/[0.10] space-y-2.5 shadow-lg">
+            <div class="pb-2 border-b border-white/[0.08]">
+              <h3 class="text-xs font-mono font-bold text-gray-200 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+                <span>Related Series</span>
+              </h3>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5">
+              {lsiSemanticLinks.map((lsi) => (
+                <a
+                  href={`/category/${categoryInfo.slug}/${lsi.slug}`}
+                  class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-walpix-lime/10 border border-white/[0.08] hover:border-walpix-lime/40 text-[11px] font-mono text-gray-300 hover:text-walpix-lime transition-all"
+                >
+                  #{lsi.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Right Ad Slot -->
+          <div class="p-4 rounded-2xl bg-neutral-900/80 border border-white/10 text-center min-h-[200px] flex flex-col justify-between shadow-xl">
+            <span class="text-[10px] font-mono text-[#8E949E] uppercase tracking-wider block">
+              SPONSORED PLACEMENT
+            </span>
+            <div class="my-auto py-2">
+              <span class="text-xs font-bold text-white block">AdSense High-RPM Slot</span>
+              <span class="text-[10px] text-gray-400">Fixed container • Zero CLS</span>
+            </div>
+            <span class="text-[9px] font-mono text-walpix-lime/70">WALPIX 4K Safe Ad Viewport</span>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+
+    <!-- Similar Wallpapers Grid -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 py-10 border-t border-white/[0.08] bg-[#030508]/60">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-walpix-lime/10 border border-walpix-lime/30 flex items-center justify-center text-walpix-lime shadow-[0_0_12px_rgba(194,255,6,0.15)]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Similar 4K <span class="text-walpix-lime">Wallpapers</span>
+            </h2>
+            <p class="text-xs text-gray-400 mt-0.5">
+              More high-resolution wallpapers from {categoryInfo.name} & related series.
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={`/category/${categoryInfo.slug}`}
+          class="text-xs font-mono text-walpix-lime hover:underline font-bold flex items-center gap-1 self-start sm:self-center"
+        >
+          <span>All {categoryInfo.name} Wallpapers</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-5">
+        {similarWallpapers.map((wp, idx) => (
+          <GalleryWallpaperCard wallpaper={wp} index={idx} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Bottom AdSense Banner -->
+    <div class="w-full px-4 sm:px-8 lg:px-12 my-6">
+      <AdSenseLeaderboard slotId="category-subfolder-bottom-leaderboard" />
+    </div>
+
+    <!-- Runway Collections -->
+    <section class="w-full px-4 sm:px-8 lg:px-12 pb-20 pt-6 border-t border-white/[0.06]">
+      <div class="flex items-center justify-between mb-8 pb-3 border-b border-white/[0.08]">
+        <div>
+          <span class="text-xs font-mono font-bold text-walpix-lime uppercase tracking-widest block mb-1">
+            Infinite Discovery Runway
+          </span>
+          <h2 class="text-2xl font-bold text-white tracking-tight">
+            Explore More <span class="text-walpix-lime">Collections</span>
+          </h2>
+        </div>
+        <a href="/collections" class="text-xs font-mono text-walpix-lime hover:underline font-bold flex items-center gap-1">
+          <span>View All 500+ Packs</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {runwayCollections.map((col) => (
+          <CollageCollectionCard
+            title={col.title}
+            category={col.category}
+            count={col.count}
+            href={col.href}
+            images={col.images}
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const tagWrappers = document.querySelectorAll<HTMLElement>('.tag-strip-wrapper');
+  tagWrappers.forEach((wrapper) => {
+    const track = wrapper.querySelector<HTMLElement>('.tag-scroll-track');
+    const leftBtn = wrapper.querySelector<HTMLButtonElement>('.tag-btn-left');
+    const rightBtn = wrapper.querySelector<HTMLButtonElement>('.tag-btn-right');
+
+    if (!track) return;
+
+    function updateArrowState() {
+      if (!track || !leftBtn || !rightBtn) return;
+      const scrollLeft = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (scrollLeft <= 5) {
+        leftBtn.style.opacity = '0.3';
+        leftBtn.style.pointerEvents = 'none';
+      } else {
+        leftBtn.style.opacity = '1';
+        leftBtn.style.pointerEvents = 'auto';
+      }
+
+      if (maxScroll > 0 && scrollLeft >= maxScroll - 5) {
+        rightBtn.style.opacity = '0.3';
+        rightBtn.style.pointerEvents = 'none';
+      } else {
+        rightBtn.style.opacity = '1';
+        rightBtn.style.pointerEvents = 'auto';
+      }
+    }
+
+    updateArrowState();
+    track.addEventListener('scroll', updateArrowState);
+    window.addEventListener('resize', updateArrowState);
+
+    leftBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+
+    rightBtn?.addEventListener('click', () => {
+      track.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+  });
+</script>

@@ -7,6 +7,7 @@ import ColorPaletteFilter from '../../components/ColorPaletteFilter.astro';
 import WallpaperGrid from '../../components/WallpaperGrid.astro';
 import Footer from '../../components/Footer.astro';
 import { SCREEN_TYPES, getWallpapersByScreen, wallpapers, type ScreenTypeHub, type Wallpaper } from '../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 import OrientationToggle from '../../components/OrientationToggle.astro';
 
@@ -79,7 +80,7 @@ const schema = {
       <!-- Backdrop Preview Glow -->
       <div class="absolute inset-0 z-0">
         <img
-          src={heroImage}
+          src={getOptimizedThumbUrl(heroImage, 400, 70)}
           alt={`${screenInfo.name} Backdrop Preview`}
           class="w-full h-full object-cover object-center opacity-25 filter blur-[3px] scale-105"
         />

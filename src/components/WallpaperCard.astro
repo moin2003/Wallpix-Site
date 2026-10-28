@@ -17,7 +17,8 @@ const cardFallback = isAnime
   ? 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
   : (wallpaper.sourceCdn?.startsWith('http') ? wallpaper.sourceCdn : 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80');
 
-const thumbSrc = getOptimizedThumbUrl(wallpaper.sourceCdn, priority ? 640 : 480, 80) || cardFallback;
+const thumbSrc = getOptimizedThumbUrl(wallpaper.sourceCdn, priority ? 640 : 480, 80) || '/images/placeholder-wallpaper.webp';
+const tier2Fallback = `https://wsrv.nl/?url=${encodeURIComponent(wallpaper.sourceCdn)}&w=480&q=80&output=webp`;
 ---
 
 <div
@@ -42,7 +43,7 @@ const thumbSrc = getOptimizedThumbUrl(wallpaper.sourceCdn, priority ? 640 : 480,
       decoding="async"
       referrerpolicy="no-referrer"
       class="w-full h-full object-cover select-none transition-transform duration-300 ease-out group-hover:scale-105"
-      onerror={`if(!this.dataset.fb){this.dataset.fb='1';setTimeout(()=>{this.src='${thumbSrc}';},600);}else{this.src='/images/placeholder-wallpaper.webp';}`}
+      onerror={`if(!this.dataset.triedFallback){this.dataset.triedFallback='1';this.src='${tier2Fallback}';}else{this.src='/images/placeholder-wallpaper.webp';}`}
     />
 
     <!-- Top Badges Overlay (Res + Aspect - Solid Dark Capsule, No Heavy Backdrop Blur) -->

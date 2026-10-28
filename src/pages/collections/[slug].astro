@@ -7,6 +7,7 @@ import OrientationToggle from '../../components/OrientationToggle.astro';
 import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
 import { collections } from '../../data/collections';
 import { wallpapers } from '../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 export function getStaticPaths() {
   return collections.map((col) => ({
@@ -49,7 +50,7 @@ const packWallpapers = wallpapers.filter((w) =>
         <!-- Ambient Backdrop -->
         <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/60 z-10"></div>
         <img
-          src={collection.coverImage}
+          src={getOptimizedThumbUrl(collection.coverImage, 640, 80)}
           alt={collection.title}
           class="absolute inset-0 w-full h-full object-cover opacity-35"
         />

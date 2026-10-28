@@ -10,6 +10,7 @@ import Footer from '../../components/Footer.astro';
 import { ADSENSE_CONFIG } from '../../config/adsense';
 import { TOPIC_HUBS, type TopicHub } from '../../data/topics';
 import { wallpapers, type Wallpaper } from '../../data/wallpapers';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 export async function getStaticPaths() {
   return TOPIC_HUBS.map((topic) => {
@@ -71,7 +72,7 @@ const runwayCollections = [
     count: 142,
     href: '/collections/cyberpunk-night-city-pack',
     images: [
-      '/images/mockup_cards/card-2-neondrive.webp',
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
       'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
       'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?w=800&q=80'
     ]
@@ -82,7 +83,7 @@ const runwayCollections = [
     count: 215,
     href: '/tag/naruto',
     images: [
-      '/images/mockup_cards/card-3-shadowrealm.webp',
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
       'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
       'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
     ]
@@ -93,9 +94,9 @@ const runwayCollections = [
     count: 185,
     href: '/tag/porsche-911',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.webp',
+      'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
       'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800&q=80',
-      '/images/mockup_cards/card-2-neondrive.webp'
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     ]
   },
   {
@@ -104,9 +105,9 @@ const runwayCollections = [
     count: 280,
     href: '/collections/amoled-dark-void-pack',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.webp',
+      'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
       'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-      '/images/mockup_cards/card-3-shadowrealm.webp'
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
     ]
   }
 ];
@@ -149,7 +150,7 @@ const schema = {
       <!-- Backdrop Glow -->
       <div class="absolute inset-0 z-0 pointer-events-none">
         <img
-          src={heroImage}
+          src={getOptimizedThumbUrl(heroImage, 400, 70)}
           alt={topicInfo.name}
           class="w-full h-full object-cover object-center opacity-20 filter blur-md scale-105"
         />
@@ -241,7 +242,7 @@ const schema = {
                     <!-- Main 16:9 Immersive Wallpaper Visual -->
                     <a href={`/wallpapers/${wp.slug}`} class="block relative aspect-[16/9] w-full overflow-hidden bg-black/60 cursor-pointer">
                       <img
-                        src={wp.sourceCdn}
+                        src={getOptimizedThumbUrl(wp.sourceCdn, 1200, 85)}
                         alt={wp.title}
                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                         loading={index < 2 ? "eager" : "lazy"}
@@ -355,7 +356,7 @@ const schema = {
                   class="group relative block aspect-[16/9] w-full rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.12] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_8px_25px_rgba(194,255,6,0.25)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                 >
                   <img
-                    src={wp.sourceCdn}
+                    src={getOptimizedThumbUrl(wp.sourceCdn, 400, 80)}
                     alt={wp.title}
                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"

@@ -1,4 +1,6 @@
 ---
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
+
 interface Props {
   imageUrl: string;
   title: string;
@@ -55,7 +57,7 @@ const { imageUrl, title } = Astro.props;
         <!-- Screen Content -->
         <div class="relative aspect-[16/10] rounded-lg overflow-hidden bg-black border border-black/50 shadow-inner">
           <img
-            src={imageUrl}
+            src={getOptimizedThumbUrl(imageUrl, 640, 80)}
             alt={`${title} on desktop screen`}
             referrerpolicy="no-referrer"
             class="w-full h-full object-cover"
@@ -85,7 +87,7 @@ const { imageUrl, title } = Astro.props;
         <!-- Mobile Screen Content -->
         <div class="relative aspect-[9/19.5] rounded-[30px] overflow-hidden bg-black shadow-inner">
           <img
-            src={imageUrl}
+            src={getOptimizedThumbUrl(imageUrl, 400, 80)}
             alt={`${title} on mobile screen`}
             referrerpolicy="no-referrer"
             class="w-full h-full object-cover"

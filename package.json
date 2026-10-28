@@ -6,7 +6,9 @@
     "dev": "node --max-old-space-size=8192 ./node_modules/astro/astro.js dev --host",
     "start": "node --max-old-space-size=8192 ./node_modules/astro/astro.js dev --host",
     "build": "node --max-old-space-size=8192 ./node_modules/astro/astro.js build",
-    "preview": "node --max-old-space-size=8192 ./node_modules/astro/astro.js preview"
+    "preview": "node --max-old-space-size=8192 ./node_modules/astro/astro.js preview",
+    "studio": "node scripts/studio.mjs",
+    "ping": "node scripts/ping-search-engines.mjs"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",

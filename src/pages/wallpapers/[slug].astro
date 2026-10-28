@@ -5,7 +5,9 @@ import Footer from '../../components/Footer.astro';
 import WallpaperCard from '../../components/WallpaperCard.astro';
 import CollageCollectionCard from '../../components/CollageCollectionCard.astro';
 import { wallpapers, SCREEN_TYPES, slugifyTag, type Wallpaper } from '../../data/wallpapers';
+import { MAIN_CATEGORIES } from '../../data/taxonomy';
 import { ADSENSE_CONFIG } from '../../config/adsense';
+import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 // Curated 4-Card Split-Collage Runway for Bottom Discovery
 const bottomRunwayCollections = [
@@ -15,7 +17,7 @@ const bottomRunwayCollections = [
     count: 142,
     href: '/collections/cyberpunk-night-city-pack',
     images: [
-      '/images/mockup_cards/card-2-neondrive.jpg',
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
       'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
       'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?w=800&q=80'
     ]
@@ -26,7 +28,7 @@ const bottomRunwayCollections = [
     count: 215,
     href: '/tag/naruto',
     images: [
-      '/images/mockup_cards/card-3-shadowrealm.jpg',
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
       'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
       'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'
     ]
@@ -37,9 +39,9 @@ const bottomRunwayCollections = [
     count: 185,
     href: '/tag/porsche-911',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.jpg',
+      'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
       'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800&q=80',
-      '/images/mockup_cards/card-2-neondrive.jpg'
+      'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
     ]
   },
   {
@@ -48,9 +50,9 @@ const bottomRunwayCollections = [
     count: 280,
     href: '/collections/amoled-dark-void-pack',
     images: [
-      '/images/mockup_cards/card-6-nightbeast.jpg',
+      'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
       'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-      '/images/mockup_cards/card-3-shadowrealm.jpg'
+      'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
     ]
   }
 ];
@@ -143,30 +145,80 @@ const tagsList = wallpaper.tags && wallpaper.tags.length > 0
 const currentScreenTypes = wallpaper.screenTypes || ['desktop-4k', 'phone-iphone'];
 const supportedScreens = SCREEN_TYPES.filter((s) => currentScreenTypes.includes(s.key));
 
-// Query highly relevant Similar Wallpapers (Strictly deduplicated by slug and image)
-const similarWallpapers = wallpapers
-  .filter((w) => w.slug !== wallpaper.slug)
-  .filter((w) => {
-    const sameCategory = (w.category || '').toLowerCase() === (wallpaper.category || '').toLowerCase();
-    const sharedTags = (w.tags || []).some((t) => (wallpaper.tags || []).includes(t));
-    return sameCategory || sharedTags;
-  });
+// Parent Category & Sub-Topic Silo Resolution
+const parentCategory = MAIN_CATEGORIES.find((c) =>
+  (wallpaper.category || '').toLowerCase().includes(c.id.toLowerCase()) ||
+  (wallpaper.category || '').toLowerCase().includes(c.name.toLowerCase()) ||
+  (c.subTopics || []).some((s) => (wallpaper.tags || []).some((t) => slugifyTag(t) === s.slug))
+);
+const categoryHubInfo = parentCategory || null;
 
-const uniquePool = [
-  ...similarWallpapers,
-  ...wallpapers.filter((w) => w.slug !== wallpaper.slug)
+// Stop-words & System tokens to exclude from similarity matching
+const SIMILARITY_STOP_TAGS = new Set([
+  'desktop', 'phone', 'mobile', '4k', '8k', 'hd', 'uhd', 'ultra-hd', 'ultra',
+  '1080p', 'wallpaper', 'wallpapers', 'background', 'backgrounds',
+  'free', 'download', 'curated', 'lossless', 'vertical', 'horizontal', 'amoled',
+  'minimal', 'wallpapercat', 'aesthetic', 'and', 'the', 'photo', 'image', 'cool'
+]);
+
+const currentSpecificTags = (wallpaper.tags || [])
+  .map((t) => slugifyTag(t))
+  .filter((t) => !SIMILARITY_STOP_TAGS.has(t));
+
+const wpCatLower = (wallpaper.category || '').toLowerCase();
+const parentCatId = (parentCategory?.id || '').toLowerCase();
+const parentCatName = (parentCategory?.name || '').toLowerCase();
+
+// Strict Category Pool (Guarantees zero cross-category pollution)
+const strictCategoryPool = wallpapers.filter((w) => {
+  if (w.slug === wallpaper.slug) return false;
+  const wCat = (w.category || '').toLowerCase();
+  const matchCategory =
+    (parentCatId && (wCat.includes(parentCatId) || parentCatId.includes(wCat))) ||
+    (parentCatName && (wCat.includes(parentCatName) || parentCatName.includes(wCat))) ||
+    (wpCatLower && (wCat.includes(wpCatLower) || wpCatLower.includes(wCat)));
+  return matchCategory;
+});
+
+// 1. Same-franchise / specific tag matches inside same universe
+const franchiseMatches = strictCategoryPool.filter((w) => {
+  const wTags = (w.tags || []).map((t) => slugifyTag(t));
+  return currentSpecificTags.some((t) => wTags.includes(t));
+});
+
+// 2. Remaining wallpapers from the exact same category
+const remainingSameCategory = strictCategoryPool.filter((w) => !franchiseMatches.includes(w));
+
+const candidatePool = [
+  ...franchiseMatches,
+  ...remainingSameCategory
 ];
 
 const seenSlugs = new Set<string>();
 const seenImages = new Set<string>();
 const displaySimilar: Wallpaper[] = [];
 
-for (const wp of uniquePool) {
+for (const wp of candidatePool) {
   if (displaySimilar.length >= 8) break;
   if (!seenSlugs.has(wp.slug) && !seenImages.has(wp.sourceCdn)) {
     seenSlugs.add(wp.slug);
     seenImages.add(wp.sourceCdn);
     displaySimilar.push(wp);
+  }
+}
+
+// Fallback only if candidate pool < 8
+if (displaySimilar.length < 8) {
+  for (const wp of wallpapers) {
+    if (displaySimilar.length >= 8) break;
+    if (wp.slug !== wallpaper.slug && !seenSlugs.has(wp.slug) && !seenImages.has(wp.sourceCdn)) {
+      const wCat = (wp.category || '').toLowerCase();
+      if (wCat.includes(wpCatLower) || wpCatLower.includes(wCat)) {
+        seenSlugs.add(wp.slug);
+        seenImages.add(wp.sourceCdn);
+        displaySimilar.push(wp);
+      }
+    }
   }
 }
 
@@ -378,7 +430,7 @@ const schema = {
                   <div class="w-full bg-[#16181b] rounded-t-xl p-2.5 sm:p-3 pb-1.5 border-t border-x border-white/25 shadow-2xl">
                     <div class="relative aspect-[16/10] rounded-lg overflow-hidden bg-black shadow-inner border border-black">
                       <img
-                        src={wallpaper.sourceCdn}
+                        src={getOptimizedThumbUrl(wallpaper.sourceCdn, 800, 85)}
                         alt={`${wallpaper.title} on MacBook Pro 16"`}
                         referrerpolicy="no-referrer"
                         class="w-full h-full object-cover object-center"
@@ -407,7 +459,7 @@ const schema = {
                     </div>
                     <div class="relative w-full h-full rounded-[28px] overflow-hidden bg-black shadow-inner">
                       <img
-                        src={wallpaper.sourceCdn}
+                        src={getOptimizedThumbUrl(wallpaper.sourceCdn, 400, 85)}
                         alt={`${wallpaper.title} on iPhone 16 Pro`}
                         referrerpolicy="no-referrer"
                         class="w-full h-full object-cover object-center"
@@ -430,7 +482,7 @@ const schema = {
                   </div>
                   <div class="relative w-full h-full rounded-[38px] overflow-hidden bg-black shadow-inner">
                     <img
-                      src={wallpaper.sourceCdn}
+                      src={getOptimizedThumbUrl(wallpaper.sourceCdn, 500, 85)}
                       alt={`${wallpaper.title} on iPhone 16 Pro Max`}
                       referrerpolicy="no-referrer"
                       class="w-full h-full object-cover object-center"
@@ -491,7 +543,7 @@ const schema = {
                   <!-- Screen -->
                   <div class="relative w-full h-full rounded-[20px] overflow-hidden bg-black shadow-inner">
                     <img
-                      src={wallpaper.sourceCdn}
+                      src={getOptimizedThumbUrl(wallpaper.sourceCdn, 600, 85)}
                       alt={`${wallpaper.title} on iPad Pro 13"`}
                       referrerpolicy="no-referrer"
                       class="w-full h-full object-cover object-center"
@@ -516,7 +568,7 @@ const schema = {
                   <!-- Monitor 1 (Left Half) -->
                   <div class="flex-1 aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 relative">
                     <img
-                      src={wallpaper.sourceCdn}
+                      src={getOptimizedThumbUrl(wallpaper.sourceCdn, 800, 85)}
                       alt={`${wallpaper.title} Dual Monitor Left`}
                       referrerpolicy="no-referrer"
                       class="w-[200%] h-full object-cover object-left max-w-none"
@@ -528,7 +580,7 @@ const schema = {
                   <!-- Monitor 2 (Right Half) -->
                   <div class="flex-1 aspect-[16/9] rounded-lg overflow-hidden bg-black border border-white/10 relative">
                     <img
-                      src={wallpaper.sourceCdn}
+                      src={getOptimizedThumbUrl(wallpaper.sourceCdn, 800, 85)}
                       alt={`${wallpaper.title} Dual Monitor Right`}
                       referrerpolicy="no-referrer"
                       class="w-[200%] h-full object-cover object-right max-w-none -translate-x-1/2"
@@ -726,7 +778,7 @@ const schema = {
                 <button
                   id="main-download-btn"
                   data-url={wallpaper.sourceCdn}
-                  data-filename={`${wallpaper.slug}-4k.jpg`}
+                  data-filename={`walpix-${wallpaper.slug}-4k.jpg`}
                   data-width="3840"
                   data-height="2160"
                   class="primary-download flex-1 h-[50px] sm:h-[58px] px-3.5 sm:px-5 flex items-center justify-between gap-2.5 sm:gap-3 group cursor-pointer transition-all duration-300 hover:scale-[1.005] active:scale-[0.99]"
@@ -1492,6 +1544,45 @@ const schema = {
          ======================================================== -->
     <div class="relative z-10 w-full px-3 sm:px-8 lg:px-12 pb-16 space-y-12">
       
+      {categoryHubInfo && (
+        <!-- ========================================================
+             CATEGORY SILO & SUB-TOPIC DISCOVERY HUB
+             ======================================================== -->
+        <section class="w-full pt-6 border-t border-white/[0.08]">
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-walpix-lime shadow-[0_0_10px_#C2FF06]"></span>
+              <h2 class="text-base sm:text-2xl font-display font-bold text-white tracking-tight">
+                Explore <span class="text-walpix-lime">{categoryHubInfo.name}</span> Universe
+              </h2>
+            </div>
+            <a
+              href={`/category/${categoryHubInfo.slug}`}
+              class="text-xs font-mono text-walpix-lime hover:underline font-bold flex items-center gap-1 shrink-0"
+            >
+              <span>View All in {categoryHubInfo.name}</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <!-- Sibling Franchise Sub-topics Chips Strip -->
+          {categoryHubInfo.subTopics && categoryHubInfo.subTopics.length > 0 && (
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-3">
+              {categoryHubInfo.subTopics.slice(0, 12).map((sub) => (
+                <a
+                  href={`/category/${categoryHubInfo.slug}/${sub.slug}`}
+                  class="group shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-walpix-lime/50 transition-all text-xs text-white/80 hover:text-white"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-white/30 group-hover:bg-walpix-lime transition-colors"></span>
+                  <span class="font-medium group-hover:text-walpix-lime transition-colors">{sub.name}</span>
+                  <span class="text-[10px] font-mono text-white/40">{sub.count}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
       <!-- ========================================================
            SIMILAR 4K WALLPAPERS (Dedicated Mobile 2-Col Portrait 9:16 vs Desktop 4-Col Landscape)
            ======================================================== -->
@@ -1524,11 +1615,11 @@ const schema = {
               >
                 <!-- Image with centered cover -->
                 <img
-                  src={wp.sourceCdn}
+                  src={getOptimizedThumbUrl(wp.sourceCdn, 480, 80)}
                   alt={wp.title}
                   loading="lazy"
                   class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out select-none"
-                  onerror="this.src='/images/mockup_cards/card-1-mountain.webp'"
+                  onerror="this.src='https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'"
                 />
                 <!-- Top Badges Overlay (4K UHD + 9:16 Badge) -->
                 <div class="relative z-10 flex items-center justify-between pointer-events-none">
@@ -1625,6 +1716,18 @@ const schema = {
       aria-modal="true"
       aria-label="Fullscreen Phone Wallpaper Preview"
     >
+      <!-- Fixed Corner Close Button for Instant Exit on any screen size -->
+      <button
+        id="close-fullscreen-modal-corner-btn"
+        type="button"
+        class="fixed top-4 right-4 z-[130] w-10 h-10 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-2xl active:scale-95"
+        aria-label="Close Preview"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
       <!-- Top Control Bar -->
       <div class="w-full max-w-sm flex items-center justify-between z-30 pt-1 px-1">
         <button
@@ -2038,7 +2141,7 @@ const schema = {
       if (downloadBtn && w && h && name) {
         downloadBtn.setAttribute('data-width', w);
         downloadBtn.setAttribute('data-height', h);
-        const originalFilename = downloadBtn.getAttribute('data-filename') || 'wallpaper.jpg';
+        const originalFilename = downloadBtn.getAttribute('data-filename') || 'walpix-wallpaper.jpg';
         const baseName = originalFilename.replace(/-(4k|2k|1080p|iphone|samsung)\.jpg$/, '');
         downloadBtn.setAttribute('data-filename', `${baseName}-${suffix}.jpg`);
 
@@ -2057,7 +2160,7 @@ const schema = {
   if (downloadBtn) {
     downloadBtn.addEventListener('click', async () => {
       const url = downloadBtn.getAttribute('data-url');
-      const filename = downloadBtn.getAttribute('data-filename') || 'wallpaper-4k.jpg';
+      const filename = downloadBtn.getAttribute('data-filename') || 'walpix-wallpaper-4k.jpg';
       const targetW = parseInt(downloadBtn.getAttribute('data-width') || '3840');
       const targetH = parseInt(downloadBtn.getAttribute('data-height') || '2160');
 
@@ -2308,11 +2411,12 @@ const schema = {
     });
   });
 
-  // 9. Fullscreen Phone Preview Modal Controls
+  // 9. Fullscreen 4K Viewer & Phone Preview Modal Controls
   const phoneModal = document.getElementById('fullscreen-phone-modal');
-  const openModalBtn = document.getElementById('open-fullscreen-preview-btn');
-  const quickModalBtn = document.getElementById('preview-fullscreen-quick-btn');
+  const openModalBtn = document.getElementById('open-fullscreen-preview-btn'); // 4K viewer expand button
+  const quickModalBtn = document.getElementById('preview-fullscreen-quick-btn'); // Phone Preview button
   const closeModalBtn = document.getElementById('close-fullscreen-modal-btn');
+  const cornerCloseModalBtn = document.getElementById('close-fullscreen-modal-corner-btn');
   const toggleLockscreenBtn = document.getElementById('toggle-lockscreen-ui-btn');
   const lockscreenOverlay = document.getElementById('modal-lockscreen-overlay');
   const lockscreenToggleText = document.getElementById('lockscreen-toggle-text');
@@ -2334,9 +2438,35 @@ const schema = {
     }
   };
 
-  openModalBtn?.addEventListener('click', openPhoneModal);
+  // Expand button on 4K viewer triggers TRUE native fullscreen for desktop/laptop
+  openModalBtn?.addEventListener('click', () => {
+    const viewerContainer = document.getElementById('detail-viewer-container');
+    if (viewerContainer) {
+      if (!document.fullscreenElement) {
+        if (viewerContainer.requestFullscreen) {
+          viewerContainer.requestFullscreen().catch(() => {});
+        } else if ((viewerContainer as any).webkitRequestFullscreen) {
+          (viewerContainer as any).webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    }
+  });
+
+  // Dedicated "Phone Preview" button opens the phone lockscreen simulation modal
   quickModalBtn?.addEventListener('click', openPhoneModal);
   closeModalBtn?.addEventListener('click', closePhoneModal);
+  cornerCloseModalBtn?.addEventListener('click', closePhoneModal);
+
+  // Click outside modal content / on backdrop to close
+  phoneModal?.addEventListener('click', (e) => {
+    if (e.target === phoneModal) {
+      closePhoneModal();
+    }
+  });
 
   // Close on ESC
   document.addEventListener('keydown', (e) => {

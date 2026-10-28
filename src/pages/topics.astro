@@ -8,6 +8,7 @@ import TopicStrip from '../components/TopicStrip.astro';
 import { TOPIC_HUBS } from '../data/topics';
 import { RESOLUTION_GROUPS } from '../data/resolutions';
 import { wallpapers } from '../data/wallpapers';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -126,7 +127,7 @@ const androidResolutions = androidGroup?.items || [];
                   <!-- 16:9 Wallpaper Visual Preview -->
                   <div class="relative aspect-[16/9] w-full overflow-hidden bg-black/60">
                     <img
-                      src={topic.cover}
+                      src={getOptimizedThumbUrl(topic.cover, 500, 80)}
                       alt={topic.name}
                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       loading="lazy"

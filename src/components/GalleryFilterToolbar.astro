@@ -446,18 +446,31 @@ const categories = [
     });
   });
 
-  // Category Filter Matching with Instant Responsive Transition
-  function filterWallpapers(cat: string) {
+  // Category & Search Filter Matching with Instant Responsive Transition
+  function filterWallpapers(cat: string, searchQuery?: string) {
     currentCategory = cat;
     const cards = document.querySelectorAll<HTMLElement>('.walpix-gallery-card-item');
     const ads = document.querySelectorAll<HTMLElement>('.gallery-ad-item');
 
     let visibleCount = 0;
+    const cleanQuery = (searchQuery || '').trim().toLowerCase();
+    const queryTokens = cleanQuery ? cleanQuery.split(/\s+/).filter(Boolean) : [];
 
     cards.forEach((c) => {
       const itemCat = (c.getAttribute('data-category') || '').toLowerCase();
       const itemTags = (c.getAttribute('data-tags') || '').toLowerCase();
       const itemTitle = (c.getAttribute('data-title') || '').toLowerCase();
+
+      // 1. If search query exists, card MUST match search query tokens
+      if (queryTokens.length > 0) {
+        const matchesQuery = queryTokens.every((token) =>
+          itemTitle.includes(token) || itemTags.includes(token) || itemCat.includes(token)
+        );
+        if (!matchesQuery) {
+          c.style.display = 'none';
+          return;
+        }
+      }
 
       let isMatch = false;
 
@@ -519,53 +532,21 @@ const categories = [
       }
     });
 
-    // Handle in-feed ads
+    // Handle in-feed ads (only on unfiltered 'all' view)
     ads.forEach((ad) => {
-      ad.style.display = cat === 'all' ? 'block' : 'none';
+      ad.style.display = (cat === 'all' && !cleanQuery) ? 'block' : 'none';
     });
 
-    // Handle Category Folder Card Views vs Single Wallpaper Grid
-    const allFolderViews = document.querySelectorAll<HTMLElement>('.category-folders-view');
+    // Handle Gallery Grid visibility & Empty State based on visible items
     const orientationWrapper = document.getElementById('gallery-orientation-wrapper');
-    const targetFolderView = document.getElementById(`category-folders-${cat}`);
+    if (orientationWrapper) orientationWrapper.classList.remove('hidden');
 
-    if (cat === 'all') {
-      // ALL WALLPAPERS: Show full 4-column wallpaper grid, hide all folder views
-      allFolderViews.forEach((v) => {
-        v.classList.add('hidden');
-        v.classList.remove('block');
-      });
-      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
+    if (visibleCount === 0) {
+      if (gridContainer) gridContainer.classList.add('hidden');
+      if (emptyState) emptyState.classList.remove('hidden');
+    } else {
       if (gridContainer) gridContainer.classList.remove('hidden');
       if (emptyState) emptyState.classList.add('hidden');
-    } else if (targetFolderView) {
-      // CATEGORY SELECTED (e.g. Anime, Gaming, Cars, AMOLED): Show Category Franchise Folders Grid
-      allFolderViews.forEach((v) => {
-        if (v === targetFolderView) {
-          v.classList.remove('hidden');
-          v.classList.add('block');
-        } else {
-          v.classList.add('hidden');
-          v.classList.remove('block');
-        }
-      });
-      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
-      if (gridContainer) gridContainer.classList.add('hidden');
-      if (emptyState) emptyState.classList.add('hidden');
-    } else {
-      // Fallback if no specific folder view exists
-      allFolderViews.forEach((v) => {
-        v.classList.add('hidden');
-        v.classList.remove('block');
-      });
-      if (orientationWrapper) orientationWrapper.classList.remove('hidden');
-      if (visibleCount === 0) {
-        if (gridContainer) gridContainer.classList.add('hidden');
-        if (emptyState) emptyState.classList.remove('hidden');
-      } else {
-        if (gridContainer) gridContainer.classList.remove('hidden');
-        if (emptyState) emptyState.classList.add('hidden');
-      }
     }
 
     window.dispatchEvent(new CustomEvent('walpix-category-change', { detail: { category: cat } }));
@@ -583,8 +564,40 @@ const categories = [
     });
   });
 
+  // URL Parameter auto-synchronization (Search query / Category from header)
+  function initGalleryFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search') || urlParams.get('q');
+    const catParam = urlParams.get('category');
+
+    if (searchParam) {
+      const desktopSearch = document.getElementById('global-search-input') as HTMLInputElement | null;
+      const mobileSearch = document.getElementById('mobile-search-input') as HTMLInputElement | null;
+      if (desktopSearch) desktopSearch.value = searchParam;
+      if (mobileSearch) mobileSearch.value = searchParam;
+      filterWallpapers(catParam || 'all', searchParam);
+    } else if (catParam) {
+      const targetPill = document.querySelector<HTMLButtonElement>(`[data-category-filter="${catParam}"]`);
+      if (targetPill) {
+        filterPills.forEach((b) => b.classList.remove('active'));
+        targetPill.classList.add('active');
+        filterWallpapers(catParam);
+      }
+    }
+  }
+
+  initGalleryFromUrl();
+  document.addEventListener('astro:page-load', initGalleryFromUrl);
+
   // Reset Filter Button
   resetBtn?.addEventListener('click', () => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    window.history.replaceState({}, '', url.pathname);
+    const desktopSearch = document.getElementById('global-search-input') as HTMLInputElement | null;
+    const mobileSearch = document.getElementById('mobile-search-input') as HTMLInputElement | null;
+    if (desktopSearch) desktopSearch.value = '';
+    if (mobileSearch) mobileSearch.value = '';
     const allBtn = document.querySelector<HTMLButtonElement>('[data-category-filter="all"]');
     allBtn?.click();
   });

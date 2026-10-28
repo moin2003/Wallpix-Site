@@ -1,5 +1,6 @@
 ---
 import { TOPIC_HUBS } from '../data/topics';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 // Comprehensive Category Sub-Folders Database for WALPIX 4K
 export interface SubFolderItem {
@@ -36,7 +37,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'naruto',
         count: '1,420+ Wallpapers',
         badge: 'Sage Mode 4K',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/3/1/141742-3840x2160-desktop-4k-naruto-wallpaper-image.jpg',
         tagQuery: 'naruto'
       },
       {
@@ -44,7 +45,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'jujutsu-kaisen',
         count: '980+ Wallpapers',
         badge: 'Cursed Realm',
-        thumb: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80',
+        thumb: 'https://wallpapercat.com/w/full/0/f/4/24693-3840x2160-desktop-4k-jujutsu-kaisen-background-photo.jpg',
         tagQuery: 'jujutsu-kaisen'
       },
       {
@@ -52,7 +53,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'studio-ghibli',
         count: '850+ Wallpapers',
         badge: 'Miyazaki Scenic',
-        thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+        thumb: 'https://wallpapercat.com/w/full/1/6/d/138467-3840x2160-desktop-4k-spirited-away-background-photo.jpg',
         tagQuery: 'studio-ghibli'
       },
       {
@@ -60,7 +61,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'demon-slayer',
         count: '1,120+ Wallpapers',
         badge: 'Breathing Styles',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/a/c/182832-2339x1654-desktop-hd-demon-slayer-kimetsu-no-yaiba-background-image.jpg',
         tagQuery: 'demon-slayer'
       },
       {
@@ -68,7 +69,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'dragon-ball',
         count: '1,250+ Wallpapers',
         badge: 'Ultra Instinct',
-        thumb: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80',
+        thumb: 'https://wallpapercat.com/w/full/2/0/6/1215980-3840x2160-desktop-4k-goku-background-image.jpg',
         tagQuery: 'dragon-ball'
       },
       {
@@ -76,7 +77,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'attack-on-titan',
         count: '890+ Wallpapers',
         badge: 'Shingeki 4K',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/1/7/0/25940-3840x2160-desktop-4k-attack-on-titan-the-final-season-background.jpg',
         tagQuery: 'attack-on-titan'
       },
       {
@@ -84,7 +85,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'one-piece',
         count: '1,540+ Wallpapers',
         badge: 'Gear 5 Joyboy',
-        thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
+        thumb: 'https://wallpapercat.com/w/full/4/1/0/33422-3840x2160-desktop-4k-one-piece-background.jpg',
         tagQuery: 'one-piece'
       },
       {
@@ -92,32 +93,32 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'bleach',
         count: '740+ Wallpapers',
         badge: 'Thousand-Year War',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/1/f/7/49788-3840x2160-desktop-4k-bleach-wallpaper-photo.jpg',
         tagQuery: 'bleach'
       },
       {
-        name: 'Chainsaw Man',
-        slug: 'chainsaw-man',
+        name: 'Cool Anime Backgrounds',
+        slug: 'cool-anime-backgrounds',
         count: '680+ Wallpapers',
-        badge: 'Devil Hunter',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.webp',
-        tagQuery: 'chainsaw-man'
+        badge: 'Aesthetic 4K',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
+        tagQuery: 'cool-anime-backgrounds'
       },
       {
-        name: 'Solo Leveling',
-        slug: 'solo-leveling',
+        name: 'Berserk',
+        slug: 'berserk',
         count: '590+ Wallpapers',
-        badge: 'Shadow Monarch',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
-        tagQuery: 'solo-leveling'
+        badge: 'Dark Fantasy',
+        thumb: 'https://wallpapercat.com/w/full/0/9/0/1644033-3840x2160-desktop-4k-berserk-background-image.jpg',
+        tagQuery: 'berserk'
       },
       {
-        name: 'Anime Blade Samurai',
-        slug: 'samurai',
+        name: 'Tokyo Ghoul',
+        slug: 'tokyo-ghoul',
         count: '820+ Wallpapers',
-        badge: 'Katana Mist',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
-        tagQuery: 'samurai'
+        badge: 'Ken Kaneki',
+        thumb: 'https://wallpapercat.com/w/full/f/0/c/1561630-3840x2160-desktop-4k-tokyo-ghoul-wallpaper.jpg',
+        tagQuery: 'tokyo-ghoul'
       }
     ]
   },
@@ -136,7 +137,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'cyberpunk-2077',
         count: '1,650+ Wallpapers',
         badge: 'Night City Overdrive',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'cyberpunk-2077'
       },
       {
@@ -144,7 +145,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'elden-ring',
         count: '1,120+ Wallpapers',
         badge: 'Lands Between',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'elden-ring'
       },
       {
@@ -184,7 +185,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'the-witcher',
         count: '890+ Wallpapers',
         badge: 'White Wolf',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'witcher'
       },
       {
@@ -192,7 +193,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'need-for-speed',
         count: '980+ Wallpapers',
         badge: 'Heat & Unbound',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'racing'
       },
       {
@@ -228,7 +229,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'amoled-black',
         count: '3,200+ Wallpapers',
         badge: '#000000 0% Lit',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'amoled-black'
       },
       {
@@ -236,7 +237,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'fluid',
         count: '1,450+ Wallpapers',
         badge: 'Fluid Waveform',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'waveform'
       },
       {
@@ -244,7 +245,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'neon',
         count: '1,820+ Wallpapers',
         badge: 'HDR Glow',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'neon'
       },
       {
@@ -252,7 +253,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'particles',
         count: '980+ Wallpapers',
         badge: 'Luxury Particle',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'gold'
       },
       {
@@ -260,7 +261,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'dark-aesthetic',
         count: '890+ Wallpapers',
         badge: 'Minimal 3D',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'geometric'
       },
       {
@@ -268,7 +269,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'gt3',
         count: '1,240+ Wallpapers',
         badge: 'Stealth Automotive',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'gt3'
       }
     ]
@@ -288,7 +289,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'porsche-911',
         count: '1,850+ Wallpapers',
         badge: 'Track Weapon',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'porsche'
       },
       {
@@ -296,7 +297,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'lamborghini',
         count: '2,120+ Wallpapers',
         badge: 'V12 Hypercar',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'lamborghini'
       },
       {
@@ -312,7 +313,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'nissan-skyline',
         count: '1,420+ Wallpapers',
         badge: 'JDM Legend',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'nissan'
       },
       {
@@ -336,7 +337,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'supercar',
         count: '1,320+ Wallpapers',
         badge: 'Midnight City Glow',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'night'
       }
     ]
@@ -356,7 +357,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'tokyo',
         count: '2,450+ Wallpapers',
         badge: 'Rain Neon 4K',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'tokyo'
       },
       {
@@ -364,7 +365,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'synthwave',
         count: '1,920+ Wallpapers',
         badge: 'Outrun Sunset',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'synthwave'
       },
       {
@@ -372,7 +373,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'samurai',
         count: '1,350+ Wallpapers',
         badge: 'Katana Glow',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'samurai'
       },
       {
@@ -380,7 +381,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'cyber-jaguar',
         count: '680+ Wallpapers',
         badge: 'Mecha Predator',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'cyber'
       },
       {
@@ -388,7 +389,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'highway',
         count: '1,240+ Wallpapers',
         badge: 'Infinite Road',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'highway'
       }
     ]
@@ -408,7 +409,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'black-hole',
         count: '1,950+ Wallpapers',
         badge: 'Singularity 4K',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'interstellar'
       },
       {
@@ -432,7 +433,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'planet',
         count: '2,140+ Wallpapers',
         badge: 'Exoplanet Vista',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'cosmic'
       }
     ]
@@ -460,7 +461,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'batman',
         count: '2,920+ Wallpapers',
         badge: 'Gotham Sentinel',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'batman'
       },
       {
@@ -468,7 +469,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'marvel',
         count: '2,240+ Wallpapers',
         badge: 'Infinity Tech',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'marvel'
       },
       {
@@ -476,7 +477,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'superhero',
         count: '1,560+ Wallpapers',
         badge: 'Cinematic Action',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'superhero'
       }
     ]
@@ -496,7 +497,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'mountain',
         count: '2,480+ Wallpapers',
         badge: 'Alps & Dolomites',
-        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        thumb: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
         tagQuery: 'mountain'
       },
       {
@@ -504,7 +505,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'waterfall',
         count: '1,580+ Wallpapers',
         badge: 'Crystal River',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'canyon'
       },
       {
@@ -512,7 +513,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'aurora',
         count: '1,720+ Wallpapers',
         badge: 'Arctic Aurora',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'aurora'
       },
       {
@@ -520,7 +521,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'lake',
         count: '1,420+ Wallpapers',
         badge: 'Serene Reflections',
-        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        thumb: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
         tagQuery: 'lake'
       },
       {
@@ -528,7 +529,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'forest',
         count: '1,940+ Wallpapers',
         badge: 'Autumn Mist',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'forest'
       }
     ]
@@ -548,7 +549,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'thomas-shelby',
         count: '1,680+ Wallpapers',
         badge: 'Vintage Noir',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'thomas-shelby'
       },
       {
@@ -556,7 +557,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'interstellar',
         count: '1,840+ Wallpapers',
         badge: 'Nolan Masterpiece',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: 'interstellar'
       },
       {
@@ -564,7 +565,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'gotham',
         count: '2,100+ Wallpapers',
         badge: 'Gotham Noir',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'dark-knight'
       }
     ]
@@ -584,7 +585,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'dunes',
         count: '1,240+ Wallpapers',
         badge: 'Matte Dunes',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'monolith'
       },
       {
@@ -592,7 +593,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'fluid',
         count: '1,480+ Wallpapers',
         badge: 'Fluid 4K',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'waveform'
       },
       {
@@ -600,7 +601,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'geometry',
         count: '920+ Wallpapers',
         badge: 'Pure Obsidian',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'geometric'
       }
     ]
@@ -620,7 +621,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'liquid',
         count: '1,450+ Wallpapers',
         badge: 'Liquid Metal',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'liquid'
       },
       {
@@ -628,7 +629,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'prism',
         count: '1,280+ Wallpapers',
         badge: 'Optical Prism',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'prism'
       },
       {
@@ -636,7 +637,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'particles',
         count: '1,620+ Wallpapers',
         badge: 'Gold Dust',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'particles'
       }
     ]
@@ -656,7 +657,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'dragon',
         count: '1,740+ Wallpapers',
         badge: 'Dragon Citadel',
-        thumb: '/images/mockup_cards/card-5-forestcalm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/8/9/3/5816714-3840x2160-desktop-hd-cool-anime-backgrounds-photo.jpg',
         tagQuery: 'dragon'
       },
       {
@@ -684,7 +685,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'tokyo',
         count: '2,240+ Wallpapers',
         badge: 'Shibuya Rain',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'tokyo'
       },
       {
@@ -692,7 +693,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'manhattan',
         count: '2,450+ Wallpapers',
         badge: 'NYC Skyline',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'manhattan'
       }
     ]
@@ -712,7 +713,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'predator',
         count: '1,280+ Wallpapers',
         badge: 'Cyber Beast',
-        thumb: '/images/mockup_cards/card-6-nightbeast.jpg',
+        thumb: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg',
         tagQuery: 'predator'
       },
       {
@@ -720,7 +721,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'wolf',
         count: '1,540+ Wallpapers',
         badge: 'Lunar Wolf',
-        thumb: '/images/mockup_cards/card-3-shadowrealm.jpg',
+        thumb: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg',
         tagQuery: 'wolf'
       }
     ]
@@ -740,7 +741,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: '4k-wallpapers',
         count: '50,000+ Wallpapers',
         badge: 'Lossless 4K',
-        thumb: '/images/mockup_cards/card-1-mountain.jpg',
+        thumb: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85',
         tagQuery: '4k'
       },
       {
@@ -748,7 +749,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: '8k-wallpapers',
         count: '12,000+ Wallpapers',
         badge: '7680×4320 8K',
-        thumb: '/images/mockup_cards/card-4-cosmichorizon.jpg',
+        thumb: 'https://wallpapercat.com/w/full/9/7/7/151978-3840x2160-desktop-4k-interstellar-wallpaper.jpg',
         tagQuery: '8k'
       },
       {
@@ -756,7 +757,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         slug: 'dual-monitor-wallpapers',
         count: '8,500+ Wallpapers',
         badge: '5120×1440',
-        thumb: '/images/mockup_cards/card-2-neondrive.jpg',
+        thumb: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg',
         tagQuery: 'ultrawide'
       }
     ]
@@ -805,7 +806,7 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
             href={`/topic/${topic.slug}`}
             class="group relative shrink-0 h-[48px] sm:h-[52px] min-w-[150px] sm:min-w-[170px] rounded-xl overflow-hidden border border-white/10 hover:border-walpix-lime/60 hover:shadow-[0_4px_16px_rgba(194,255,6,0.2)] hover:-translate-y-0.5 transition-all duration-300 select-none flex items-center px-3 py-2"
           >
-            <img src={topic.cover} alt={topic.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
+            <img src={getOptimizedThumbUrl(topic.cover, 320, 80)} alt={topic.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
             <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/70 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/55 transition-colors"></div>
             <div class="relative z-10 flex flex-col justify-center min-w-0">
               <span class="text-xs sm:text-[13px] font-bold text-white group-hover:text-walpix-lime transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
@@ -869,11 +870,11 @@ export const CATEGORY_SUBFOLDERS: Record<string, CategoryGroup> = {
         <div class="strip-scroll-track flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 flex-grow min-w-0 select-none cursor-grab">
           {catData.subFolders.map((folder) => (
             <a
-              href={`/tag/${folder.slug}`}
+              href={`/category/${catKey}/${folder.slug}`}
               data-subfolder-tag={folder.tagQuery || folder.slug}
               class="subfolder-chip group relative shrink-0 h-[52px] sm:h-[56px] min-w-[170px] sm:min-w-[195px] rounded-xl overflow-hidden border border-white/10 hover:border-walpix-lime/70 hover:shadow-[0_4px_20px_rgba(194,255,6,0.25)] hover:-translate-y-0.5 transition-all duration-300 select-none flex items-center px-3 py-2 cursor-pointer"
             >
-              <img src={folder.thumb} alt={folder.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
+              <img src={getOptimizedThumbUrl(folder.thumb, 320, 80)} alt={folder.name} class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" loading="lazy" />
               <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/75 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/65 transition-colors"></div>
               <div class="relative z-10 flex flex-col justify-center min-w-0 w-full">
                 <div class="flex items-center justify-between gap-1 w-full">

@@ -1,8 +1,9 @@
-# Workspace Agent Guidelines & Directives
+er6235# Workspace Agent Guidelines & Directives
 
 This project workspace is configured with an elite arsenal of **236 specialized AI skills** (combining the complete Web Design & UI/UX Suite, Google AdSense Monetization, SE Ranking Pro SEO, GEO, AEO, Three.js/Spline 3D, and full-stack web automation) located in [`.agent/skills/`](./.agent/skills/).
 
 ## Active Rules & References
+- **Execution Master Plan**: Complete roadmap in [PROJECT_EXECUTION_MASTER_PLAN.md](./PROJECT_EXECUTION_MASTER_PLAN.md).
 - **Code Standards**: Follow [.agent/rules/website-standards.md](./.agent/rules/website-standards.md) for mobile responsiveness, semantic HTML, and Core Web Vitals.
 - **Google AdSense Safety**: Always enforce [.agent/rules/adsense-compliance.md](./.agent/rules/adsense-compliance.md) to prevent accidental clicks and invalid traffic penalties.
 - **SEO & Content**: Follow [.agent/rules/seo-and-content-guidelines.md](./.agent/rules/seo-and-content-guidelines.md) for all meta tags, schema markup, and slug formatting.
@@ -28,6 +29,11 @@ This project workspace is configured with an elite arsenal of **236 specialized 
 4. **Non-Destructive Performance & SEO Operations**:
    * When handling SEO, indexing, or performance tasks, operate strictly on the backend, data, structured schemas, meta tags, and sitemaps.
    * If any automated audit tool (like Lighthouse or PageSpeed) recommends altering fonts or touch target dimensions that would alter the approved design, **DO NOT CHANGE THEM** without presenting the trade-off and obtaining explicit user permission first.
+
+5. **Automated Git Push on Every Task Completion (Continuous Deployment Directive)**:
+   * Once the repository is connected to GitHub and Vercel, the agent must **ALWAYS** stage and commit all verified changes and push them to the active GitHub branch (`git push`) at the conclusion of each task.
+   * This guarantees that every change made locally triggers an instant automated Vercel deployment without requiring manual user intervention.
+
 
 ---
 

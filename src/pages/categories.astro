@@ -6,22 +6,30 @@ import AdSenseLeaderboard from '../components/AdSenseLeaderboard.astro';
 import AdCard from '../components/AdCard.astro';
 import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
 import TopicStrip from '../components/TopicStrip.astro';
+import taxonomyData from '../data/taxonomyData.json';
 import { CATEGORIES, wallpapers } from '../data/wallpapers';
+import { getOptimizedThumbUrl } from '../utils/imageOptimizer';
 
 const categoryMetadata: Record<string, { desc: string; icon: string }> = {
   'all': { desc: 'Browse all lossless 4K & 8K wallpapers in one unified gallery.', icon: 'sparkles' },
   '4k-ultra-hd': { desc: 'True 3840×2160 pixel-dense backgrounds for ultra-high DPI screens.', icon: 'monitor' },
+  'anime': { desc: 'Legendary shinobi sagas, Studio Ghibli sceneries, dark fantasy manga, and beloved anime icons.', icon: 'sparkles' },
+  'gaming': { desc: 'Epic 4K gaming wallpapers from AAA titles, esports tournaments, and iconic video game battlestations.', icon: 'gamepad' },
   'anime-gaming': { desc: 'Moody cyberpunk warriors, legendary samurai, and ethereal anime art.', icon: 'gamepad' },
   'amoled-black': { desc: 'True pitch black #000000 canvases engineered for OLED energy efficiency.', icon: 'moon' },
   'cyberpunk-neon': { desc: 'Rain-soaked dystopian streets, neon signs, and futuristic high-speed vehicles.', icon: 'zap' },
   'nature-scenery': { desc: 'Misty alpine mountains, glacial crystal lakes, and tranquil evergreen forests.', icon: 'mountain' },
   'minimalist-abstract': { desc: 'Calming fluid waveforms, clean geometric spheres, and distraction-free gradients.', icon: 'layers' },
   'cars-supercars': { desc: 'Exotic hypercars, track-ready GT3 beasts, and aggressive nocturnal silhouettes.', icon: 'gauge' },
+  'cartoon': { desc: 'Vibrant 4K cartoon wallpapers from Disney, Pixar, Rick and Morty, SpongeBob, Spider-Verse, and animated classics.', icon: 'sparkles' },
+  'music': { desc: 'Iconic rock bands, pop superstars, hip-hop icons, K-Pop idols, and high-energy concerts.', icon: 'music' },
   'space-cosmic': { desc: 'Deep-field nebulae, celestial orbital galaxies, and planetary horizons.', icon: 'orbit' },
   'dark-mode': { desc: 'Mysterious low-key cinematic shadows and ambient atmospheric lighting.', icon: 'eye' },
   'fantasy': { desc: 'Celestial dragons, enchanted mystic groves, and majestic mythic castles.', icon: 'wand' },
   'city': { desc: 'Tokyo rain skylines, Manhattan midnight architecture, and urban battlestations.', icon: 'building' },
   'animals': { desc: 'Cyber neon predators, arctic snow wolves, and majestic sovereign wildlife.', icon: 'paw' },
+  'sports': { desc: 'High-octane sports wallpapers featuring legendary footballers, F1 drivers, and athletic champions.', icon: 'trophy' },
+  'celebrities': { desc: 'Ultra HD 4K portraits of Hollywood celebrities, pop stars, and cultural icons.', icon: 'star' },
 };
 
 const enrichedCategories = CATEGORIES.map((cat) => {
@@ -38,7 +46,13 @@ const enrichedCategories = CATEGORIES.map((cat) => {
         return cSlug.includes(cat.slug) || cTags.includes(cat.slug) || (cat.slug === 'dark-mode' && (cSlug.includes('amoled') || cTags.includes('dark')));
       });
 
-  const preview = matchingWps[0]?.sourceCdn || wallpapers[0]?.sourceCdn || '/images/mockup_cards/card-1-mountain.jpg';
+  const taxCat = taxonomyData.mainCategories.find((c: any) => c.slug === cat.slug || c.id === cat.slug);
+  const wcatPreview = matchingWps.find((w) => w.sourceCdn && w.sourceCdn.startsWith('https://wallpapercat.com'))?.sourceCdn;
+  const hotlinkPreview = matchingWps.find((w) => w.sourceCdn && w.sourceCdn.startsWith('http'))?.sourceCdn;
+  
+  const preview = (taxCat?.cover && taxCat.cover.startsWith('http'))
+    ? taxCat.cover
+    : (wcatPreview || hotlinkPreview || matchingWps[0]?.sourceCdn || wallpapers[0]?.sourceCdn || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85');
 
   return {
     ...cat,
@@ -49,12 +63,12 @@ const enrichedCategories = CATEGORIES.map((cat) => {
 });
 
 // Top 3 Spotlight Categories
-const spotlightCategories = enrichedCategories.filter(c => ['cyberpunk-neon', 'amoled-black', 'anime-gaming'].includes(c.slug));
+const spotlightCategories = enrichedCategories.filter(c => ['anime', 'gaming', 'amoled-black'].includes(c.slug));
 ---
 
 <Layout
   title="All Wallpaper Categories | Explore 50,000+ 4K Ultra HD Wallpapers"
-  description="Explore all WALPIX 4K wallpaper categories: Anime & Gaming, Cyberpunk & Neon, AMOLED Black, Nature, Supercars, Space, Minimalist, City, Fantasy, and Animals."
+  description="Explore all WALPIX 4K wallpaper categories: Anime & Manga, Gaming, Cyberpunk & Neon, AMOLED Black, Nature, Supercars, Space, Minimalist, City, Fantasy, and Animals."
 >
   <!-- Floating Glass Header -->
   <Header currentCategory="categories" />
@@ -140,7 +154,7 @@ const spotlightCategories = enrichedCategories.filter(c => ['cyberpunk-neon', 'a
           >
             <!-- Background Image -->
             <img
-              src={spot.preview}
+              src={getOptimizedThumbUrl(spot.preview, 640, 80)}
               alt={spot.name}
               class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               loading="eager"
@@ -202,7 +216,7 @@ const spotlightCategories = enrichedCategories.filter(c => ['cyberpunk-neon', 'a
               >
                 <!-- Background Cover Image -->
                 <img
-                  src={cat.preview}
+                  src={getOptimizedThumbUrl(cat.preview, 480, 80)}
                   alt={cat.name}
                   class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   loading="lazy"

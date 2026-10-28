@@ -7,6 +7,8 @@ export interface SubTopic {
   name: string;
   slug: string;
   count: string;
+  cover?: string;
+  wpcEndpoint?: string;
 }
 
 export interface MainCategory {
@@ -59,10 +61,27 @@ export function getAllTags(): SubTopic[] {
   return cachedAllTags;
 }
 
+const CATEGORY_SLUG_ALIASES: Record<string, string> = {
+  'comics': 'superheroes',
+  'superhero': 'superheroes',
+  'cartoons': 'cartoon',
+  'music-artists': 'music',
+  'animals-wildlife': 'animals',
+  'celebrities-music': 'celebrities',
+  'nature': 'nature-scenery',
+  'space': 'space-cosmic',
+  'cars': 'cars-supercars',
+  'amoled': 'amoled-black',
+  'cyberpunk': 'cyberpunk-neon',
+};
+
 export function getCategoryBySlug(slug: string): MainCategory | undefined {
   if (!slug) return undefined;
   const clean = slug.toLowerCase().trim();
-  return MAIN_CATEGORIES.find((c) => c.slug === clean || c.id === clean);
+  const alias = CATEGORY_SLUG_ALIASES[clean] || clean;
+  return MAIN_CATEGORIES.find(
+    (c) => c.slug === alias || c.id === alias || c.slug === clean || c.id === clean
+  );
 }
 
 export function getTagBySlug(slug: string): SubTopic | undefined {
