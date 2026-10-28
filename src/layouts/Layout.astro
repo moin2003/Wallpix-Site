@@ -16,7 +16,7 @@ interface Props {
 const {
   title,
   description = 'Download ultra high-definition 4K, 2K and AMOLED wallpapers for PC, Mac, iPhone, and Android. Free, fast and customizable with instant live canvas cropper.',
-  image = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&q=80',
+  image = '/images/walpix-og-banner.jpg',
   type = 'website',
   schema,
   preloadImage,
@@ -26,6 +26,11 @@ const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION || '';
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '';
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://walpix.site');
+const siteOrigin = Astro.url.origin || 'https://walpix.site';
+const rawImage = image || '/images/walpix-og-banner.jpg';
+const socialImageUrl = rawImage.startsWith('http')
+  ? rawImage
+  : new URL(rawImage, siteOrigin).toString();
 
 const defaultWebsiteSchema = {
   '@context': 'https://schema.org',
@@ -89,19 +94,27 @@ const activeSchema = schema || defaultWebsiteSchema;
       </>
     )}
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook & WhatsApp -->
+    <meta property="og:site_name" content="WALPIX 4K" />
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="WALPIX 4K Ultra HD Wallpapers" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={`${title} | WALPIX 4K Wallpapers`} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={image} />
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@thewallpix" />
+    <meta name="twitter:creator" content="@thewallpix" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={`${title} | WALPIX 4K Wallpapers`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
 
     <!-- LCP Image Preload for 0ms Discovery Delay -->
     {preloadImage && (
