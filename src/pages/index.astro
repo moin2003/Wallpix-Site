@@ -17,7 +17,10 @@ import { wallpapers } from '../data/wallpapers';
 const desktopWps = wallpapers.filter(w => w.aspectRatio === '16:9').slice(0, 36);
 
 // Authentic 9:16 Mobile Phone Showcase (Next 36 items - 100% pure vertical phone wallpapers)
-const mobileWps = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical').slice(0, 36);
+const allMobileWps = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+const wcatMobile = allMobileWps.filter(w => (w.sourceCdn || '').includes('wallpapercat.com'));
+const otherMobile = allMobileWps.filter(w => !(w.sourceCdn || '').includes('wallpapercat.com'));
+const mobileWps = [...wcatMobile, ...otherMobile].slice(0, 36);
 
 const trendingWallpapers: typeof wallpapers = [...desktopWps, ...mobileWps];
 

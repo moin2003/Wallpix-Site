@@ -66,7 +66,13 @@ export function getOptimizedThumbUrl(
     return rawUrl.replace('/w/full/', `/w/${thumbType}/`);
   }
 
-  // 6. Global Cloudflare Edge WebP CDN (wsrv.nl) for any other remote wallpapers
+  // 6. AlphaCoders (wsrv.nl blocks alphacoders.com by policy, use WordPress Photon CDN which returns 200)
+  if (rawUrl.includes('alphacoders.com')) {
+    const cleanUrl = rawUrl.replace(/^https?:\/\//, '');
+    return `https://i0.wp.com/${cleanUrl}?w=${width}&strip=all`;
+  }
+
+  // 7. Global Cloudflare Edge WebP CDN (wsrv.nl) for any other remote wallpapers
   if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
     return `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}&output=webp`;
   }
