@@ -32,7 +32,9 @@ const categoryMetadata: Record<string, { desc: string; icon: string }> = {
   'celebrities': { desc: 'Ultra HD 4K portraits of Hollywood celebrities, pop stars, and cultural icons.', icon: 'star' },
 };
 
-const enrichedCategories = CATEGORIES.map((cat) => {
+const actualCategories = CATEGORIES.filter(c => c.slug !== 'all');
+
+const enrichedCategories = actualCategories.map((cat) => {
   const meta = categoryMetadata[cat.slug] || {
     desc: `Discover handpicked high-resolution 4K ${cat.name} wallpapers.`,
     icon: 'sparkles',
