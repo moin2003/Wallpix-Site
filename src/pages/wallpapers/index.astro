@@ -6,7 +6,51 @@ import TopicStrip from '../../components/TopicStrip.astro';
 import OrientationToggle from '../../components/OrientationToggle.astro';
 import GalleryGrid from '../../components/GalleryGrid.astro';
 import Footer from '../../components/Footer.astro';
-import { wallpapers } from '../../data/wallpapers';
+import { wallpapers, type Wallpaper } from '../../data/wallpapers';
+
+// High-speed, payload-safe multi-format discovery dataset
+// Ensures all formats (16:9 Desktop, 9:16 Mobile, 32:9 Dual Screen) and all 23 categories have rich coverage
+// Keeps total HTML under 150 KB, preventing Vercel 413: CONTENT_TOO_LARGE error
+function getDiverseWallpapers(items: Wallpaper[], maxTotal: number): Wallpaper[] {
+  const byCategory: Record<string, Wallpaper[]> = {};
+  for (const item of items) {
+    const cat = item.category || 'other';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(item);
+  }
+  const result: Wallpaper[] = [];
+  const categories = Object.keys(byCategory);
+  let index = 0;
+  while (result.length < maxTotal) {
+    let addedAny = false;
+    for (const cat of categories) {
+      if (byCategory[cat][index]) {
+        result.push(byCategory[cat][index]);
+        addedAny = true;
+        if (result.length >= maxTotal) break;
+      }
+    }
+    if (!addedAny) break;
+    index++;
+  }
+  return result;
+}
+
+const desktopPool = wallpapers.filter(w => w.aspectRatio === '16:9');
+const desktopWallpapers = getDiverseWallpapers(desktopPool, 72);
+
+const allMobilePool = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+const wcatMobile = allMobilePool.filter(w => (w.sourceCdn || '').includes('wallpapercat.com'));
+const otherMobile = allMobilePool.filter(w => !(w.sourceCdn || '').includes('wallpapercat.com'));
+const mobileWallpapers = getDiverseWallpapers([...wcatMobile, ...otherMobile], 72);
+
+const dualWallpapers = wallpapers.filter(w => 
+  (w.aspectRatio || '').includes('32:9') || 
+  (w.screenTypes || []).includes('dual-monitor') ||
+  (w.screenTypes || []).includes('ultrawide')
+).slice(0, 36);
+
+const discoveryWallpapers = [...desktopWallpapers, ...mobileWallpapers, ...dualWallpapers];
 
 const schema = {
   '@context': 'https://schema.org',
@@ -15,7 +59,7 @@ const schema = {
   url: 'https://walpix.site/wallpapers',
 };
 
-const lcpImage = wallpapers && wallpapers.length > 0 ? wallpapers[0].sourceCdn : undefined;
+const lcpImage = discoveryWallpapers && discoveryWallpapers.length > 0 ? discoveryWallpapers[0].sourceCdn : undefined;
 ---
 
 <Layout
@@ -57,7 +101,7 @@ const lcpImage = wallpapers && wallpapers.length > 0 ? wallpapers[0].sourceCdn :
       </div>
 
       <!-- 4-Column 16:9 Gallery Grid for All Wallpapers with Strategic In-Feed Ads -->
-      <GalleryGrid wallpapers={wallpapers} />
+      <GalleryGrid wallpapers={discoveryWallpapers} />
     </div>
   </main>
 
