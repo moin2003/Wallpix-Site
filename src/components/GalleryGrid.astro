@@ -124,15 +124,15 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
       if (!sourceCdn) return '/images/hero-astronaut-master.png';
       if (sourceCdn.includes('wallpapercat.com/w/full/')) {
         const isVert = /(mobile|phone|iphone|samsung|vertical)/i.test(sourceCdn) || isPhone;
-        const thumbType = isVert ? 'small-vertical-retina' : 'small-retina';
+        const thumbType = isVert ? 'middle-vertical-retina' : 'middle-retina';
         return sourceCdn.replace('/w/full/', `/w/${thumbType}/`);
       }
       if (sourceCdn.includes('images.unsplash.com')) {
-        return sourceCdn + (sourceCdn.includes('?') ? '&' : '?') + 'w=500&q=80&auto=format&fm=webp';
+        return sourceCdn + (sourceCdn.includes('?') ? '&' : '?') + 'w=800&q=85&auto=format&fm=webp';
       }
       if (sourceCdn.includes('alphacoders.com')) {
         const clean = sourceCdn.replace(/^https?:\/\//, '');
-        return `https://i0.wp.com/${clean}?w=500&strip=all`;
+        return `https://i0.wp.com/${clean}?w=800&strip=all`;
       }
       return sourceCdn;
     }

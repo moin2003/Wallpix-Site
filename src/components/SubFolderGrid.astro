@@ -674,25 +674,22 @@ const INITIAL_DISPLAY = 36;
       {folderList.map((folder, index) => {
         // High-RPM Strategic In-Feed Native Ad Slots at position 6 and position 18
         const showAd = index === 5 || index === 17;
-        const isInitiallyHidden = index >= INITIAL_DISPLAY;
         return (
           <>
             <a
               href={`/category/${categorySlug}/${folder.slug}`}
-              class={`subfolder-card group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none ${isInitiallyHidden ? 'hidden' : ''}`}
+              class="subfolder-card group relative block aspect-[16/10] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#070b12] border border-white/[0.10] hover:border-walpix-lime/60 shadow-lg hover:shadow-[0_10px_30px_rgba(194,255,6,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
               data-index={index}
               data-name={folder.name.toLowerCase()}
-              data-hidden={isInitiallyHidden ? 'true' : 'false'}
-              style={isInitiallyHidden ? 'display: none;' : ''}
             >
-              <!-- Full-Bleed Image -->
+              <!-- Full-Bleed Image with High-DPI Retina Preview -->
               <img
                 src={getOptimizedThumbUrl(folder.thumb, 480, 80)}
                 alt={`${folder.name} 4K Wallpapers Collection`}
                 width="480"
                 height="270"
-                loading={index < 4 ? 'eager' : 'lazy'}
-                fetchpriority={index < 4 ? 'high' : 'low'}
+                loading={index < 6 ? 'eager' : 'lazy'}
+                fetchpriority={index < 6 ? 'high' : 'low'}
                 decoding="async"
                 referrerpolicy="no-referrer"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
@@ -744,34 +741,6 @@ const INITIAL_DISPLAY = 36;
         );
       })}
     </div>
-
-    <!-- Progressive Load More & Show All Controls -->
-    {folderList.length > INITIAL_DISPLAY && (
-      <div class="mt-6 sm:mt-8 flex items-center justify-center gap-3" id="subfolder-actions-wrap">
-        <button
-          type="button"
-          id="subfolder-load-more-btn"
-          class="px-5 py-2.5 rounded-xl bg-white/[0.06] hover:bg-walpix-lime/15 border border-white/15 hover:border-walpix-lime/40 text-xs sm:text-sm font-bold text-white hover:text-walpix-lime transition-all flex items-center gap-2 shadow-lg cursor-pointer"
-        >
-          <svg class="w-4 h-4 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-          <span>Load More Series (+24)</span>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-gray-300" id="subfolder-remaining-count">
-            {folderList.length - INITIAL_DISPLAY} Remaining
-          </span>
-        </button>
-
-        <button
-          type="button"
-          id="subfolder-show-all-btn"
-          class="px-4 py-2.5 rounded-xl bg-transparent hover:bg-white/[0.04] border border-white/10 text-xs font-mono text-gray-400 hover:text-white transition-all cursor-pointer"
-        >
-          Show All ({folderList.length})
-        </button>
-      </div>
-    )}
-
   </section>
 )}
 
@@ -781,73 +750,16 @@ const INITIAL_DISPLAY = 36;
     if (!grid) return;
 
     const cards = Array.from(grid.querySelectorAll('.subfolder-card')) as HTMLElement[];
-    const loadMoreBtn = document.getElementById('subfolder-load-more-btn');
-    const showAllBtn = document.getElementById('subfolder-show-all-btn');
-    const remainingSpan = document.getElementById('subfolder-remaining-count');
     const searchInput = document.getElementById('subfolder-search-input') as HTMLInputElement | null;
-    const actionsWrap = document.getElementById('subfolder-actions-wrap');
-
-    let currentlyShown = 36;
-    const BATCH_SIZE = 24;
-
-    function updateRemaining() {
-      const hiddenCount = cards.filter(c => c.getAttribute('data-hidden') === 'true').length;
-      if (remainingSpan) {
-        remainingSpan.textContent = `${hiddenCount} Remaining`;
-      }
-      if (hiddenCount === 0 && actionsWrap) {
-        actionsWrap.style.display = 'none';
-      }
-    }
-
-    if (loadMoreBtn) {
-      loadMoreBtn.onclick = () => {
-        let revealed = 0;
-        for (const card of cards) {
-          if (card.getAttribute('data-hidden') === 'true') {
-            card.setAttribute('data-hidden', 'false');
-            card.classList.remove('hidden');
-            card.style.display = '';
-            revealed++;
-            if (revealed >= BATCH_SIZE) break;
-          }
-        }
-        currentlyShown += revealed;
-        updateRemaining();
-      };
-    }
-
-    if (showAllBtn) {
-      showAllBtn.onclick = () => {
-        for (const card of cards) {
-          card.setAttribute('data-hidden', 'false');
-          card.classList.remove('hidden');
-          card.style.display = '';
-        }
-        currentlyShown = cards.length;
-        updateRemaining();
-      };
-    }
 
     if (searchInput) {
       searchInput.oninput = (e) => {
         const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
         if (!query) {
-          cards.forEach((card, idx) => {
-            if (idx < currentlyShown) {
-              card.setAttribute('data-hidden', 'false');
-              card.classList.remove('hidden');
-              card.style.display = '';
-            } else {
-              card.setAttribute('data-hidden', 'true');
-              card.classList.add('hidden');
-              card.style.display = 'none';
-            }
+          cards.forEach((card) => {
+            card.classList.remove('hidden');
+            card.style.display = '';
           });
-          if (actionsWrap && currentlyShown < cards.length) {
-            actionsWrap.style.display = 'flex';
-          }
-          updateRemaining();
           return;
         }
 
@@ -861,10 +773,6 @@ const INITIAL_DISPLAY = 36;
             card.style.display = 'none';
           }
         });
-
-        if (actionsWrap) {
-          actionsWrap.style.display = 'none';
-        }
       };
     }
   }

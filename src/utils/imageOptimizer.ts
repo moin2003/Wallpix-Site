@@ -15,12 +15,13 @@ export function getOptimizedThumbUrl(
     return rawUrl.replace('.jpg', '.webp');
   }
 
-  // 2. Unsplash dynamic format API
+  // 2. Unsplash dynamic format API (High-DPI Retina clarity)
   if (rawUrl.includes('images.unsplash.com')) {
     try {
       const u = new URL(rawUrl);
-      u.searchParams.set('w', width.toString());
-      u.searchParams.set('q', quality.toString());
+      const targetWidth = Math.max(width * 1.5, 800);
+      u.searchParams.set('w', Math.round(targetWidth).toString());
+      u.searchParams.set('q', '85');
       u.searchParams.set('auto', 'format');
       u.searchParams.set('fit', 'crop');
       u.searchParams.set('fm', 'webp');
@@ -30,13 +31,13 @@ export function getOptimizedThumbUrl(
     }
   }
 
-  // 3. Wallhaven native thumbnails (small for grid ~10-24KB; lg for showcases >= 800px ~10-25KB)
+  // 3. Wallhaven native thumbnails (lg 1280x720 for cards >= 300px; small for micro thumbs)
   if (rawUrl.includes('w.wallhaven.cc/full/')) {
     const parts = rawUrl.split('/');
     const sub = parts[parts.length - 2];
     const filename = parts[parts.length - 1];
     const id = filename.replace(/^wallhaven-/, '').split('.')[0];
-    const sizeFolder = width >= 800 ? 'lg' : 'small';
+    const sizeFolder = width >= 300 ? 'lg' : 'small';
     return `https://th.wallhaven.cc/${sizeFolder}/${sub}/${id}.jpg`;
   }
 
@@ -44,8 +45,9 @@ export function getOptimizedThumbUrl(
   if (rawUrl.includes('bing.com/th')) {
     try {
       const u = new URL(rawUrl);
-      u.searchParams.set('w', width.toString());
-      u.searchParams.set('h', Math.round((width * 9) / 16).toString());
+      const targetWidth = Math.max(width * 1.5, 800);
+      u.searchParams.set('w', Math.round(targetWidth).toString());
+      u.searchParams.set('h', Math.round((targetWidth * 9) / 16).toString());
       u.searchParams.set('c', '7');
       u.searchParams.set('rs', '1');
       return u.toString();
@@ -54,27 +56,29 @@ export function getOptimizedThumbUrl(
     }
   }
 
-  // 5. WallpaperCat native retina thumbnails (small-retina 600x400 ~25KB for grid; middle-retina 1600x900 ~114KB for showcases >= 800px)
+  // 5. WallpaperCat native retina thumbnails (middle-retina 1600x900 ~110KB for crystal-clear cards; small-retina for micro icons < 250px)
   if (rawUrl.includes('wallpapercat.com/w/full/')) {
     const isVertical =
       /(mobile|phone|iphone|samsung|vertical)/i.test(rawUrl) ||
       /(5828021|5828027|5827973|5828001|5827784|5827936|5828105|5828096|5828338|5828115)\.jpg/.test(
         rawUrl
       );
-    const sizePrefix = width >= 800 ? 'middle' : 'small';
+    const sizePrefix = width >= 250 ? 'middle' : 'small';
     const thumbType = isVertical ? `${sizePrefix}-vertical-retina` : `${sizePrefix}-retina`;
     return rawUrl.replace('/w/full/', `/w/${thumbType}/`);
   }
 
-  // 6. AlphaCoders (wsrv.nl blocks alphacoders.com by policy, use WordPress Photon CDN which returns 200)
+  // 6. AlphaCoders (WordPress Photon CDN with 2x High-DPI sampling)
   if (rawUrl.includes('alphacoders.com')) {
     const cleanUrl = rawUrl.replace(/^https?:\/\//, '');
-    return `https://i0.wp.com/${cleanUrl}?w=${width}&strip=all`;
+    const targetWidth = Math.max(width * 1.5, 800);
+    return `https://i0.wp.com/${cleanUrl}?w=${Math.round(targetWidth)}&strip=all`;
   }
 
-  // 7. Global Cloudflare Edge WebP CDN (wsrv.nl) for any other remote wallpapers
+  // 7. Global Cloudflare Edge WebP CDN (wsrv.nl) with High-DPI sampling
   if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
-    return `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}&output=webp`;
+    const targetWidth = Math.max(width * 1.5, 800);
+    return `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=${Math.round(targetWidth)}&q=85&output=webp`;
   }
 
   return rawUrl;

@@ -54,7 +54,7 @@ const enrichedCategories = actualCategories.map((cat) => {
   
   const preview = (taxCat?.cover && taxCat.cover.startsWith('http'))
     ? taxCat.cover
-    : (wcatPreview || hotlinkPreview || matchingWps[0]?.sourceCdn || wallpapers[0]?.sourceCdn || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&q=85');
+    : (wcatPreview || hotlinkPreview || matchingWps[0]?.sourceCdn || wallpapers[0]?.sourceCdn || 'https://wallpapercat.com/w/full/c/9/2/347641-3840x2160-desktop-4k-transformers-background.jpg');
 
   return {
     ...cat,
@@ -160,6 +160,7 @@ const spotlightCategories = enrichedCategories.filter(c => ['anime', 'gaming', '
               alt={spot.name}
               class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               loading="eager"
+              onerror="this.src='https://wallpapercat.com/w/middle-retina/c/9/2/347641-3840x2160-desktop-4k-transformers-background.jpg'"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-[#05070a] via-[#05070a]/70 to-black/30"></div>
 
@@ -222,6 +223,7 @@ const spotlightCategories = enrichedCategories.filter(c => ['anime', 'gaming', '
                   alt={cat.name}
                   class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   loading="lazy"
+                  onerror="this.src='https://wallpapercat.com/w/middle-retina/c/9/2/347641-3840x2160-desktop-4k-transformers-background.jpg'"
                 />
                 
                 <!-- Dark Cinema Gradient -->
