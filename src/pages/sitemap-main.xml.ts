@@ -1,3 +1,4 @@
+export const prerender = true;
 import type { APIRoute } from 'astro';
 import { collections } from '../data/collections';
 import { blogPosts } from '../data/blogPosts';

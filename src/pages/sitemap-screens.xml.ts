@@ -1,3 +1,4 @@
+export const prerender = true;
 import type { APIRoute } from 'astro';
 import { SCREEN_TYPES } from '../data/wallpapers';
 

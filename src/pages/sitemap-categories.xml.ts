@@ -1,3 +1,4 @@
+export const prerender = true;
 import type { APIRoute } from 'astro';
 import { CATEGORIES, LUXURY_COLORS } from '../data/wallpapers';
 

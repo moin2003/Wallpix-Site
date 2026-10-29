@@ -55,8 +55,14 @@ interface Props {
 }
 
 const { slug } = Astro.params;
-const tag = (Astro.props as any).tagInfo || getAllTags().find(t => t.slug === slug) || { name: (slug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), slug: slug || '', count: 0, cover: '' };
 const allTags = getAllTags();
+const tagInfo: TagHubItem = (Astro.props as any).tagInfo || allTags.find(t => t.slug === slug) || { 
+  name: (slug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
+  slug: slug || '', 
+  count: 0, 
+  cover: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg' 
+};
+const tag = tagInfo;
 
 const directMatches = getWallpapersByTag(tag.slug);
 
