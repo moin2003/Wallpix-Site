@@ -1,6 +1,34 @@
 import type { APIRoute } from 'astro';
 import { wallpapers, type Wallpaper } from '../../data/wallpapers';
 
+export const prerender = false;
+
+// Round-robin category diversification for rich, balanced discovery feeds
+function diversifyByCategory(items: Wallpaper[]): Wallpaper[] {
+  const byCat = new Map<string, Wallpaper[]>();
+  for (const item of items) {
+    const cat = item.category || 'Other';
+    if (!byCat.has(cat)) byCat.set(cat, []);
+    byCat.get(cat)!.push(item);
+  }
+
+  const result: Wallpaper[] = [];
+  const catArrays = Array.from(byCat.values());
+  let maxLen = 0;
+  for (const arr of catArrays) {
+    if (arr.length > maxLen) maxLen = arr.length;
+  }
+
+  for (let i = 0; i < maxLen; i++) {
+    for (const arr of catArrays) {
+      if (i < arr.length) {
+        result.push(arr[i]);
+      }
+    }
+  }
+  return result;
+}
+
 export const GET: APIRoute = async ({ url }) => {
   const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit = Math.min(Math.max(12, parseInt(url.searchParams.get('limit') || '36', 10)), 72);
@@ -77,13 +105,20 @@ export const GET: APIRoute = async ({ url }) => {
     return true;
   });
 
-  // 5. Sort
-  if (sort === 'recent' || sort === 'newest') {
-    filtered = [...filtered].reverse();
-  } else if (sort === 'downloads') {
-    filtered = [...filtered].sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-  } else if (sort === 'popular') {
-    filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
+  // 5. Sort & Category Diversification
+  if (category === 'all' && !search) {
+    filtered = diversifyByCategory(filtered);
+    if (sort === 'recent' || sort === 'newest') {
+      filtered = filtered.reverse();
+    }
+  } else {
+    if (sort === 'recent' || sort === 'newest') {
+      filtered = [...filtered].reverse();
+    } else if (sort === 'downloads') {
+      filtered = [...filtered].sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+    } else if (sort === 'popular') {
+      filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
+    }
   }
 
   const total = filtered.length;
@@ -102,7 +137,7 @@ export const GET: APIRoute = async ({ url }) => {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
+      'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
     }
   });
 };

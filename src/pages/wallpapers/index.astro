@@ -50,14 +50,27 @@ const dualWallpapers = wallpapers.filter(w =>
   (w.screenTypes || []).includes('ultrawide')
 ).slice(0, 36);
 
+const urlFormat = (Astro.url.searchParams.get('format') || '').toLowerCase().trim();
 const userAgent = Astro.request.headers.get('user-agent') || '';
 const isMobileUA = /mobile|iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(userAgent);
 
-const discoveryWallpapers = isMobileUA
+const isPhoneFormat = urlFormat === 'phone' || urlFormat === 'mobile' || (!urlFormat && isMobileUA);
+const isDualFormat = urlFormat === 'dual';
+const isDesktopFormat = urlFormat === 'desktop';
+
+const discoveryWallpapers = isPhoneFormat
   ? [...mobileWallpapers, ...desktopWallpapers, ...dualWallpapers]
+  : isDualFormat
+  ? [...dualWallpapers, ...desktopWallpapers, ...mobileWallpapers]
   : [...desktopWallpapers, ...mobileWallpapers, ...dualWallpapers];
 
-const initialGridMode: 'all' | 'desktop' | 'phone' | 'dual' = isMobileUA ? 'phone' : 'all';
+const initialGridMode: 'all' | 'desktop' | 'phone' | 'dual' = isPhoneFormat
+  ? 'phone'
+  : isDualFormat
+  ? 'dual'
+  : isDesktopFormat
+  ? 'desktop'
+  : 'all';
 
 const schema = {
   '@context': 'https://schema.org',

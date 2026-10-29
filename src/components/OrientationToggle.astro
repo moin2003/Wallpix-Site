@@ -371,15 +371,6 @@ const formats = [
             grid.className = grid.className.replace(/grid-mode-[a-z]+/g, '').trim() + ` grid-mode-${formatKey}`;
           });
 
-          // Fast Aspect & Resolution Badges Update
-          const aspectBadges = document.querySelectorAll<HTMLElement>('.card-badge-aspect');
-          const resBadges = document.querySelectorAll<HTMLElement>('.card-badge-res');
-          const aspectText = formatKey === 'phone' ? '9:16' : (formatKey === 'dual' ? '32:9' : '16:9');
-          const resText = formatKey === 'phone' ? '1080×2400' : (formatKey === 'dual' ? '7680×2160' : '4K UHD');
-
-          aspectBadges.forEach(b => { if (b.textContent !== aspectText) b.textContent = aspectText; });
-          resBadges.forEach(b => { if (b.textContent !== resText) b.textContent = resText; });
-
           // On /wallpapers gallery discovery, GalleryGrid dynamically streams all catalog wallpapers for the selected format
           const isGalleryDiscovery = window.location.pathname.startsWith('/wallpapers') && !window.location.pathname.includes('/wallpapers/');
           if (isGalleryDiscovery) {

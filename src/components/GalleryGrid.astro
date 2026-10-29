@@ -58,44 +58,35 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     </button>
   </div>
 
-  <!-- Dynamic Infinite Progressive Loading Section -->
-  <div id="gallery-load-more-section" class="flex flex-col items-center justify-center pt-10 pb-6">
-    <button
-      id="gallery-load-more-btn"
-      type="button"
-      class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white/[0.06] hover:bg-walpix-lime hover:text-black border border-white/15 hover:border-walpix-lime text-white text-xs font-bold transition-all duration-300 shadow-xl cursor-pointer select-none group"
-    >
-      <span id="load-more-btn-text">Load More Wallpapers</span>
-      <svg id="load-more-spinner" class="hidden w-4 h-4 animate-spin text-current" fill="none" viewBox="0 0 24 24">
+  <!-- Dynamic Infinite Progressive Loading Section (Clean Auto-Streaming Sentinel) -->
+  <div id="gallery-load-more-section" class="flex flex-col items-center justify-center pt-8 pb-10">
+    <div id="gallery-stream-loader" class="hidden items-center gap-2.5 px-6 py-2.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-walpix-lime shadow-lg mb-2">
+      <svg class="w-4 h-4 animate-spin text-walpix-lime" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
       </svg>
-      <svg class="w-4 h-4 text-walpix-lime group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+      <span>Streaming wallpapers...</span>
+    </div>
     
-    <p id="gallery-counter-text" class="text-xs font-mono text-[#8E949E] mt-3 select-none">
+    <p id="gallery-counter-text" class="text-xs font-mono text-[#8E949E] mt-1 select-none">
       Showing <span id="gallery-loaded-count" class="text-white font-bold">{displayWallpapers.length}</span> of <span id="gallery-total-count" class="text-walpix-lime font-bold">14,850+</span> Wallpapers
     </p>
 
     <!-- Invisible Scroll Sentinel for Infinite Scrolling via IntersectionObserver -->
-    <div id="gallery-scroll-sentinel" class="w-full h-12 pointer-events-none opacity-0 mt-2"></div>
+    <div id="gallery-scroll-sentinel" class="w-full h-24 pointer-events-none opacity-0 mt-2"></div>
   </div>
 </section>
 
 <script>
   function initDynamicGallery() {
     const gridContainer = document.getElementById('wallpaper-grid-container');
-    const loadMoreBtn = document.getElementById('gallery-load-more-btn') as HTMLButtonElement | null;
-    const loadMoreText = document.getElementById('load-more-btn-text');
-    const loadMoreSpinner = document.getElementById('load-more-spinner');
+    const streamLoader = document.getElementById('gallery-stream-loader');
     const loadedCountEl = document.getElementById('gallery-loaded-count');
     const totalCountEl = document.getElementById('gallery-total-count');
     const emptyState = document.getElementById('gallery-empty-state');
     const sentinel = document.getElementById('gallery-scroll-sentinel');
 
-    if (!gridContainer || !loadMoreBtn) return;
+    if (!gridContainer) return;
 
     // Set of currently rendered wallpaper slugs to prevent ANY duplicates
     const renderedSlugs = new Set<string>();
@@ -224,8 +215,10 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
       if (isLoading) return;
       isLoading = true;
 
-      if (loadMoreSpinner) loadMoreSpinner.classList.remove('hidden');
-      if (loadMoreText) loadMoreText.textContent = append ? 'Loading More...' : 'Filtering Wallpapers...';
+      if (streamLoader) {
+        streamLoader.classList.remove('hidden');
+        streamLoader.style.display = 'inline-flex';
+      }
 
       const queryParams = new URLSearchParams({
         page: String(targetPage),
@@ -282,27 +275,20 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
           gridContainer.classList.toggle('hidden', isZero);
         }
 
-        // Load more button state
+        // Stream section visibility
         const loadMoreSection = document.getElementById('gallery-load-more-section');
         if (loadMoreSection) {
           loadMoreSection.style.display = totalWallpapers === 0 ? 'none' : 'flex';
         }
-        if (loadMoreBtn) {
-          if (!hasMore) {
-            loadMoreBtn.classList.add('opacity-50', 'pointer-events-none');
-            if (loadMoreText) loadMoreText.textContent = 'All Wallpapers Loaded';
-          } else {
-            loadMoreBtn.classList.remove('opacity-50', 'pointer-events-none');
-            if (loadMoreText) loadMoreText.textContent = 'Load More Wallpapers';
-          }
-        }
 
       } catch (err) {
         console.error('Gallery stream error:', err);
-        if (loadMoreText) loadMoreText.textContent = 'Load More Wallpapers';
       } finally {
         isLoading = false;
-        if (loadMoreSpinner) loadMoreSpinner.classList.add('hidden');
+        if (streamLoader) {
+          streamLoader.classList.add('hidden');
+          streamLoader.style.display = 'none';
+        }
       }
     }
 
@@ -336,21 +322,18 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
       fetchWallpapers(1, false);
     }) as EventListener);
 
-    // If initial viewport is mobile and URL doesn't have ?format=desktop, ensure pure 9:16 phone wallpapers are loaded
+    // Ensure initial rendered cards match currentFormat
     const firstCard = gridContainer.querySelector<HTMLElement>('.walpix-gallery-card-item');
     const firstCardAspect = firstCard?.getAttribute('data-aspect') || '';
-    if (isMobileViewport && currentFormat === 'phone' && firstCardAspect === '16:9') {
+    if (currentFormat === 'phone' && firstCardAspect !== '9:16') {
+      fetchWallpapers(1, false);
+    } else if (currentFormat === 'desktop' && firstCardAspect === '9:16') {
+      fetchWallpapers(1, false);
+    } else if (currentFormat === 'dual' && firstCardAspect !== '32:9') {
       fetchWallpapers(1, false);
     }
 
-    // Click handler for Load More Button
-    loadMoreBtn.addEventListener('click', () => {
-      if (hasMore && !isLoading) {
-        fetchWallpapers(page + 1, true);
-      }
-    });
-
-    // Infinite Scroll IntersectionObserver
+    // Seamless Infinite Scroll via IntersectionObserver
     if (sentinel && 'IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         const first = entries[0];
@@ -358,7 +341,7 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
           fetchWallpapers(page + 1, true);
         }
       }, {
-        rootMargin: '400px 0px',
+        rootMargin: '600px 0px',
       });
       observer.observe(sentinel);
     }
