@@ -440,6 +440,7 @@ const categories = [
       opt.appendChild(checkmark);
 
       sortWallpapers(currentSort);
+      window.dispatchEvent(new CustomEvent('walpix-sort-change', { detail: { sort: currentSort } }));
 
       sortMenu?.classList.add('hidden');
       if (sortChevron) sortChevron.style.transform = 'rotate(0deg)';

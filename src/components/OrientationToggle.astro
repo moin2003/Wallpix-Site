@@ -335,6 +335,9 @@ const formats = [
           history.replaceState(null, '', currentUrl.toString());
         }
 
+        // Notify dynamic gallery grid for full-catalog streaming
+        window.dispatchEvent(new CustomEvent('walpix-format-change', { detail: { format: formatKey } }));
+
         // 3. Fast Hardware-Accelerated Card Filtering & Grid Morphing
         requestAnimationFrame(() => {
           const gridContainers = document.querySelectorAll<HTMLElement>('#wallpaper-grid-container, #wallpapers-grid-container');
@@ -376,6 +379,12 @@ const formats = [
 
           aspectBadges.forEach(b => { if (b.textContent !== aspectText) b.textContent = aspectText; });
           resBadges.forEach(b => { if (b.textContent !== resText) b.textContent = resText; });
+
+          // On /wallpapers gallery discovery, GalleryGrid dynamically streams all catalog wallpapers for the selected format
+          const isGalleryDiscovery = window.location.pathname.startsWith('/wallpapers') && !window.location.pathname.includes('/wallpapers/');
+          if (isGalleryDiscovery) {
+            return;
+          }
 
           let visibleCount = 0;
 

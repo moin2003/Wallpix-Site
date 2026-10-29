@@ -10,11 +10,12 @@ interface Props {
   maxCards?: number;
 }
 
-const { wallpapers, gridMode = 'all', maxCards = 200 } = Astro.props;
+const { wallpapers, gridMode = 'all', maxCards = 48 } = Astro.props;
 const displayWallpapers = wallpapers.slice(0, maxCards);
 ---
 
 <section class="w-full px-4 sm:px-6 lg:px-10 pt-3 pb-16 relative z-10">
+  <!-- Dynamic Wallpaper Grid Container -->
   <div id="wallpaper-grid-container" class={`grid-mode-${gridMode}`}>
     {displayWallpapers.map((wp, index) => {
       // Strategic High-RPM In-Feed Ads only when AdSense is approved & live
@@ -51,9 +52,295 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     </div>
     <button
       id="reset-filter-btn"
-      class="px-5 py-2.5 rounded-full bg-walpix-lime text-black font-extrabold text-xs shadow-lg hover:shadow-[0_0_18px_rgba(194,255,6,0.3)] transition-all"
+      class="px-5 py-2.5 rounded-full bg-walpix-lime text-black font-extrabold text-xs shadow-lg hover:shadow-[0_0_18px_rgba(194,255,6,0.3)] transition-all cursor-pointer"
     >
       View All Wallpapers
     </button>
   </div>
+
+  <!-- Dynamic Infinite Progressive Loading Section -->
+  <div id="gallery-load-more-section" class="flex flex-col items-center justify-center pt-10 pb-6">
+    <button
+      id="gallery-load-more-btn"
+      type="button"
+      class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white/[0.06] hover:bg-walpix-lime hover:text-black border border-white/15 hover:border-walpix-lime text-white text-xs font-bold transition-all duration-300 shadow-xl cursor-pointer select-none group"
+    >
+      <span id="load-more-btn-text">Load More Wallpapers</span>
+      <svg id="load-more-spinner" class="hidden w-4 h-4 animate-spin text-current" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      <svg class="w-4 h-4 text-walpix-lime group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    
+    <p id="gallery-counter-text" class="text-xs font-mono text-[#8E949E] mt-3 select-none">
+      Showing <span id="gallery-loaded-count" class="text-white font-bold">{displayWallpapers.length}</span> of <span id="gallery-total-count" class="text-walpix-lime font-bold">14,850+</span> Wallpapers
+    </p>
+
+    <!-- Invisible Scroll Sentinel for Infinite Scrolling via IntersectionObserver -->
+    <div id="gallery-scroll-sentinel" class="w-full h-12 pointer-events-none opacity-0 mt-2"></div>
+  </div>
 </section>
+
+<script>
+  function initDynamicGallery() {
+    const gridContainer = document.getElementById('wallpaper-grid-container');
+    const loadMoreBtn = document.getElementById('gallery-load-more-btn') as HTMLButtonElement | null;
+    const loadMoreText = document.getElementById('load-more-btn-text');
+    const loadMoreSpinner = document.getElementById('load-more-spinner');
+    const loadedCountEl = document.getElementById('gallery-loaded-count');
+    const totalCountEl = document.getElementById('gallery-total-count');
+    const emptyState = document.getElementById('gallery-empty-state');
+    const sentinel = document.getElementById('gallery-scroll-sentinel');
+
+    if (!gridContainer || !loadMoreBtn) return;
+
+    // Gallery state
+    let page = 1;
+    const limit = 36;
+    let currentCategory = 'all';
+    let currentFormat = 'all';
+    let currentSearch = '';
+    let currentSort = 'popular';
+    let totalWallpapers = 14850;
+    let loadedWallpapers = gridContainer.querySelectorAll('.walpix-gallery-card-item').length || 48;
+    let hasMore = true;
+    let isLoading = false;
+
+    // Sync initial state from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    currentCategory = urlParams.get('category') || 'all';
+    currentFormat = urlParams.get('format') || (window.innerWidth < 640 ? 'phone' : 'all');
+    currentSearch = urlParams.get('search') || urlParams.get('q') || '';
+    currentSort = urlParams.get('sort') || 'popular';
+
+    // Helper: Build thumbnail URL matching imageOptimizer
+    function getThumb(sourceCdn: string, isPhone = false): string {
+      if (!sourceCdn) return '/images/hero-astronaut-master.png';
+      if (sourceCdn.includes('wallpapercat.com/w/full/')) {
+        const isVert = /(mobile|phone|iphone|samsung|vertical)/i.test(sourceCdn) || isPhone;
+        const thumbType = isVert ? 'small-vertical-retina' : 'small-retina';
+        return sourceCdn.replace('/w/full/', `/w/${thumbType}/`);
+      }
+      if (sourceCdn.includes('images.unsplash.com')) {
+        return sourceCdn + (sourceCdn.includes('?') ? '&' : '?') + 'w=500&q=80&auto=format&fm=webp';
+      }
+      if (sourceCdn.includes('alphacoders.com')) {
+        const clean = sourceCdn.replace(/^https?:\/\//, '');
+        return `https://i0.wp.com/${clean}?w=500&strip=all`;
+      }
+      return sourceCdn;
+    }
+
+    // Helper: Create single wallpaper card DOM node
+    function createCardElement(wp: any, index: number): HTMLElement {
+      const card = document.createElement('div');
+      card.className = "relative w-full aspect-[16/9] rounded-[15px] overflow-hidden border border-white/[0.08] bg-[#070A0D] wallpaper-card walpix-gallery-card-item group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-walpix-lime/40 hover:shadow-card-hover select-none";
+      card.setAttribute('data-title', (wp.title || '').toLowerCase());
+      card.setAttribute('data-category', (wp.category || '').toLowerCase());
+      card.setAttribute('data-tags', (wp.tags || []).join(' ').toLowerCase());
+      card.setAttribute('data-views', wp.views || 0);
+      card.setAttribute('data-downloads', wp.downloads || 0);
+      card.setAttribute('data-index', String(index));
+      card.setAttribute('data-aspect', wp.aspectRatio || '16:9');
+      card.setAttribute('data-screen-types', (wp.screenTypes || ['desktop-4k']).join(' '));
+
+      const isPhone = wp.aspectRatio === '9:16' || wp.aspectRatio === 'vertical';
+      const isDual = (wp.aspectRatio || '').includes('32:9') || (wp.screenTypes || []).includes('dual-monitor');
+      const aspectText = isPhone ? '9:16' : (isDual ? '32:9' : '16:9');
+      const resText = isPhone ? '1080×2400' : (isDual ? '7680×2160' : '4K UHD');
+      const viewsCount = ((wp.views || 1200) / 10).toFixed(1) + 'K';
+      const swatch1 = wp.colorHex || '#FF1493';
+      const thumb = getThumb(wp.sourceCdn, isPhone);
+
+      card.innerHTML = `
+        <a href="/wallpapers/${wp.slug}" class="absolute inset-0 w-full h-full block z-10 overflow-hidden" aria-label="View and download ${wp.title}">
+          <img
+            src="${thumb}"
+            alt="${wp.title}"
+            width="480"
+            height="270"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            class="w-full h-full object-cover block select-none transition-transform duration-500 ease-out group-hover:scale-105"
+            onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback='1';this.src='${wp.sourceCdn || '/images/hero-astronaut-master.png'}';}else{this.src='/images/placeholder-wallpaper.webp';}"
+          />
+          <div class="absolute top-2.5 inset-x-2.5 sm:inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+            <span class="card-badge-res inline-flex items-center h-[22px] sm:h-[24px] px-2 sm:px-2.5 rounded-full bg-black/45 border border-white/20 text-white/90 text-[10px] sm:text-[11px] font-medium shadow-sm backdrop-blur-md">
+              ${resText}
+            </span>
+            <span class="card-badge-aspect inline-flex items-center justify-center min-w-[32px] sm:w-10 h-[22px] sm:h-[24px] px-1.5 rounded-full bg-black/40 border border-white/20 text-white/80 text-[9px] sm:text-[10px] font-medium shadow-sm backdrop-blur-md">
+              ${aspectText}
+            </span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 h-32 sm:h-28 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
+          <div class="absolute bottom-0 inset-x-0 p-2.5 sm:p-3 z-20 space-y-1.5 pointer-events-none card-meta-box">
+            <h3 class="text-xs sm:text-[13px] font-semibold text-white truncate leading-tight group-hover:text-walpix-lime transition-colors">
+              ${wp.title}
+            </h3>
+            <div class="flex items-center justify-between gap-1.5 pt-0.5 pointer-events-none card-action-row">
+              <div class="flex items-center gap-1 shrink-0 card-swatches">
+                <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/60 shadow-sm" style="background-color: ${swatch1};"></span>
+                <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/60 shadow-sm" style="background-color: #22D3EE;"></span>
+                <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/60 shadow-sm" style="background-color: #C2F600;"></span>
+              </div>
+              <div class="flex items-center gap-1 text-[10px] sm:text-[11px] font-medium text-[#E3E6E9] shrink-0 card-views">
+                <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>${viewsCount}</span>
+              </div>
+              <div class="card-download-btn h-7 sm:h-8 px-2.5 sm:px-3 rounded-full bg-[rgba(15,19,23,0.85)] group-hover:bg-walpix-lime group-hover:text-black border border-white/40 group-hover:border-walpix-lime text-white text-[10px] sm:text-[11px] font-semibold inline-flex items-center gap-1 sm:gap-1.5 backdrop-blur-md transition-all shadow-sm shrink-0">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Download</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      `;
+      return card;
+    }
+
+    // Core dynamic fetcher
+    async function fetchWallpapers(targetPage: number, append = false) {
+      if (isLoading) return;
+      isLoading = true;
+
+      if (loadMoreSpinner) loadMoreSpinner.classList.remove('hidden');
+      if (loadMoreText) loadMoreText.textContent = append ? 'Loading More...' : 'Filtering Wallpapers...';
+
+      const queryParams = new URLSearchParams({
+        page: String(targetPage),
+        limit: String(limit),
+        category: currentCategory,
+        format: currentFormat,
+        search: currentSearch,
+        sort: currentSort,
+      });
+
+      try {
+        const res = await fetch(`/api/wallpapers?${queryParams.toString()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        totalWallpapers = data.total || 0;
+        hasMore = !!data.hasMore;
+        page = targetPage;
+
+        if (!append) {
+          // Clear container for new filter
+          gridContainer.innerHTML = '';
+          loadedWallpapers = 0;
+          window.scrollTo({ top: gridContainer.offsetTop - 120, behavior: 'smooth' });
+        }
+
+        if (data.items && data.items.length > 0) {
+          const fragment = document.createDocumentFragment();
+          data.items.forEach((wp: any, idx: number) => {
+            const cardEl = createCardElement(wp, loadedWallpapers + idx);
+            fragment.appendChild(cardEl);
+          });
+          gridContainer.appendChild(fragment);
+          loadedWallpapers += data.items.length;
+        }
+
+        // Update Counter
+        if (loadedCountEl) loadedCountEl.textContent = String(loadedWallpapers);
+        if (totalCountEl) totalCountEl.textContent = totalWallpapers > 0 ? `${totalWallpapers.toLocaleString()}+` : '0';
+
+        // Empty state handling
+        if (emptyState) {
+          const isZero = totalWallpapers === 0;
+          emptyState.classList.toggle('hidden', !isZero);
+          gridContainer.classList.toggle('hidden', isZero);
+        }
+
+        // Load more button state
+        const loadMoreSection = document.getElementById('gallery-load-more-section');
+        if (loadMoreSection) {
+          loadMoreSection.style.display = totalWallpapers === 0 ? 'none' : 'flex';
+        }
+        if (loadMoreBtn) {
+          if (!hasMore) {
+            loadMoreBtn.classList.add('opacity-50', 'pointer-events-none');
+            if (loadMoreText) loadMoreText.textContent = 'All Wallpapers Loaded';
+          } else {
+            loadMoreBtn.classList.remove('opacity-50', 'pointer-events-none');
+            if (loadMoreText) loadMoreText.textContent = 'Load More Wallpapers';
+          }
+        }
+
+      } catch (err) {
+        console.error('Gallery stream error:', err);
+        if (loadMoreText) loadMoreText.textContent = 'Load More Wallpapers';
+      } finally {
+        isLoading = false;
+        if (loadMoreSpinner) loadMoreSpinner.classList.add('hidden');
+      }
+    }
+
+    // Category Change Listener
+    window.addEventListener('walpix-category-change', ((e: CustomEvent) => {
+      const newCat = e.detail?.category || 'all';
+      const newSearch = e.detail?.search || '';
+      if (currentCategory === newCat && currentSearch === newSearch) return;
+      currentCategory = newCat;
+      currentSearch = newSearch;
+      fetchWallpapers(1, false);
+    }) as EventListener);
+
+    // Format (Device Orientation) Change Listener
+    window.addEventListener('walpix-format-change', ((e: CustomEvent) => {
+      const newFormat = e.detail?.format || 'all';
+      if (currentFormat === newFormat) return;
+      currentFormat = newFormat;
+      fetchWallpapers(1, false);
+    }) as EventListener);
+
+    // Search Change Listener
+    window.addEventListener('walpix-search-change', ((e: CustomEvent) => {
+      const newQuery = e.detail?.query || '';
+      if (currentSearch === newQuery) return;
+      currentSearch = newQuery;
+      fetchWallpapers(1, false);
+    }) as EventListener);
+
+    // Sort Change Listener
+    window.addEventListener('walpix-sort-change', ((e: CustomEvent) => {
+      const newSort = e.detail?.sort || 'popular';
+      if (currentSort === newSort) return;
+      currentSort = newSort;
+      fetchWallpapers(1, false);
+    }) as EventListener);
+
+    // Click handler for Load More Button
+    loadMoreBtn.addEventListener('click', () => {
+      if (hasMore && !isLoading) {
+        fetchWallpapers(page + 1, true);
+      }
+    });
+
+    // Infinite Scroll IntersectionObserver
+    if (sentinel && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !isLoading) {
+          fetchWallpapers(page + 1, true);
+        }
+      }, {
+        rootMargin: '400px 0px',
+      });
+      observer.observe(sentinel);
+    }
+  }
+
+  // Initialize on page load and on Astro view transitions
+  initDynamicGallery();
+  document.addEventListener('astro:page-load', initDynamicGallery);
+</script>
