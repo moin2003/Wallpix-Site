@@ -450,107 +450,20 @@ const categories = [
   // Category & Search Filter Matching with Instant Responsive Transition
   function filterWallpapers(cat: string, searchQuery?: string) {
     currentCategory = cat;
-    const cards = document.querySelectorAll<HTMLElement>('.walpix-gallery-card-item');
-    const ads = document.querySelectorAll<HTMLElement>('.gallery-ad-item');
+    if (searchQuery !== undefined) currentSearch = searchQuery;
 
-    let visibleCount = 0;
-    const cleanQuery = (searchQuery || '').trim().toLowerCase();
-    const queryTokens = cleanQuery ? cleanQuery.split(/\s+/).filter(Boolean) : [];
-
-    cards.forEach((c) => {
-      const itemCat = (c.getAttribute('data-category') || '').toLowerCase();
-      const itemTags = (c.getAttribute('data-tags') || '').toLowerCase();
-      const itemTitle = (c.getAttribute('data-title') || '').toLowerCase();
-
-      // 1. If search query exists, card MUST match search query tokens
-      if (queryTokens.length > 0) {
-        const matchesQuery = queryTokens.every((token) =>
-          itemTitle.includes(token) || itemTags.includes(token) || itemCat.includes(token)
-        );
-        if (!matchesQuery) {
-          c.style.display = 'none';
-          return;
-        }
-      }
-
-      let isMatch = false;
-
-      if (cat === 'all') {
-        isMatch = true;
-      } else if (cat === '4k') {
-        isMatch = itemCat.includes('4k') || itemTags.includes('4k') || itemTitle.includes('4k');
-      } else if (cat === 'hd') {
-        isMatch = itemCat.includes('hd') || itemCat.includes('1080p') || itemTags.includes('hd') || itemTags.includes('1080p') || itemTags.includes('4k') || itemCat.includes('4k');
-      } else if (cat === 'gaming') {
-        isMatch = itemCat.includes('game') || itemCat.includes('gaming') || itemTags.includes('game') || itemTags.includes('gaming') || itemTags.includes('genshin') || itemTags.includes('cyberpunk') || itemTags.includes('valorant') || itemTags.includes('gta');
-      } else if (cat === 'amoled') {
-        isMatch = itemCat.includes('amoled') || itemTags.includes('amoled') || itemTags.includes('oled') || itemTags.includes('black') || itemTitle.includes('black') || itemTitle.includes('amoled');
-      } else if (cat === 'superheroes') {
-        isMatch = itemCat.includes('hero') || itemTags.includes('hero') || itemTags.includes('superhero') || itemTags.includes('marvel') || itemTags.includes('batman') || itemTags.includes('spider-man') || itemTags.includes('spider') || itemTags.includes('gotham');
-      } else if (cat === 'movies') {
-        isMatch = itemCat.includes('movie') || itemTags.includes('movie') || itemTags.includes('film') || itemTags.includes('cinema') || itemTags.includes('peaky') || itemTags.includes('shelby') || itemTags.includes('interstellar');
-      } else if (cat === 'tv-shows') {
-        isMatch = itemCat.includes('tv') || itemCat.includes('show') || itemCat.includes('series') || itemTags.includes('series') || itemTags.includes('tv') || itemTags.includes('stranger') || itemTags.includes('breaking-bad') || itemTags.includes('thrones') || itemTags.includes('peaky') || itemTags.includes('shelby');
-      } else if (cat === 'sports') {
-        isMatch = itemCat.includes('sport') || itemTags.includes('sport') || itemTags.includes('racing') || itemTags.includes('speed') || itemTags.includes('track');
-      } else if (cat === 'celebrities') {
-        isMatch = itemCat.includes('celebrity') || itemTags.includes('celebrity') || itemTags.includes('music') || itemTags.includes('singer') || itemTags.includes('shelby');
-      } else if (cat === 'dark') {
-        isMatch = itemCat.includes('amoled') || itemCat.includes('dark') || itemTags.includes('dark') || itemTags.includes('amoled') || itemTags.includes('black') || itemTags.includes('shadow') || itemTags.includes('noir');
-      } else if (cat === 'cars') {
-        isMatch = itemCat.includes('car') || itemTags.includes('car') || itemTags.includes('bike') || itemTags.includes('motorcycle') || itemTags.includes('supercar') || itemTags.includes('gt3') || itemTags.includes('porsche') || itemTags.includes('lamborghini') || itemTags.includes('nissan') || itemTags.includes('ferrari') || itemTags.includes('bmw') || itemTags.includes('ducati') || itemTags.includes('yamaha') || itemTags.includes('kawasaki') || itemTags.includes('harley');
-      } else if (cat === 'city') {
-        isMatch = itemCat.includes('city') || itemTags.includes('city') || itemTags.includes('urban') || itemTags.includes('tokyo') || itemTags.includes('manhattan') || itemTags.includes('skyline');
-      } else if (cat === 'animals') {
-        isMatch = itemCat.includes('animal') || itemTags.includes('animal') || itemTags.includes('wildlife') || itemTags.includes('wolf') || itemTags.includes('jaguar') || itemTags.includes('predator');
-      } else if (cat === 'fantasy') {
-        isMatch = itemCat.includes('fantasy') || itemTags.includes('fantasy') || itemTags.includes('dragon') || itemTags.includes('mythical') || itemTags.includes('magic') || itemTags.includes('citadel') || itemTags.includes('enchanted');
-      } else if (cat === 'abstract') {
-        isMatch = itemCat.includes('abstract') || itemCat.includes('minimal') || itemTags.includes('abstract') || itemTags.includes('geometry') || itemTags.includes('3d') || itemTags.includes('fluid') || itemTags.includes('prism') || itemTags.includes('chrome');
-      } else if (cat === 'minimalist') {
-        isMatch = itemCat.includes('minimal') || itemTags.includes('minimal') || itemTags.includes('clean') || itemTags.includes('monolith');
-      } else if (cat === 'space') {
-        isMatch = itemCat.includes('space') || itemTags.includes('space') || itemTags.includes('cosmic') || itemTags.includes('nebula') || itemTags.includes('galaxy') || itemTags.includes('planet') || itemTags.includes('astronaut');
-      } else if (cat === 'cyberpunk') {
-        isMatch = itemCat.includes('cyber') || itemTags.includes('cyber') || itemTags.includes('neon') || itemTags.includes('synthwave') || itemTitle.includes('cyber');
-      } else if (cat === 'nature') {
-        isMatch = itemCat.includes('nature') || itemTags.includes('nature') || itemTags.includes('mountain') || itemTags.includes('forest') || itemTags.includes('waterfall') || itemTags.includes('lake') || itemTags.includes('ocean');
-      } else if (cat === 'anime') {
-        isMatch = itemCat.includes('anime') || itemTags.includes('anime') || itemTags.includes('manga') || itemTags.includes('ghibli') || itemTags.includes('naruto') || itemTags.includes('samurai');
-      } else if (cat === 'cartoon') {
-        isMatch = itemCat.includes('cartoon') || itemCat.includes('animation') || itemTags.includes('cartoon') || itemTags.includes('disney') || itemTags.includes('pixar') || itemTags.includes('spongebob') || itemTags.includes('animation');
-      } else if (cat === 'music') {
-        isMatch = itemCat.includes('music') || itemCat.includes('singer') || itemCat.includes('band') || itemCat.includes('rock') || itemTags.includes('music') || itemTags.includes('singer') || itemTags.includes('band') || itemTags.includes('rock') || itemTags.includes('kpop') || itemTags.includes('metal') || itemTags.includes('guitar') || itemTags.includes('concert');
-      } else {
-        isMatch = itemCat.includes(cat) || itemTags.includes(cat) || itemTitle.includes(cat);
-      }
-
-      if (isMatch) {
-        c.style.display = 'block';
-        visibleCount++;
-      } else {
-        c.style.display = 'none';
-      }
-    });
-
-    // Handle in-feed ads (only on unfiltered 'all' view)
-    ads.forEach((ad) => {
-      ad.style.display = (cat === 'all' && !cleanQuery) ? 'block' : 'none';
-    });
-
-    // Handle Gallery Grid visibility & Empty State based on visible items
+    // Reset grid visibility and empty state before fetching category stream
     const orientationWrapper = document.getElementById('gallery-orientation-wrapper');
     if (orientationWrapper) orientationWrapper.classList.remove('hidden');
 
-    if (visibleCount === 0) {
-      if (gridContainer) gridContainer.classList.add('hidden');
-      if (emptyState) emptyState.classList.remove('hidden');
-    } else {
-      if (gridContainer) gridContainer.classList.remove('hidden');
-      if (emptyState) emptyState.classList.add('hidden');
-    }
+    const gridContainer = document.getElementById('wallpaper-grid-container');
+    const emptyState = document.getElementById('gallery-empty-state');
+    if (gridContainer) gridContainer.classList.remove('hidden');
+    if (emptyState) emptyState.classList.add('hidden');
 
-    window.dispatchEvent(new CustomEvent('walpix-category-change', { detail: { category: cat } }));
+    window.dispatchEvent(new CustomEvent('walpix-category-change', {
+      detail: { category: cat, search: currentSearch }
+    }));
   }
 
   // Filter Pills Click: Simply toggle .active!

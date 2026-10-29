@@ -50,7 +50,14 @@ const dualWallpapers = wallpapers.filter(w =>
   (w.screenTypes || []).includes('ultrawide')
 ).slice(0, 36);
 
-const discoveryWallpapers = [...desktopWallpapers, ...mobileWallpapers, ...dualWallpapers];
+const userAgent = Astro.request.headers.get('user-agent') || '';
+const isMobileUA = /mobile|iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(userAgent);
+
+const discoveryWallpapers = isMobileUA
+  ? [...mobileWallpapers, ...desktopWallpapers, ...dualWallpapers]
+  : [...desktopWallpapers, ...mobileWallpapers, ...dualWallpapers];
+
+const initialGridMode: 'all' | 'desktop' | 'phone' | 'dual' = isMobileUA ? 'phone' : 'all';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -97,11 +104,11 @@ const lcpImage = discoveryWallpapers && discoveryWallpapers.length > 0 ? discove
 
       <!-- Aspect Ratio & Orientation Toggle (All Formats, Horizontal, Vertical, Dual Screen) -->
       <div id="gallery-orientation-wrapper">
-        <OrientationToggle />
+        <OrientationToggle activeFormat={initialGridMode} />
       </div>
 
       <!-- 4-Column 16:9 Gallery Grid for All Wallpapers with Strategic In-Feed Ads -->
-      <GalleryGrid wallpapers={discoveryWallpapers} />
+      <GalleryGrid wallpapers={discoveryWallpapers} gridMode={initialGridMode} />
     </div>
   </main>
 

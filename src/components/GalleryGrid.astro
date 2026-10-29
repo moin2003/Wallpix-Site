@@ -97,6 +97,17 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
 
     if (!gridContainer || !loadMoreBtn) return;
 
+    // Set of currently rendered wallpaper slugs to prevent ANY duplicates
+    const renderedSlugs = new Set<string>();
+
+    // Scan initial SSR cards in DOM and track their slugs
+    gridContainer.querySelectorAll<HTMLElement>('.walpix-gallery-card-item').forEach((card) => {
+      const link = card.querySelector('a');
+      const href = link?.getAttribute('href') || '';
+      const slug = href.replace('/wallpapers/', '').trim();
+      if (slug) renderedSlugs.add(slug);
+    });
+
     // Gallery state
     let page = 1;
     const limit = 36;
@@ -105,14 +116,15 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     let currentSearch = '';
     let currentSort = 'popular';
     let totalWallpapers = 14850;
-    let loadedWallpapers = gridContainer.querySelectorAll('.walpix-gallery-card-item').length || 48;
+    let loadedWallpapers = renderedSlugs.size;
     let hasMore = true;
     let isLoading = false;
 
     // Sync initial state from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
+    const isMobileViewport = window.innerWidth < 640;
     currentCategory = urlParams.get('category') || 'all';
-    currentFormat = urlParams.get('format') || (window.innerWidth < 640 ? 'phone' : 'all');
+    currentFormat = urlParams.get('format') || (isMobileViewport ? 'phone' : 'all');
     currentSearch = urlParams.get('search') || urlParams.get('q') || '';
     currentSort = urlParams.get('sort') || 'popular';
 
@@ -207,7 +219,7 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
       return card;
     }
 
-    // Core dynamic fetcher
+    // Core dynamic fetcher with strict de-duplication
     async function fetchWallpapers(targetPage: number, append = false) {
       if (isLoading) return;
       isLoading = true;
@@ -234,7 +246,8 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
         page = targetPage;
 
         if (!append) {
-          // Clear container for new filter
+          // Clear container and de-duplication set when resetting filters
+          renderedSlugs.clear();
           gridContainer.innerHTML = '';
           loadedWallpapers = 0;
           window.scrollTo({ top: gridContainer.offsetTop - 120, behavior: 'smooth' });
@@ -242,15 +255,23 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
 
         if (data.items && data.items.length > 0) {
           const fragment = document.createDocumentFragment();
-          data.items.forEach((wp: any, idx: number) => {
-            const cardEl = createCardElement(wp, loadedWallpapers + idx);
+          let newAdded = 0;
+
+          data.items.forEach((wp: any) => {
+            // Strict de-duplication check: NEVER append a wallpaper that is already displayed
+            if (!wp.slug || renderedSlugs.has(wp.slug)) return;
+            renderedSlugs.add(wp.slug);
+
+            const cardEl = createCardElement(wp, loadedWallpapers + newAdded);
             fragment.appendChild(cardEl);
+            newAdded++;
           });
+
           gridContainer.appendChild(fragment);
-          loadedWallpapers += data.items.length;
+          loadedWallpapers += newAdded;
         }
 
-        // Update Counter
+        // Update Live Counter
         if (loadedCountEl) loadedCountEl.textContent = String(loadedWallpapers);
         if (totalCountEl) totalCountEl.textContent = totalWallpapers > 0 ? `${totalWallpapers.toLocaleString()}+` : '0';
 
@@ -289,16 +310,14 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     window.addEventListener('walpix-category-change', ((e: CustomEvent) => {
       const newCat = e.detail?.category || 'all';
       const newSearch = e.detail?.search || '';
-      if (currentCategory === newCat && currentSearch === newSearch) return;
       currentCategory = newCat;
       currentSearch = newSearch;
       fetchWallpapers(1, false);
     }) as EventListener);
 
-    // Format (Device Orientation) Change Listener
+    // Format (Device Orientation) Change Listener (Mobile Phone 9:16, Desktop 16:9, Dual 32:9)
     window.addEventListener('walpix-format-change', ((e: CustomEvent) => {
       const newFormat = e.detail?.format || 'all';
-      if (currentFormat === newFormat) return;
       currentFormat = newFormat;
       fetchWallpapers(1, false);
     }) as EventListener);
@@ -306,7 +325,6 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     // Search Change Listener
     window.addEventListener('walpix-search-change', ((e: CustomEvent) => {
       const newQuery = e.detail?.query || '';
-      if (currentSearch === newQuery) return;
       currentSearch = newQuery;
       fetchWallpapers(1, false);
     }) as EventListener);
@@ -314,10 +332,16 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     // Sort Change Listener
     window.addEventListener('walpix-sort-change', ((e: CustomEvent) => {
       const newSort = e.detail?.sort || 'popular';
-      if (currentSort === newSort) return;
       currentSort = newSort;
       fetchWallpapers(1, false);
     }) as EventListener);
+
+    // If initial viewport is mobile and URL doesn't have ?format=desktop, ensure pure 9:16 phone wallpapers are loaded
+    const firstCard = gridContainer.querySelector<HTMLElement>('.walpix-gallery-card-item');
+    const firstCardAspect = firstCard?.getAttribute('data-aspect') || '';
+    if (isMobileViewport && currentFormat === 'phone' && firstCardAspect === '16:9') {
+      fetchWallpapers(1, false);
+    }
 
     // Click handler for Load More Button
     loadMoreBtn.addEventListener('click', () => {

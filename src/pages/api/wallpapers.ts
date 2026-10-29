@@ -11,9 +11,12 @@ export const GET: APIRoute = async ({ url }) => {
 
   let filtered: Wallpaper[] = wallpapers;
 
-  // 1. Format Filter
+  // 1. Format Filter (Prioritize authentic high-res WallpaperCat mobile wallpapers for phone)
   if (format === 'phone' || format === 'mobile') {
-    filtered = filtered.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+    const allPhone = filtered.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+    const wcatPhone = allPhone.filter(w => (w.sourceCdn || '').includes('wallpapercat.com'));
+    const otherPhone = allPhone.filter(w => !(w.sourceCdn || '').includes('wallpapercat.com'));
+    filtered = [...wcatPhone, ...otherPhone];
   } else if (format === 'desktop') {
     filtered = filtered.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
   } else if (format === 'dual') {
@@ -32,7 +35,7 @@ export const GET: APIRoute = async ({ url }) => {
       const cTitle = (w.title || '').toLowerCase();
 
       if (category === '4k') return cCat.includes('4k') || cTags.includes('4k') || cTitle.includes('4k');
-      if (category === 'hd') return cCat.includes('hd') || cCat.includes('1080p') || cTags.includes('hd') || cTags.includes('1080p');
+      if (category === 'hd') return (w.resolution || '').includes('1920') || (w.title || '').includes('1080') || cCat.includes('hd') || cCat.includes('1080p') || cTags.includes('hd') || cTags.includes('1080p');
       if (category === 'gaming') return cCat.includes('game') || cTags.includes('game') || cTags.includes('gaming') || cTags.includes('genshin') || cTags.includes('cyberpunk') || cTags.includes('valorant') || cTags.includes('gta');
       if (category === 'anime') return cCat.includes('anime') || cCat.includes('manga') || cTags.includes('anime') || cTags.includes('manga') || cTags.includes('naruto') || cTags.includes('ghibli');
       if (category === 'amoled') return cCat.includes('amoled') || cTags.includes('amoled') || cCat.includes('black') || cTags.includes('dark') || cTitle.includes('black');
@@ -48,7 +51,7 @@ export const GET: APIRoute = async ({ url }) => {
       if (category === 'city') return cCat.includes('city') || cTags.includes('city') || cTags.includes('urban') || cTags.includes('tokyo');
       if (category === 'animals') return cCat.includes('animal') || cTags.includes('animal') || cTags.includes('wildlife') || cTags.includes('wolf');
       if (category === 'sports') return cCat.includes('sport') || cTags.includes('sport') || cTags.includes('racing');
-      if (category === 'celebrities') return cCat.includes('celebrity') || cTags.includes('celebrity');
+      if (category === 'celebrities') return cCat.includes('celebrity') || cCat.includes('actor') || cCat.includes('actress') || cCat.includes('model') || cCat.includes('singer') || cTags.includes('celebrity') || cTags.includes('singer') || cTags.includes('actor') || cTags.includes('actress') || cTags.includes('artist') || cTags.includes('taylor-swift');
       if (category === 'minimalist' || category === 'abstract') return cCat.includes('minimal') || cCat.includes('abstract') || cTags.includes('abstract') || cTags.includes('minimal');
       if (category === 'dark') return cCat.includes('dark') || cTags.includes('dark') || cCat.includes('black') || cTags.includes('shadow');
       if (category === 'fantasy') return cCat.includes('fantasy') || cTags.includes('fantasy') || cTags.includes('magic') || cTags.includes('dragon');
@@ -66,14 +69,20 @@ export const GET: APIRoute = async ({ url }) => {
     });
   }
 
-  // 4. Sort
+  // 4. De-duplicate by slug before pagination
+  const seenSlugs = new Set<string>();
+  filtered = filtered.filter(w => {
+    if (!w.slug || seenSlugs.has(w.slug)) return false;
+    seenSlugs.add(w.slug);
+    return true;
+  });
+
+  // 5. Sort
   if (sort === 'recent' || sort === 'newest') {
-    // Reverse order for newest
     filtered = [...filtered].reverse();
   } else if (sort === 'downloads') {
     filtered = [...filtered].sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-  } else {
-    // popular: views
+  } else if (sort === 'popular') {
     filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
   }
 
