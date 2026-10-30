@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ========================================================================================
-       WALPIX 4K — DEDICATED WALLPAPERCAT PHONE / MOBILE INGESTION ENGINE
+       WALPIX 4K — DEDICATED WALLPAPERCAT PHONE / MOBILE INGESTION ENGINE (V2)
 ========================================================================================
 Fetches genuine native vertical (9:16) phone wallpapers directly from WallpaperCat:
 - Targets WallpaperCat's /phone, /iphone-wallpapers, /anime-phone-wallpapers,
@@ -9,7 +9,9 @@ Fetches genuine native vertical (9:16) phone wallpapers directly from WallpaperC
 - Strictly filters out landscape desktop wallpapers: Only captures vertical assets
   (2160x3840, 1440x2560, 1080x1920, 1080x2400, 1170x2532, 1290x2796, mobile, iphone).
 - Zero Local Storage: Uses high-speed direct CDN streaming from wallpapercat.com/w/full/...
-- Smart anti-duplicate engine ensuring zero duplicates in catalog.json.
+- Ensures 100% clean URLs without srcset parameters.
+- Cleans titles into pristine human-readable format.
+- Prepends new wallpapers to the FRONT of the catalog so they appear first!
 ========================================================================================
 """
 
@@ -69,39 +71,39 @@ TARGET_PHONE_FEEDS = [
     {"url": "https://wallpapercat.com/naruto-wallpapers", "category": "Anime & Manga", "base_tags": ["naruto", "shippuden", "anime", "ninja"]},
     {"url": "https://wallpapercat.com/one-piece-wallpapers", "category": "Anime & Manga", "base_tags": ["one-piece", "luffy", "anime", "straw-hat"]},
     {"url": "https://wallpapercat.com/dragon-ball-z-wallpapers", "category": "Anime & Manga", "base_tags": ["dragon-ball-z", "goku", "saiyan", "anime"]},
-    {"url": "https://wallpapercat.com/jujutsu-kaisen-wallpapers", "category": "Anime & Manga", "base_tags": ["jujutsu-kaisen", "gojo", "sukuna", "anime"]},
-    {"url": "https://wallpapercat.com/demon-slayer-wallpapers", "category": "Anime & Manga", "base_tags": ["demon-slayer", "tanjiro", "nezuko", "anime"]},
-    {"url": "https://wallpapercat.com/attack-on-titan-wallpapers", "category": "Anime & Manga", "base_tags": ["attack-on-titan", "eren", "levi", "anime"]},
-    {"url": "https://wallpapercat.com/solo-leveling-wallpapers", "category": "Anime & Manga", "base_tags": ["solo-leveling", "sung-jin-woo", "shadow-monarch"]},
     {"url": "https://wallpapercat.com/bleach-wallpapers", "category": "Anime & Manga", "base_tags": ["bleach", "ichigo", "bankai", "anime"]},
+    {"url": "https://wallpapercat.com/death-note-wallpapers", "category": "Anime & Manga", "base_tags": ["death-note", "light-yagami", "l", "anime"]},
+    {"url": "https://wallpapercat.com/hunter-x-hunter-wallpapers", "category": "Anime & Manga", "base_tags": ["hunter-x-hunter", "killua", "gon", "anime"]},
+    {"url": "https://wallpapercat.com/my-hero-academia-wallpapers", "category": "Anime & Manga", "base_tags": ["my-hero-academia", "deku", "all-might", "anime"]},
+    {"url": "https://wallpapercat.com/tokyo-ghoul-wallpapers", "category": "Anime & Manga", "base_tags": ["tokyo-ghoul", "kaneki", "ken-kaneki", "anime"]},
+    {"url": "https://wallpapercat.com/berserk-wallpapers", "category": "Anime & Manga", "base_tags": ["berserk", "guts", "anime", "dark-fantasy"]},
+    {"url": "https://wallpapercat.com/chainsaw-man-wallpapers", "category": "Anime & Manga", "base_tags": ["chainsaw-man", "denji", "makima", "anime"]},
 
     # 3. Gaming Mobile Hubs
     {"url": "https://wallpapercat.com/cyberpunk-2077-wallpapers", "category": "Gaming", "base_tags": ["cyberpunk-2077", "night-city", "gaming", "neon"]},
-    {"url": "https://wallpapercat.com/grand-theft-auto-v-wallpapers", "category": "Gaming", "base_tags": ["gta-5", "rockstar-games", "gaming"]},
     {"url": "https://wallpapercat.com/elden-ring-wallpapers", "category": "Gaming", "base_tags": ["elden-ring", "fromsoftware", "gaming"]},
     {"url": "https://wallpapercat.com/valorant-wallpapers", "category": "Gaming", "base_tags": ["valorant", "riot-games", "jett", "gaming"]},
     {"url": "https://wallpapercat.com/genshin-impact-wallpapers", "category": "Gaming", "base_tags": ["genshin-impact", "anime-game", "raiden-shogun"]},
+    {"url": "https://wallpapercat.com/witcher-3-wallpapers", "category": "Gaming", "base_tags": ["witcher-3", "geralt", "cd-projekt", "gaming"]},
+    {"url": "https://wallpapercat.com/god-of-war-wallpapers", "category": "Gaming", "base_tags": ["god-of-war", "kratos", "playstation", "gaming"]},
+    {"url": "https://wallpapercat.com/halo-wallpapers", "category": "Gaming", "base_tags": ["halo", "master-chief", "xbox", "gaming"]},
 
     # 4. Cars & Supercars Mobile Hubs
     {"url": "https://wallpapercat.com/porsche-wallpapers", "category": "Cars & Bikes", "base_tags": ["porsche", "911-gt3", "supercars", "cars"]},
     {"url": "https://wallpapercat.com/ferrari-wallpapers", "category": "Cars & Bikes", "base_tags": ["ferrari", "hypercar", "speed", "cars"]},
     {"url": "https://wallpapercat.com/lamborghini-wallpapers", "category": "Cars & Bikes", "base_tags": ["lamborghini", "aventador", "supercars", "cars"]},
     {"url": "https://wallpapercat.com/bmw-wallpapers", "category": "Cars & Bikes", "base_tags": ["bmw", "bmw-m4", "drift", "cars"]},
+    {"url": "https://wallpapercat.com/mercedes-wallpapers", "category": "Cars & Bikes", "base_tags": ["mercedes", "amg", "supercars", "cars"]},
+    {"url": "https://wallpapercat.com/mclaren-wallpapers", "category": "Cars & Bikes", "base_tags": ["mclaren", "p1", "hypercar", "cars"]},
+    {"url": "https://wallpapercat.com/nissan-gtr-wallpapers", "category": "Cars & Bikes", "base_tags": ["nissan-gtr", "godzilla", "jdm", "cars"]},
 
-    # 5. AMOLED, Dark & Space Mobile Hubs
+    # 5. AMOLED, Dark, Space & Superheroes Mobile Hubs
     {"url": "https://wallpapercat.com/black-wallpapers", "category": "AMOLED Black", "base_tags": ["amoled", "black", "dark", "pitch-black"]},
+    {"url": "https://wallpapercat.com/space-wallpapers", "category": "Space & Cosmic", "base_tags": ["space", "galaxy", "nebula", "stars"]},
     {"url": "https://wallpapercat.com/interstellar-wallpapers", "category": "Space & Cosmic", "base_tags": ["interstellar", "space", "galaxy", "black-hole"]},
     {"url": "https://wallpapercat.com/spider-man-wallpapers", "category": "Comics & Superheroes", "base_tags": ["spider-man", "marvel", "miles-morales"]},
     {"url": "https://wallpapercat.com/batman-wallpapers", "category": "Comics & Superheroes", "base_tags": ["batman", "dc-comics", "dark-knight"]},
-]
-
-VERTICAL_RESOLUTION_PATTERNS = [
-    r'(\d{3,4})x(\d{4})',        # e.g. 1080x1920, 2160x3840
-    r'mobile',
-    r'phone',
-    r'iphone',
-    r'portrait',
-    r'vertical'
+    {"url": "https://wallpapercat.com/joker-wallpapers", "category": "Comics & Superheroes", "base_tags": ["joker", "dc-comics", "heath-ledger"]},
 ]
 
 def is_vertical_image(filename_or_url):
@@ -119,19 +121,32 @@ def is_vertical_image(filename_or_url):
         return True, "1440x3200"
     return False, None
 
+def clean_wallpaper_title(raw_path, fallback_topic):
+    name = raw_path.split('/')[-1]
+    name = re.sub(r'^\d+-', '', name)
+    name = re.sub(r'\.(?:jpg|jpeg|png|webp)$', '', name, flags=re.I)
+    name = re.sub(r'\b\d+x\d+\b', '', name)
+    name = re.sub(r'\b(samsung|phone|iphone|mobile|desktop|4k|hd|background|wallpaper|photo|image|full|raw)\b', '', name, flags=re.I)
+    name = ' '.join(name.replace('-', ' ').replace('_', ' ').split()).title()
+    
+    if len(name) < 3 or name.isdigit():
+        name = fallback_topic
+    return name
+
 def fetch_feed(feed):
     url = feed['url']
     category = feed['category']
     base_tags = feed['base_tags']
+    fallback_topic = url.split('/')[-1].replace('-wallpapers', '').replace('-phone', '').replace('-', ' ').title()
     
-    print(f"[*] Crawling WallpaperCat Phone Feed: {url} ...")
+    print(f"[*] Crawling WallpaperCat: {url} ...")
     try:
         req = urllib.request.Request(url, headers=HEADERS)
         with urllib.request.urlopen(req, timeout=18) as resp:
             html = resp.read().decode('utf-8', errors='ignore')
         
-        # Match all image candidates on WallpaperCat
-        matches = re.findall(r'/w/(?:full|middle-vertical-retina|middle-vertical|xmini-sq|middle)/([^"\'#?]+\.(?:jpg|jpeg|png|webp))', html)
+        # Match only clean relative paths without spaces or srcset parameters
+        matches = re.findall(r'/w/(?:full|middle-vertical-retina|middle-vertical|xmini-sq|middle)/([a-zA-Z0-9_\-\/]+\.(?:jpg|jpeg|png|webp))', html)
         unique_matches = sorted(set(matches))
         
         extracted = []
@@ -140,17 +155,12 @@ def fetch_feed(feed):
             if not is_vert:
                 continue
             
+            # Ensure URL is 100% clean
             full_cdn_url = f"https://wallpapercat.com/w/full/{img_rel}"
-            
-            # Extract clean title from filename
-            name_part = img_rel.split('/')[-1]
-            # Strip leading IDs and dimensions
-            clean_title = re.sub(r'^\d+-|\b\d+x\d+\b|-(?:mobile|phone|iphone|desktop|4k|hd|background|wallpaper|photo|image)|[._-]', ' ', name_part, flags=re.I)
-            clean_title = ' '.join(clean_title.split()).title()
-            
-            if len(clean_title) < 3 or clean_title.isdigit():
-                topic_name = url.split('/')[-1].replace('-wallpapers', '').replace('-phone', '').replace('-', ' ').title()
-                clean_title = f"{topic_name} Phone Wallpaper"
+            if ' ' in full_cdn_url or ',' in full_cdn_url:
+                continue
+                
+            clean_title = clean_wallpaper_title(img_rel, fallback_topic)
             
             extracted.append({
                 "sourceCdn": full_cdn_url,
@@ -161,7 +171,7 @@ def fetch_feed(feed):
                 "raw_filename": img_rel
             })
             
-        print(f"  [+] Found {len(extracted)} verified 9:16 vertical phone wallpapers on {url}")
+        print(f"  [+] Found {len(extracted)} clean 9:16 vertical phone wallpapers on {url}")
         return extracted
     except Exception as e:
         print(f"  [!] Failed to crawl {url}: {e}")
@@ -169,7 +179,7 @@ def fetch_feed(feed):
 
 def main():
     print("=" * 80)
-    print("     WALPIX 4K — WALLPAPERCAT PHONE / MOBILE INGESTION ENGINE")
+    print("     WALPIX 4K — WALLPAPERCAT PHONE / MOBILE INGESTION ENGINE (V2)")
     print("=" * 80)
     
     if not CATALOG_PATH.exists():
@@ -179,13 +189,13 @@ def main():
     with open(CATALOG_PATH, 'r', encoding='utf-8') as f:
         catalog = json.load(f)
         
-    initial_total = len(catalog)
-    initial_mobile = sum(1 for w in catalog if w.get('aspectRatio') == '9:16')
-    print(f"Initial Catalog Total: {initial_total} (Desktop: {initial_total - initial_mobile}, Mobile: {initial_mobile})")
+    # Purge any old malformed wpm-wcat- entries
+    cleaned_existing = [w for w in catalog if not w.get('id', '').startswith('wpm-wcat-')]
+    print(f"Catalog base (without wpm-wcat): {len(cleaned_existing)}")
     
-    existing_urls = {w.get('sourceCdn') for w in catalog if w.get('sourceCdn')}
-    existing_ids = {w.get('id') for w in catalog if w.get('id')}
-    existing_slugs = {w.get('slug') for w in catalog if w.get('slug')}
+    existing_urls = {w.get('sourceCdn') for w in cleaned_existing if w.get('sourceCdn')}
+    existing_ids = {w.get('id') for w in cleaned_existing if w.get('id')}
+    existing_slugs = {w.get('slug') for w in cleaned_existing if w.get('slug')}
     
     all_candidates = []
     
@@ -199,14 +209,16 @@ def main():
     print(f"\n[*] Total candidates collected: {len(all_candidates)}")
     
     new_entries = []
+    seen_in_batch = set()
     skipped_duplicates = 0
     
     for item in all_candidates:
         url = item['sourceCdn']
-        if url in existing_urls:
+        if url in existing_urls or url in seen_in_batch:
             skipped_duplicates += 1
             continue
             
+        seen_in_batch.add(url)
         unique_hash = hashlib.md5(url.encode()).hexdigest()[:8]
         entry_id = f"wpm-wcat-{unique_hash}"
         if entry_id in existing_ids:
@@ -223,7 +235,7 @@ def main():
             continue
             
         palette = random.choice(LUXURY_PALETTES)
-        views = random.randint(24500, 118400)
+        views = random.randint(28500, 142400)
         downloads = int(views * random.uniform(0.28, 0.46))
         
         tags = ["mobile", "phone", "iphone", "4k", "vertical", "9:16"]
@@ -257,17 +269,22 @@ def main():
         
     print(f"\n=======================================================")
     print(f"Skipped Duplicates: {skipped_duplicates}")
-    print(f"Fresh 9:16 Phone Wallpapers Added: {len(new_entries)}")
+    print(f"Fresh Clean 9:16 Phone Wallpapers: {len(new_entries)}")
     
     if new_entries:
-        catalog.extend(new_entries)
-        print(f"New Catalog Total: {len(catalog)} (Added: +{len(new_entries)} Phone Wallpapers)")
+        # Shuffle new entries for high visual diversity across Anime, Cars, Gaming, AMOLED, etc.
+        random.seed(42)
+        random.shuffle(new_entries)
+        
+        # PREPEND new entries to the FRONT of the catalog!
+        final_catalog = new_entries + cleaned_existing
+        print(f"New Catalog Total: {len(final_catalog)} (Prepended +{len(new_entries)} Fresh Wallpapers to the TOP)")
         
         with open(CATALOG_PATH, 'w', encoding='utf-8') as f:
-            json.dump(catalog, f, indent=2, ensure_ascii=False)
+            json.dump(final_catalog, f, indent=2, ensure_ascii=False)
         print("✓ Successfully saved updated catalog to public/data/catalog.json!")
     else:
-        print("• No new unique wallpapers found to add (all already present).")
+        print("• No new unique wallpapers found to add.")
         
 if __name__ == "__main__":
     main()
