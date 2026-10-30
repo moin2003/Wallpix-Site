@@ -49,7 +49,7 @@ const schema = {
   '@type': 'CollectionPage',
   name: screenInfo.title,
   description: screenInfo.description,
-  url: `https://walpix.site/screen/${screenInfo.slug}`,
+  url: `https://www.walpix.site/screen/${screenInfo.slug}`,
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: wallpapersList.slice(0, 12).map((wp, index) => ({
@@ -59,7 +59,7 @@ const schema = {
         '@type': 'ImageObject',
         name: wp.title,
         contentUrl: wp.sourceCdn,
-        url: `https://walpix.site/wallpapers/${wp.slug}`,
+        url: `https://www.walpix.site/wallpapers/${wp.slug}`,
       },
     })),
   },

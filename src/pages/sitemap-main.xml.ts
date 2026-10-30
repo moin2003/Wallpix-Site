@@ -4,8 +4,8 @@ import { collections } from '../data/collections';
 import { blogPosts } from '../data/blogPosts';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = 'https://walpix.site';
-  const currentDate = new Date().toISOString();
+  const siteUrl = 'https://www.walpix.site';
+  const currentDate = new Date().toISOString().split('T')[0];
 
   const corePages = [
     { url: '', priority: '1.0', changefreq: 'daily' },

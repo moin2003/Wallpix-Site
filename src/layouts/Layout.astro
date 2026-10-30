@@ -25,8 +25,8 @@ const {
 const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION || '';
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '';
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://walpix.site');
-const siteOrigin = Astro.url.origin || 'https://walpix.site';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://www.walpix.site');
+const siteOrigin = Astro.url.origin || 'https://www.walpix.site';
 const rawImage = image || '/images/walpix-og-banner.jpg';
 const socialImageUrl = rawImage.startsWith('http')
   ? rawImage
@@ -36,11 +36,11 @@ const defaultWebsiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'WALPIX 4K',
-  url: 'https://walpix.site',
+  url: 'https://www.walpix.site',
   description: description,
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://walpix.site/wallpapers?q={search_term_string}',
+    target: 'https://www.walpix.site/wallpapers?q={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };

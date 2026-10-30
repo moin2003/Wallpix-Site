@@ -270,7 +270,7 @@ const schema = {
   '@type': 'CollectionPage',
   name: `${tagInfo.name} 4K Wallpapers`,
   description: metaDescription,
-  url: `https://walpix.site/tag/${tagInfo.slug}`,
+  url: `https://www.walpix.site/tag/${tagInfo.slug}`,
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: wallpapersList.slice(0, 12).map((wp, index) => ({
@@ -280,7 +280,7 @@ const schema = {
         '@type': 'ImageObject',
         name: wp.title,
         contentUrl: wp.sourceCdn,
-        url: `https://walpix.site/wallpapers/${wp.slug}`,
+        url: `https://www.walpix.site/wallpapers/${wp.slug}`,
       },
     })),
   },

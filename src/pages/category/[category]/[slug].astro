@@ -181,14 +181,14 @@ const schema = {
   '@type': 'CollectionPage',
   name: `${subTopic.name} 4K Wallpapers - ${categoryInfo.name}`,
   description: metaDescription,
-  url: `https://walpix.site/category/${categoryInfo.slug}/${subTopic.slug}`,
+  url: `https://www.walpix.site/category/${categoryInfo.slug}/${subTopic.slug}`,
   breadcrumb: {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://walpix.site/' },
-      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://walpix.site/categories' },
-      { '@type': 'ListItem', position: 3, name: categoryInfo.name, item: `https://walpix.site/category/${categoryInfo.slug}` },
-      { '@type': 'ListItem', position: 4, name: subTopic.name, item: `https://walpix.site/category/${categoryInfo.slug}/${subTopic.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.walpix.site/' },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://www.walpix.site/categories' },
+      { '@type': 'ListItem', position: 3, name: categoryInfo.name, item: `https://www.walpix.site/category/${categoryInfo.slug}` },
+      { '@type': 'ListItem', position: 4, name: subTopic.name, item: `https://www.walpix.site/category/${categoryInfo.slug}/${subTopic.slug}` },
     ],
   },
   mainEntity: {
@@ -200,7 +200,7 @@ const schema = {
         '@type': 'ImageObject',
         name: wp.title,
         contentUrl: wp.sourceCdn,
-        url: `https://walpix.site/wallpapers/${wp.slug}`,
+        url: `https://www.walpix.site/wallpapers/${wp.slug}`,
       },
     })),
   },

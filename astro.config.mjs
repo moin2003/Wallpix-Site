@@ -14,5 +14,5 @@ export default defineConfig({
       applyBaseStyles: true,
     }),
   ],
-  site: 'https://walpix.site',
+  site: 'https://www.walpix.site',
 });

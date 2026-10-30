@@ -3,8 +3,8 @@ import type { APIRoute } from 'astro';
 import { CATEGORIES, LUXURY_COLORS } from '../data/wallpapers';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = 'https://walpix.site';
-  const currentDate = new Date().toISOString();
+  const siteUrl = 'https://www.walpix.site';
+  const currentDate = new Date().toISOString().split('T')[0];
 
   const categoryPages = CATEGORIES.map((cat) => ({
     url: `/category/${cat.slug}`,

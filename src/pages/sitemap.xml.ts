@@ -2,8 +2,8 @@ export const prerender = true;
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = 'https://walpix.site';
-  const currentDate = new Date().toISOString();
+  const siteUrl = 'https://www.walpix.site';
+  const currentDate = new Date().toISOString().split('T')[0];
 
   const sitemaps = [
     '/sitemap-main.xml',
