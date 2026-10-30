@@ -24,153 +24,158 @@ BOARDS = [
 
 def run():
     print("=" * 60)
-    print("🚀 WALPIX - PINTEREST AUTOMATED BOARD CREATOR")
+    print("🚀 WALPIX - PINTEREST EXACT UI BOARD AUTOMATION")
     print("=" * 60)
     print(f"Total boards to create: {len(BOARDS)}")
-    print("Opening browser with saved session profile...")
 
     with sync_playwright() as p:
         user_data_dir = "./scripts/pinterest_session"
         context = p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
             headless=False,
-            viewport={'width': 1280, 'height': 850},
+            viewport={'width': 1366, 'height': 860},
             args=["--disable-blink-features=AutomationControlled"]
         )
 
         page = context.new_page()
         page.goto("https://www.pinterest.com/", wait_until="domcontentloaded")
-        print("\nNavigated to Pinterest.")
+        time.sleep(3)
 
-        # Check if user needs to log in
         print("\nChecking login status...")
-        print("👉 If you are not logged in yet, please log into your Pinterest account now in the opened browser window.")
-        print("Waiting for login detection (up to 120 seconds)...")
-
-        logged_in = False
+        # Check if user needs to login or is already logged in
+        # If not on profile, guide or wait
+        profile_detected = False
         for _ in range(60):
-            time.sleep(2)
-            # Check for indicators of being logged in: profile icon, saved tab, etc.
-            content = page.content()
-            if 'aria-label="Saved"' in content or 'data-test-id="header-profile"' in content or '/_saved' in page.url or 'aria-label="Profile"' in content:
-                logged_in = True
+            if page.locator('div[data-test-id="header-profile"]').count() > 0 or '/_saved' in page.url or 'Create' in page.content():
+                profile_detected = True
                 break
-            if 'pinterest.com/today' in page.url or 'pinterest.com/business' in page.url:
-                logged_in = True
-                break
+            time.sleep(1)
 
-        if not logged_in:
-            print("⚠️ Still waiting or please make sure you are logged in. Press Enter in this terminal once you are logged in:")
-            try:
-                input()
-            except Exception:
-                pass
+        if not profile_detected:
+            print("👉 Please log into your Pinterest account in the opened window...")
+            print("Waiting for login...")
+            while True:
+                time.sleep(2)
+                if 'Create' in page.content() or page.locator('div[data-test-id="header-profile"]').count() > 0:
+                    break
 
         print("✅ Logged in successfully!")
-        
-        # Navigate to profile / saved tab
-        print("Navigating to Profile / Saved page...")
-        # Find profile button or click it
-        try:
-            profile_btn = page.locator('div[data-test-id="header-profile"], button[aria-label*="Profile"], a[aria-label*="Profile"]').first
-            if profile_btn.count() > 0:
-                profile_btn.click()
-                time.sleep(3)
-            else:
-                page.goto("https://www.pinterest.com/settings/", wait_until="domcontentloaded")
-                time.sleep(2)
-        except Exception as e:
-            print(f"Note: {e}")
 
-        # Current URL is profile
-        profile_url = page.url
-        print(f"Current Profile URL: {profile_url}")
+        # Make sure we are on the Profile -> Saved page
+        print("Ensuring we are on Profile (Saved tab)...")
+        header_profile = page.locator('div[data-test-id="header-profile"], a[data-test-id="header-profile"], button[aria-label*="profile" i]').first
+        if header_profile.count() > 0:
+            header_profile.click()
+            time.sleep(3)
+
+        # Click 'Saved' tab if visible
+        saved_tab = page.locator('button:has-text("Saved"), a:has-text("Saved"), div[role="tab"]:has-text("Saved")').first
+        if saved_tab.count() > 0 and saved_tab.is_visible():
+            saved_tab.click()
+            time.sleep(2)
+
+        saved_url = page.url
+        print(f"Profile Saved URL: {saved_url}")
 
         created_count = 0
 
         for i, board_name in enumerate(BOARDS, 1):
-            print(f"\n[{i}/{len(BOARDS)}] Creating board: '{board_name}'...")
-            try:
-                # Click the '+' / create button on profile or header
-                # Pinterest usually has an Add button on profile: aria-label="Create", or "Create board"
-                # Let's look for create button
-                add_btn = None
-                selectors = [
-                    'button[aria-label="Create a board"]',
-                    'div[data-test-id="create-board-button"]',
-                    'button[aria-label="Create board"]',
-                    'div[aria-label="Create"] button',
-                    'button[aria-label="Create"]',
-                    'button[aria-label="Add"]',
-                    'div[data-test-id="create-button"]',
-                    'button:has-text("Create board")'
-                ]
-                
-                for sel in selectors:
-                    loc = page.locator(sel).first
-                    if loc.count() > 0 and loc.is_visible():
-                        add_btn = loc
+            print(f"\n[{i}/{len(BOARDS)}] Processing: '{board_name}'...")
+
+            # 1. Look for 'Create' floating button (black pill button on right)
+            clicked_create = False
+            
+            # Direct text search for Create button
+            create_candidates = [
+                page.locator('button:has-text("Create")').last,
+                page.locator('div[role="button"]:has-text("Create")').last,
+                page.locator('[data-test-id*="create"]').first,
+                page.locator('button[aria-label*="Create"]').last
+            ]
+
+            for btn in create_candidates:
+                try:
+                    if btn.count() > 0 and btn.is_visible():
+                        btn.click()
+                        clicked_create = True
                         break
+                except Exception:
+                    continue
 
-                if not add_btn:
-                    # Look for floating '+' button or dropdown
-                    plus_btn = page.locator('button[aria-label="Add board or pin"], button[aria-label="Create Pin or Board"], div[data-test-id="add-board-icon"]').first
-                    if plus_btn.count() > 0 and plus_btn.is_visible():
-                        plus_btn.click()
-                        time.sleep(1)
-                        board_option = page.locator('text=Board').first
-                        if board_option.count() > 0:
-                            board_option.click()
-                            time.sleep(1)
-                    else:
-                        # Fallback to direct script injection
-                        print(f"Could not find '+' button for {board_name}, attempting direct modal trigger...")
-                else:
-                    add_btn.click()
+            if not clicked_create:
+                # If cannot find, click the red circle / floating button on right
+                try:
+                    red_btn = page.locator('button:has(svg), div:has(svg)').filter(has_text="").last
+                    page.mouse.click(1300, 680) # Click near bottom right where Create sits
+                    time.sleep(1)
+                except Exception:
+                    pass
+
+            time.sleep(1)
+
+            # 2. Click 'Board' in the popup menu (Pin / Board / Collage)
+            board_item = page.locator('div:text-is("Board"), span:text-is("Board"), div[role="menuitem"]:has-text("Board")').first
+            if board_item.count() > 0 and board_item.is_visible():
+                board_item.click()
+                time.sleep(1.5)
+            else:
+                # Try clicking any text 'Board' visible
+                any_board = page.get_by_text("Board", exact=True).first
+                if any_board.count() > 0 and any_board.is_visible():
+                    any_board.click()
                     time.sleep(1.5)
+                else:
+                    print(f"  ❌ 'Board' option not visible in menu for: {board_name}")
+                    continue
 
-                    # If a menu popped up with "Pin" and "Board"
-                    board_choice = page.locator('div:has-text("Board"), span:has-text("Board")').first
-                    if board_choice.count() > 0 and board_choice.is_visible():
-                        board_choice.click()
-                        time.sleep(1.5)
+            # 3. Handle Create board Modal dialog
+            try:
+                # Find the input inside dialog
+                dialog = page.locator('div[role="dialog"]').first
+                if dialog.count() == 0:
+                    dialog = page
 
-                # Now in create board modal
-                name_input = page.locator('input#boardEditName, input[name="boardName"], input[id*="board"], input[placeholder*="Name"], input[placeholder*="Like"]').first
+                # Find input
+                name_input = dialog.locator('input[type="text"], input#boardEditName, input[placeholder*="Like"], input[name="name"]').first
                 if name_input.count() > 0:
+                    name_input.click()
                     name_input.fill("")
-                    name_input.fill(board_name)
+                    name_input.type(board_name, delay=25)
                     time.sleep(0.5)
 
-                    create_confirm = page.locator('button:has-text("Create"), button[type="submit"]').last
-                    if create_confirm.count() > 0 and create_confirm.is_visible():
-                        create_confirm.click()
-                        print(f"  ✨ Successfully created: {board_name}")
+                    # Click 'Create' button inside modal
+                    modal_create_btn = dialog.locator('button:has-text("Create")').last
+                    if modal_create_btn.count() > 0 and modal_create_btn.is_visible():
+                        modal_create_btn.click()
+                        print(f"  ✅ Successfully created board: '{board_name}'")
                         created_count += 1
-                        time.sleep(3) # Wait for creation animation
-                        
-                        # If a "Save pins to your new board" modal pops up, click "Done" or close
-                        done_btn = page.locator('button:has-text("Done"), button[aria-label="Close"]').first
-                        if done_btn.count() > 0 and done_btn.is_visible():
-                            done_btn.click()
+                        time.sleep(3)
+
+                        # Check for secondary 'Save pins to your new board' modal
+                        for _ in range(3):
+                            done_btn = page.locator('button:has-text("Done"), button[aria-label="Close"], button:has-text("Cancel")').first
+                            if done_btn.count() > 0 and done_btn.is_visible():
+                                done_btn.click()
+                                time.sleep(1)
+                                break
                             time.sleep(1)
                     else:
-                        print(f"  ❌ Could not find Create submit button for {board_name}")
+                        print(f"  ❌ Modal Create submit button not found for: {board_name}")
                 else:
-                    print(f"  ❌ Modal input not found for {board_name}")
+                    print(f"  ❌ Name input field not found for: {board_name}")
 
-            except Exception as ex:
-                print(f"  ⚠️ Error creating '{board_name}': {ex}")
+            except Exception as e:
+                print(f"  ⚠️ Error while creating '{board_name}': {e}")
 
-            # Return to profile if redirected
-            if not page.url.startswith(profile_url):
-                page.goto(profile_url, wait_until="domcontentloaded")
+            # 4. Return back to Saved tab for the next board
+            if not page.url.endswith('/_saved/') and not page.url.endswith('/saved/'):
+                page.goto(saved_url, wait_until="domcontentloaded")
                 time.sleep(2)
 
         print("\n" + "=" * 60)
         print(f"🎉 COMPLETED! Created {created_count}/{len(BOARDS)} boards.")
         print("=" * 60)
-        time.sleep(5)
+        time.sleep(3)
         context.close()
 
 if __name__ == "__main__":
