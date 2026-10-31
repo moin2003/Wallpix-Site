@@ -12,6 +12,7 @@ interface Props {
   initialCount?: number;
   totalCount?: number;
   maxDomCount?: number;
+  enableLoadMore?: boolean;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   initialCount = 36,
   totalCount = wallpapers.length,
   maxDomCount = 64,
+  enableLoadMore = false,
 } = Astro.props;
 
 // High-performance DOM safeguarding: Render up to maxDomCount (64) cards in DOM, with initialCount (36) visible
@@ -73,7 +75,7 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
   <!-- Dynamic Responsive Grid Container (4 Columns on Desktop = 8 full rows of 32) -->
   <div id="wallpapers-grid-container" class={`grid-mode-${gridMode}`}>
     {renderWallpapers.map((wp, index) => {
-      const isInitiallyHidden = index >= initialCount;
+      const isInitiallyHidden = enableLoadMore && index >= initialCount;
       return (
         <div
           class={`wallpaper-grid-item ${isInitiallyHidden ? 'load-more-hidden' : ''}`}
@@ -91,8 +93,8 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
     })}
   </div>
 
-  <!-- Centered Interactive Load More Section -->
-  {totalCount > initialCount && (
+  <!-- Centered Interactive Discovery Hub / Load More Section -->
+  {enableLoadMore && totalCount > initialCount ? (
     <div id="load-more-wrapper" class="flex flex-col items-center justify-center pt-10 pb-6">
       <button
         id="load-more-btn"
@@ -119,6 +121,18 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
       >
         <span>Explore All 50,000+ Wallpapers in Discovery Hub</span>
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+    </div>
+  ) : (
+    <div id="load-more-wrapper" class="flex flex-col items-center justify-center pt-10 pb-6">
+      <a
+        href="/wallpapers"
+        class="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-[#090C10] hover:bg-[#C2FF06] text-white hover:text-[#050608] border border-white/[0.12] hover:border-[#C2FF06] font-bold text-xs tracking-wider uppercase transition-all duration-300 shadow-none hover:shadow-[0_0_24px_rgba(194,255,6,0.45)] cursor-pointer select-none active:scale-95"
+      >
+        <span>Explore All 50,000+ Wallpapers in Discovery Hub</span>
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1 duration-300 text-[#C2FF06] group-hover:text-[#050608]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
       </a>
     </div>
   )}
