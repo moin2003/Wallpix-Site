@@ -222,7 +222,7 @@ const categories = [
         class="h-[34px] sm:h-[38px] px-3 sm:px-4 rounded-full bg-[#0a0e14] hover:bg-[#121720] border border-white/20 hover:border-walpix-lime/40 text-gray-200 hover:text-white text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 transition-all duration-200 shadow-xl cursor-pointer shrink-0"
       >
         <span class="text-[#8E949E] hidden xs:inline">Sort:</span>
-        <span class="text-white font-bold" id="current-sort-label">Popular</span>
+        <span class="text-white font-bold" id="current-sort-label">Newest</span>
         <svg class="w-3.5 h-3.5 text-walpix-lime transition-transform duration-200 shrink-0" id="sort-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
@@ -369,7 +369,7 @@ const categories = [
   const resetBtn = document.getElementById('reset-filter-btn');
 
   let currentCategory = 'all';
-  let currentSort = 'popular';
+  let currentSort = 'recent';
   let currentSearch = '';
 
   // Toggle Dropdown

@@ -105,7 +105,7 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     let currentCategory = 'all';
     let currentFormat = 'all';
     let currentSearch = '';
-    let currentSort = 'popular';
+    let currentSort = 'recent';
     let totalWallpapers = 14850;
     let loadedWallpapers = renderedSlugs.size;
     let hasMore = true;
@@ -117,7 +117,7 @@ const displayWallpapers = wallpapers.slice(0, maxCards);
     currentCategory = urlParams.get('category') || 'all';
     currentFormat = urlParams.get('format') || (isMobileViewport ? 'phone' : 'all');
     currentSearch = urlParams.get('search') || urlParams.get('q') || '';
-    currentSort = urlParams.get('sort') || 'popular';
+    currentSort = urlParams.get('sort') || 'recent';
 
     // Helper: Build thumbnail URL matching imageOptimizer
     function getThumb(sourceCdn: string, isPhone = false): string {

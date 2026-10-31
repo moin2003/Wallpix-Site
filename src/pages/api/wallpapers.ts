@@ -35,7 +35,7 @@ export const GET: APIRoute = async ({ url }) => {
   const category = (url.searchParams.get('category') || 'all').toLowerCase().trim();
   const format = (url.searchParams.get('format') || 'all').toLowerCase().trim();
   const search = (url.searchParams.get('search') || url.searchParams.get('q') || '').toLowerCase().trim();
-  const sort = (url.searchParams.get('sort') || 'popular').toLowerCase().trim();
+  const sort = (url.searchParams.get('sort') || 'recent').toLowerCase().trim();
 
   let filtered: Wallpaper[] = wallpapers;
 
@@ -106,20 +106,17 @@ export const GET: APIRoute = async ({ url }) => {
   });
 
   // 5. Sort & Category Diversification
-  if (category === 'all' && !search) {
+  if (sort === 'downloads') {
+    filtered = [...filtered].sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+  } else if (sort === 'popular') {
+    filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
+  } else if (sort === 'oldest') {
+    filtered = [...filtered].reverse();
+  } else if (category === 'all' && !search) {
+    // Newest/recent default with category round-robin so feed is vibrant and diverse
     filtered = diversifyByCategory(filtered);
-    if (sort === 'recent' || sort === 'newest') {
-      filtered = filtered.reverse();
-    }
-  } else {
-    if (sort === 'recent' || sort === 'newest') {
-      filtered = [...filtered].reverse();
-    } else if (sort === 'downloads') {
-      filtered = [...filtered].sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-    } else if (sort === 'popular') {
-      filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
-    }
   }
+  // If sort === 'recent' or 'newest' (default), filtered is already in true newest-first chronological order!
 
   const total = filtered.length;
   const startIndex = (page - 1) * limit;

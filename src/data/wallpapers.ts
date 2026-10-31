@@ -194,9 +194,26 @@ export const SCREEN_TYPES: ScreenTypeHub[] = [
 // 100% Authentic 4K Wallpapers Catalog (Zero mockups, zero dummy cards)
 export const FEATURED_MASTER_MOCKUP: Wallpaper[] = [];
 
-export const wallpapers: Wallpaper[] = (catalogData as Wallpaper[]).filter(
+// Filter valid CDN items from raw catalog
+const rawWallpapers: Wallpaper[] = (catalogData as Wallpaper[]).filter(
   w => w.sourceCdn && w.sourceCdn.startsWith('http') && !w.sourceCdn.includes('mockup')
 );
+
+// Chronological Newest-First Universal Architecture:
+// 1. Items with explicit dateAdded are prioritized by latest date (descending)
+// 2. For identical dates or items without explicit dateAdded, preserve reverse catalog insertion order
+// (since newly fetched/scraped wallpapers are continuously appended to the end of catalog.json)
+export const wallpapers: Wallpaper[] = rawWallpapers
+  .map((w, idx) => ({ w, idx }))
+  .sort((a, b) => {
+    const timeA = a.w.dateAdded ? new Date(a.w.dateAdded).getTime() : 0;
+    const timeB = b.w.dateAdded ? new Date(b.w.dateAdded).getTime() : 0;
+    if (timeA !== timeB) {
+      return timeB - timeA;
+    }
+    return b.idx - a.idx;
+  })
+  .map(item => item.w);
 
 const CATEGORY_SYNONYMS: Record<string, string[]> = {
   '4k-ultra-hd': ['4k', 'uhd', 'ultra', 'desktop', 'wallpaper', '3840'],
