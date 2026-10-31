@@ -314,7 +314,7 @@ const formats = [
         if (isMobileScreen) {
           effectiveFormat = 'phone';
         } else {
-          effectiveFormat = switcher.getAttribute('data-active-format') || 'all';
+          effectiveFormat = 'desktop';
         }
       }
 
@@ -364,7 +364,7 @@ const formats = [
 
           const loadMoreWrapper = document.getElementById('load-more-wrapper');
           if (loadMoreWrapper) {
-            loadMoreWrapper.style.display = (formatKey === 'all' || formatKey === 'phone') ? 'flex' : 'none';
+            loadMoreWrapper.style.display = 'flex';
           }
 
           gridContainers.forEach((grid) => {
@@ -399,11 +399,7 @@ const formats = [
 
             let match = false;
             if (formatKey === 'all') {
-              if (window.innerWidth < 640) {
-                match = is916;
-              } else {
-                match = is169;
-              }
+              match = true;
             } else if (formatKey === 'desktop') {
               match = is169;
             } else if (formatKey === 'phone') {
@@ -413,7 +409,7 @@ const formats = [
             }
 
             if (match) {
-              const isHiddenByLoadMore = formatKey === 'all' && container.classList.contains('load-more-hidden');
+              const isHiddenByLoadMore = container.classList.contains('load-more-hidden');
               container.style.display = isHiddenByLoadMore ? 'none' : '';
               visibleCount++;
             } else {

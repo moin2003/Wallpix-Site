@@ -46,3 +46,4 @@ export const GET: APIRoute = async ({ request }) => {
     return new Response(`Error proxying image download: ${err?.message || err}`, { status: 500 });
   }
 };
+

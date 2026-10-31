@@ -111,6 +111,15 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
       <p class="text-[11px] font-mono text-zinc-400 mt-2.5">
         Showing <span id="visible-count-num" class="text-walpix-lime font-bold">{Math.min(initialCount, renderWallpapers.length)}</span> of <span class="text-white font-bold">{totalCount}+</span> Handpicked Wallpapers
       </p>
+
+      <!-- Prominent 1-Click Gateway to Full Catalog (Discovery Hub) -->
+      <a
+        href="/wallpapers"
+        class="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.04] hover:bg-[#C2FF06] border border-white/10 hover:border-[#C2FF06] text-xs font-bold text-gray-200 hover:text-[#050608] transition-all duration-300 shadow-sm hover:shadow-[0_0_20px_rgba(194,255,6,0.35)] cursor-pointer select-none active:scale-95"
+      >
+        <span>Explore All 50,000+ Wallpapers in Discovery Hub</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
     </div>
   )}
 
@@ -211,8 +220,22 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
     const total = parseInt(loadMoreBtn.getAttribute('data-total') || '0', 10);
 
     loadMoreBtn.addEventListener('click', () => {
-      const items = document.querySelectorAll<HTMLElement>('.wallpaper-grid-item');
-      const nextVisible = Math.min(currentVisible + step, total);
+      const activeSwitcher = document.querySelector('.device-switcher-btn.active');
+      const activeFormat = activeSwitcher?.getAttribute('data-format') || 'all';
+
+      const allItems = Array.from(document.querySelectorAll<HTMLElement>('.wallpaper-grid-item'));
+      const items = allItems.filter(item => {
+        const card = item.querySelector('.wallpaper-card');
+        if (!card) return false;
+        const aspect = card.getAttribute('data-aspect') || '';
+        const is916 = aspect === '9:16' || aspect.includes('9:16') || aspect.includes('vertical');
+        const is169 = aspect === '16:9' || aspect.includes('16:9') || (!is916 && !aspect.includes('32:9'));
+        if (activeFormat === 'all') return true;
+        if (activeFormat === 'desktop') return is169;
+        if (activeFormat === 'phone') return is916;
+        return true;
+      });
+      const nextVisible = Math.min(currentVisible + step, items.length);
 
       items.forEach((item, idx) => {
         if (idx < nextVisible) {
@@ -235,7 +258,7 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
       }
 
       // When all loaded, turn button into gallery discovery link
-      if (currentVisible >= total) {
+      if (currentVisible >= items.length) {
         if (loadMoreText) {
           loadMoreText.textContent = 'Explore All in Discovery Hub →';
         }
