@@ -4,6 +4,22 @@ dist/
 .vercel/
 node_modules/
 
+# Agent skills, rules & workspace configs
+.agent/
+AGENTS.md
+*.md
+
+# Local UI screenshots, mockups & design captures
+UI examples/
+images/
+preview_*.png
+*.png
+!public/**/*.png
+*.jpg
+!public/**/*.jpg
+*.webp
+!public/**/*.webp
+
 # Environment variables
 .env
 .env.production
@@ -15,29 +31,21 @@ node_modules/
 Thumbs.db
 *.log
 
-# Scratch & Temporary Testing Scripts/Files
+# Scratch, Testing & Python Scripts
 scratch/
 __pycache__/
 *.pyc
+*.py
 *.psd
 Wallpix/
-.agent/reports/
-.agent/scripts/
-.agent/data/
-*.py
-!scripts/*.py
-
-# Root Level Testing Screenshots & Lighthouse Audits
-*.png
-!public/**/*.png
-*.jpg
-!public/**/*.jpg
-*.webp
-!public/**/*.webp
 *.jsonl
 lh_*.json
 lighthouse_*.json
 
-# Temporary root python test scripts
-capture_*.py
-test_*.py
+# Scratch scripts
+scripts/saved_step*
+scripts/*.py
+scripts/expand_catalog.cjs
+scripts/generate_rich_catalog.cjs
+scripts/create_pinterest_boards.py
+scripts/pinterest_console_script.js
