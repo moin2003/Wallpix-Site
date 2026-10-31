@@ -8,7 +8,7 @@ import CollageCollectionCard from '../../components/CollageCollectionCard.astro'
 import Footer from '../../components/Footer.astro';
 import { ADSENSE_CONFIG } from '../../config/adsense';
 import { MAIN_CATEGORIES, type SubTopic } from '../../data/taxonomy';
-import { getAllTags, getWallpapersByTag, wallpapers, type TagHubItem, type Wallpaper } from '../../data/wallpapers';
+import { getAllTags, getWallpapersByTag, getWallpapersByCategory, wallpapers, type TagHubItem, type Wallpaper } from '../../data/wallpapers';
 import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 // High-reliability thumbnail resolver with 100% verified 4K covers
@@ -23,16 +23,13 @@ function getTagThumbnail(tagSlug: string, parentCatSlug = '', index = 0): string
     }
   }
 
-  // 2. Direct tag match in catalog (strictly genuine 4K CDN wallpapers)
-  const match = wallpapers.find(w => 
-    w.sourceCdn?.startsWith('http') &&
-    (w.tags || []).some(t => t.toLowerCase() === norm || t.toLowerCase().includes(norm))
-  );
-  if (match?.sourceCdn) return match.sourceCdn;
+  // 2. Direct tag match in catalog via O(1) indexed lookup
+  const tagMatches = getWallpapersByTag(norm);
+  if (tagMatches.length > 0 && tagMatches[0]?.sourceCdn) return tagMatches[0].sourceCdn;
 
-  // 3. Diversified parent category matches (strictly genuine 4K CDN wallpapers)
+  // 3. Diversified parent category matches via O(1) indexed lookup
   if (parentCatSlug) {
-    const catMatches = wallpapers.filter(w => w.sourceCdn?.startsWith('http') && (w.category || '').toLowerCase().includes(parentCatSlug.toLowerCase()));
+    const catMatches = getWallpapersByCategory(parentCatSlug);
     if (catMatches.length > 0) {
       return catMatches[index % catMatches.length].sourceCdn;
     }
@@ -83,9 +80,10 @@ const sameCategoryWallpapers = parentCat
   ? wallpapers.filter(w => (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase()) || (w.category || '').toLowerCase().includes((parentCat.slug || '').toLowerCase()))
   : wallpapers;
 
-const wallpapersList = directMatches.length > 0
+const rawList = directMatches.length > 0
   ? directMatches
-  : Array.from(new Set([...directMatches, ...relatedMatches, ...sameCategoryWallpapers])).slice(0, 18);
+  : Array.from(new Set([...directMatches, ...relatedMatches, ...sameCategoryWallpapers]));
+const wallpapersList = rawList.slice(0, 36);
 
 // Similar wallpapers for bottom multi-column grid
 const streamIds = new Set(wallpapersList.slice(0, 8).map(w => w.id));
@@ -317,7 +315,7 @@ const schema = {
         <nav class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#8E949E] font-mono mb-2.5 sm:mb-3 text-left overflow-x-auto no-scrollbar whitespace-nowrap">
           <a href="/" class="hover:text-white transition-colors">Home</a>
           <span>/</span>
-          <a href="/tags" class="hover:text-white transition-colors">Tags</a>
+          <a href="/tag" class="hover:text-white transition-colors">Tags</a>
           {parentCat && (
             <>
               <span>/</span>

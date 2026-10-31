@@ -276,6 +276,7 @@ const formats = [
       if (!params.has('format')) {
         var switcher = document.querySelector('.walpix-device-switcher');
         if (switcher && switcher.getAttribute('data-active-format') === 'all') {
+          if (window.location.pathname.includes('/collections/')) return;
           switcher.setAttribute('data-active-format', 'phone');
           var allBtn = switcher.querySelector('[data-format="all"]');
           var phoneBtn = switcher.querySelector('[data-format="phone"]');
@@ -311,7 +312,10 @@ const formats = [
       // On desktop (>=640px), default to data-active-format or 'all'.
       let effectiveFormat = queryFormat;
       if (!effectiveFormat) {
-        if (isMobileScreen) {
+        const activeAttr = switcher.getAttribute('data-active-format');
+        if (window.location.pathname.includes('/collections/') && activeAttr === 'all') {
+          effectiveFormat = 'all';
+        } else if (isMobileScreen) {
           effectiveFormat = 'phone';
         } else {
           effectiveFormat = 'desktop';
@@ -340,7 +344,7 @@ const formats = [
 
         // 3. Fast Hardware-Accelerated Card Filtering & Grid Morphing
         requestAnimationFrame(() => {
-          const gridContainers = document.querySelectorAll<HTMLElement>('#wallpaper-grid-container, #wallpapers-grid-container');
+          const gridContainers = document.querySelectorAll<HTMLElement>('#wallpaper-grid-container, #wallpapers-grid-container, #collection-pack-grid');
           const cards = document.querySelectorAll<HTMLElement>('.walpix-gallery-card-item, .wallpaper-card');
           const emptyState = document.getElementById('gallery-empty-state') || document.getElementById('no-results-state');
 
@@ -417,6 +421,16 @@ const formats = [
             } else {
               container.style.display = 'none';
             }
+          }
+
+          // Safe fallback for curated collections & packs: NEVER leave user with a blank 0-wallpaper screen
+          if (visibleCount === 0 && cards.length > 0 && (window.location.pathname.includes('/collections/') || !emptyState)) {
+            for (let j = 0; j < cards.length; j++) {
+              const c = cards[j];
+              const wrap = (c.closest('.wallpaper-grid-item') as HTMLElement) || c;
+              wrap.style.display = '';
+            }
+            visibleCount = cards.length;
           }
 
           if (emptyState) {

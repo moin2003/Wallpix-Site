@@ -1,4 +1,5 @@
 import catalogData from '../../public/data/catalog.json';
+import { getAllTags as getTaxonomyTags } from './taxonomy';
 
 export interface Wallpaper {
   id: string;
@@ -228,7 +229,8 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'food': ['food', 'culinary', 'coffee', 'fruit', 'fruits', 'pizza', 'burger', 'dessert', 'ice-cream', 'chocolate', 'cake', 'sushi', 'pasta', 'tea', 'sweets', 'drink', 'beverage', 'delicious'],
 };
 
-export function getWallpapersByCategory(slug: string): Wallpaper[] {
+// Internal helper to compute category wallpapers
+function computeCategoryWallpapers(slug: string): Wallpaper[] {
   if (!slug || slug === 'all') return wallpapers;
   const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const synonyms = CATEGORY_SYNONYMS[cleanSlug] || [cleanSlug.replace(/-/g, ' '), cleanSlug];
@@ -252,10 +254,72 @@ export function getWallpapersByCategory(slug: string): Wallpaper[] {
     // Synonym check with exact token matching (prevents 'game' from matching 'gilgamesh')
     return synonyms.some(syn => {
       if (cat.includes(syn)) return true;
-      if (title.split(/[-_\s]+/).includes(syn)) return true;
-      return tags.some(t => t === syn || t.split(/[-_\s]+/).includes(syn));
+      if (title.split(/[-_\\s]+/).includes(syn)) return true;
+      return tags.some(t => t === syn || t.split(/[-_\\s]+/).includes(syn));
     });
   });
+}
+
+// 0ms O(1) In-Memory Lookup Indices
+let tagIndexMap: Map<string, Wallpaper[]> | null = null;
+let categoryIndexMap: Map<string, Wallpaper[]> | null = null;
+let screenIndexMap: Map<string, Wallpaper[]> | null = null;
+let cachedAllTags: TagHubItem[] | null = null;
+
+function initIndices(): void {
+  if (tagIndexMap && categoryIndexMap && screenIndexMap) return;
+  tagIndexMap = new Map<string, Wallpaper[]>();
+  categoryIndexMap = new Map<string, Wallpaper[]>();
+  screenIndexMap = new Map<string, Wallpaper[]>();
+
+  for (let i = 0; i < wallpapers.length; i++) {
+    const wp = wallpapers[i];
+
+    // Index by tag
+    const tags = wp.tags || [];
+    const seen = new Set<string>();
+    for (let j = 0; j < tags.length; j++) {
+      const s = slugifyTag(tags[j]);
+      if (s && !seen.has(s)) {
+        seen.add(s);
+        let list = tagIndexMap.get(s);
+        if (!list) {
+          list = [];
+          tagIndexMap.set(s, list);
+        }
+        list.push(wp);
+      }
+    }
+
+    // Index by screen type
+    const screens = wp.screenTypes || [];
+    for (let j = 0; j < screens.length; j++) {
+      const sc = screens[j];
+      let sList = screenIndexMap.get(sc);
+      if (!sList) {
+        sList = [];
+        screenIndexMap.set(sc, sList);
+      }
+      sList.push(wp);
+    }
+  }
+
+  // Pre-seed known categories
+  for (const cat of CATEGORIES) {
+    categoryIndexMap.set(cat.slug, computeCategoryWallpapers(cat.slug));
+  }
+}
+
+export function getWallpapersByCategory(slug: string): Wallpaper[] {
+  if (!slug || slug === 'all') return wallpapers;
+  initIndices();
+  const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  if (categoryIndexMap!.has(cleanSlug)) {
+    return categoryIndexMap!.get(cleanSlug)!;
+  }
+  const result = computeCategoryWallpapers(cleanSlug);
+  categoryIndexMap!.set(cleanSlug, result);
+  return result;
 }
 
 export function slugifyTag(tag: string): string {
@@ -272,9 +336,10 @@ export interface TagHubItem {
   count: number;
 }
 
-import { getAllTags as getTaxonomyTags } from './taxonomy';
-
 export function getAllTags(): TagHubItem[] {
+  if (cachedAllTags) return cachedAllTags;
+  initIndices();
+
   const tagCountMap = new Map<string, { name: string; slug: string; count: number }>();
   const taxonomyMap = new Map<string, string>();
   getTaxonomyTags().forEach((t) => {
@@ -296,7 +361,7 @@ export function getAllTags(): TagHubItem[] {
         existing.count += 1;
       } else {
         const formattedName = taxonomyMap.get(slug) || trimmed
-          .split(/[-_\s]+/)
+          .split(/[-_\\s]+/)
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
           .join(' ');
         tagCountMap.set(slug, { name: formattedName, slug, count: 1 });
@@ -304,47 +369,53 @@ export function getAllTags(): TagHubItem[] {
     });
   });
 
-  return Array.from(tagCountMap.values()).sort((a, b) => b.count - a.count);
-}
-
-// Lazy-indexed live tag counts cache for ultra-fast module loading
-let liveTagCountMap: Map<string, number> | null = null;
-function getLiveTagCountMap(): Map<string, number> {
-  if (liveTagCountMap) return liveTagCountMap;
-  liveTagCountMap = new Map<string, number>();
-  for (let i = 0; i < wallpapers.length; i++) {
-    const wp = wallpapers[i];
-    const seen = new Set<string>();
-    const tags = wp.tags || [];
-    for (let j = 0; j < tags.length; j++) {
-      const norm = slugifyTag(tags[j]);
-      if (norm && !seen.has(norm)) {
-        seen.add(norm);
-        liveTagCountMap.set(norm, (liveTagCountMap.get(norm) || 0) + 1);
-      }
-    }
-  }
-  return liveTagCountMap;
+  cachedAllTags = Array.from(tagCountMap.values()).sort((a, b) => b.count - a.count);
+  return cachedAllTags;
 }
 
 export function getLiveSubTopicCount(slug: string): number {
   if (!slug) return 0;
+  initIndices();
   const norm = slugifyTag(slug);
-  return getLiveTagCountMap().get(norm) || 0;
+  return tagIndexMap!.get(norm)?.length || 0;
 }
 
 export function getAllScreenTypes(): ScreenTypeHub[] {
+  initIndices();
   return SCREEN_TYPES.map((hub) => ({
     ...hub,
-    count: getWallpapersByScreen(hub.slug).length,
+    count: screenIndexMap?.get(hub.key)?.length || getWallpapersByScreen(hub.slug).length,
   }));
 }
 
 export function getWallpapersByTag(tagSlug: string): Wallpaper[] {
+  initIndices();
   const normalized = slugifyTag(tagSlug);
-  return wallpapers.filter((wp) =>
-    (wp.tags || []).some((t) => slugifyTag(t) === normalized)
-  );
+  const direct = tagIndexMap!.get(normalized);
+  if (direct && direct.length > 0) return direct;
+
+  // Multi-token fallback (e.g. 'nissan-gtr' matches wallpapers having 'nissan' and 'gtr' or related tokens)
+  const parts = normalized.split('-').filter(p => p.length > 1);
+  if (parts.length > 1) {
+    const candidateArrays = parts.map(p => tagIndexMap!.get(p) || []).filter(a => a.length > 0);
+    if (candidateArrays.length > 0) {
+      const smallest = candidateArrays.reduce((min, a) => a.length < min.length ? a : min);
+      const matched = smallest.filter(wp => {
+        const tSet = new Set((wp.tags || []).map(slugifyTag));
+        return parts.some(p => tSet.has(p));
+      });
+      if (matched.length > 0) return matched;
+    }
+  }
+
+  // Partial match fallback for hyphenated keywords
+  for (const [key, list] of tagIndexMap!.entries()) {
+    if (key.includes(normalized) || normalized.includes(key)) {
+      if (list.length > 0) return list;
+    }
+  }
+
+  return [];
 }
 
 export function getWallpapersByScreen(screenSlugOrKey: string): Wallpaper[] {

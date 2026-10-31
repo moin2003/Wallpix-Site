@@ -76,7 +76,7 @@ const categoryDescriptions: Record<string, string> = {
 
 // Filter wallpapers for this category using smart semantic matcher
 const filteredWallpapers = getWallpapersByCategory(categoryInfo.slug);
-const displayWallpapers = filteredWallpapers.length > 0 ? filteredWallpapers : wallpapers.slice(0, 16);
+const displayWallpapers = (filteredWallpapers.length > 0 ? filteredWallpapers : wallpapers.slice(0, 16)).slice(0, 64);
 const categoryHeroImage = displayWallpapers.find(w => w.sourceCdn && w.sourceCdn.startsWith('http'))?.sourceCdn || displayWallpapers[0]?.sourceCdn || '/images/hero-astronaut-master.png';
 const categoryDesc = categoryDescriptions[categoryInfo.slug] || `Download high quality ${categoryInfo.name} 4K Ultra HD wallpapers for desktop and mobile screens.`;
 
@@ -227,7 +227,7 @@ const subTopicsList = taxonomyCat?.subTopics || [];
     <!-- Category Wallpaper Grid (Filtered Wallpapers) -->
     <WallpaperGrid
       wallpapers={displayWallpapers}
-      totalCount={displayWallpapers.length}
+      totalCount={filteredWallpapers.length || displayWallpapers.length}
       maxDomCount={64}
       initialCount={36}
       title={`${categoryInfo.name} Wallpapers`}

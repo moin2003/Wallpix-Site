@@ -24,8 +24,9 @@ if (!collection) return Astro.redirect('/collections');
 // Get wallpapers in this collection
 const packWallpapers = wallpapers.filter((w) =>
   (collection.wallpaperSlugs || []).includes(w.slug) ||
-  (w.category || '').toLowerCase().includes((collection.featuredCategory || '').toLowerCase())
-).slice(0, 12);
+  (w.category || '').toLowerCase().includes((collection.featuredCategory || '').toLowerCase()) ||
+  (collection.tags || []).some(t => (w.tags || []).some(wt => wt.toLowerCase().includes(t.toLowerCase())))
+).slice(0, 24);
 ---
 
 <Layout
@@ -72,9 +73,12 @@ const packWallpapers = wallpapers.filter((w) =>
           </p>
           <div class="flex flex-wrap gap-2 pt-1 text-left">
             {collection.tags.map((tag) => (
-              <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs text-gray-300 font-mono">
+              <a
+                href={`/tag/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                class="px-3 py-1 rounded-lg bg-white/10 hover:bg-walpix-lime/20 border border-white/10 hover:border-walpix-lime/40 text-xs text-gray-300 hover:text-walpix-lime font-mono transition-all"
+              >
                 #{tag}
-              </span>
+              </a>
             ))}
           </div>
         </div>
@@ -97,10 +101,10 @@ const packWallpapers = wallpapers.filter((w) =>
 
       <!-- In-Collection Device Switcher Bar -->
       <div class="pb-6">
-        <OrientationToggle />
+        <OrientationToggle activeFormat="all" />
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div id="collection-pack-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {packWallpapers.map((wallpaper, index) => (
           <WallpaperCard wallpaper={wallpaper} index={index} />
         ))}

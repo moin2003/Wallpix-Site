@@ -74,7 +74,7 @@ const sameCategoryWallpapers = wallpapers.filter(
 // Fallback stream if direct matches are fewer than 6
 const wallpapersList =
   directMatches.length > 0
-    ? directMatches
+    ? directMatches.slice(0, 36)
     : sameCategoryWallpapers.slice(0, 18);
 
 // Similar wallpapers for bottom multi-column grid
