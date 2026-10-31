@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import WallpaperCard from '../../components/WallpaperCard.astro';
@@ -41,7 +42,8 @@ function getTagThumbnail(tagSlug: string, parentCatSlug = '', index = 0): string
 
 export async function getStaticPaths() {
   const allTags = getAllTags();
-  return allTags.map((tag) => ({
+  // Prerender the top 250 most popular and linked tags as static CDN edge assets
+  return allTags.slice(0, 250).map((tag) => ({
     params: { slug: tag.slug },
     props: { tagInfo: tag },
   }));
