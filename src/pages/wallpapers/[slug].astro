@@ -1303,6 +1303,8 @@ const schema = {
               <!-- 3. Full-Size Screen Preview Button (Expand icon - under heart) -->
               <button
                 id="mobile-hero-fullscreen-btn"
+                type="button"
+                onclick="const m=document.getElementById('fullscreen-phone-modal');if(m){m.classList.remove('hidden');m.classList.add('flex');document.body.style.overflow='hidden';}"
                 class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer hover:border-[#C2FF06] hover:text-[#C2FF06]"
                 aria-label="Preview full size on mobile"
                 title="Full size mobile preview"
@@ -1730,7 +1732,7 @@ const schema = {
          ======================================================== -->
     <div
       id="fullscreen-phone-modal"
-      class="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl hidden flex flex-col items-center justify-between p-3 sm:p-5 select-none transition-all duration-300"
+      class="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl hidden flex flex-col items-center justify-between p-0 sm:p-5 select-none transition-all duration-300"
       role="dialog"
       aria-modal="true"
       aria-label="Fullscreen Phone Wallpaper Preview"
@@ -1739,6 +1741,7 @@ const schema = {
       <button
         id="close-fullscreen-modal-corner-btn"
         type="button"
+        onclick="const m=document.getElementById('fullscreen-phone-modal');if(m){m.classList.add('hidden');m.classList.remove('flex');document.body.style.overflow='';}"
         class="fixed top-4 right-4 z-[130] w-10 h-10 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-2xl active:scale-95"
         aria-label="Close Preview"
       >
@@ -1773,7 +1776,7 @@ const schema = {
       </div>
 
       <!-- Phone Frame Canvas (Edge-to-edge on mobile for true full size view, frame on desktop) -->
-      <div class="relative w-full sm:max-w-[340px] flex-1 my-0 sm:my-2 rounded-2xl sm:rounded-[38px] overflow-hidden border-0 sm:border-[4px] border-[#252830] shadow-[0_0_60px_rgba(0,0,0,0.95)] bg-black flex items-center justify-center">
+      <div class="relative w-full sm:max-w-[340px] flex-1 my-0 sm:my-2 rounded-none sm:rounded-[38px] overflow-hidden border-0 sm:border-[4px] border-[#252830] shadow-[0_0_60px_rgba(0,0,0,0.95)] bg-black flex items-center justify-center">
         <!-- Live Wallpaper Preview Image -->
         <img
           id="modal-phone-img"
@@ -2494,8 +2497,19 @@ const schema = {
     }
   });
 
-  // Dedicated "Phone Preview" button opens the phone lockscreen simulation modal
+  // Dedicated "Phone Preview" button & Mobile Hero Expand button
   quickModalBtn?.addEventListener('click', openPhoneModal);
+  const mobileHeroFullscreenBtn = document.getElementById('mobile-hero-fullscreen-btn');
+  mobileHeroFullscreenBtn?.addEventListener('click', openPhoneModal);
+
+  // Delegated document listener so clicking the expand button ALWAYS works
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target?.closest('#mobile-hero-fullscreen-btn')) {
+      e.preventDefault();
+      openPhoneModal();
+    }
+  });
   closeModalBtn?.addEventListener('click', closePhoneModal);
   cornerCloseModalBtn?.addEventListener('click', closePhoneModal);
 
