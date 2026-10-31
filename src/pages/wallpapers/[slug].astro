@@ -1253,8 +1253,8 @@ const schema = {
           onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=80'"
         />
 
-        <!-- Top Floating In-Image Navigation Bar (All in One Unified Row) -->
-        <div class="absolute top-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto">
+        <!-- Top Floating In-Image Navigation Bar & Action Column -->
+        <div class="absolute top-3 inset-x-3 z-30 flex items-start justify-between pointer-events-auto">
           <!-- Back Button -->
           <a
             href="/wallpapers"
@@ -1266,37 +1266,52 @@ const schema = {
             </svg>
           </a>
 
-          <!-- Right: 4K UHD Badge, Favorite Heart & Share Button -->
-          <div class="flex items-center gap-2">
-            <!-- 4K UHD Badge Pill (Cleanly Aligned Beside Favorite Button) -->
-            <span class="px-2.5 py-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-[#C2FF06]/40 text-[#C2FF06] font-mono font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+          <!-- Right: 4K UHD Badge & Vertical Action Stack -->
+          <div class="flex items-start gap-2">
+            <!-- 4K UHD Badge Pill (Neatly aligned beside the top three-dot button) -->
+            <span class="mt-1 px-2.5 py-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-[#C2FF06]/40 text-[#C2FF06] font-mono font-black text-[10px] uppercase tracking-wider shadow-lg flex items-center gap-1.5 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-[#C2FF06] animate-pulse"></span>
               4K UHD
             </span>
 
-            <!-- Favorite Button -->
-            <button
-              id="mobile-hero-fav-btn"
-              class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
-              aria-label="Add to favorites"
-            >
-              <svg class="w-5 h-5 text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
+            <!-- Vertical Action Column: Three-dot on top, Heart below, Full-Size Preview below -->
+            <div class="flex flex-col items-center gap-2">
+              <!-- 1. More / Share Button (Three-dot) -->
+              <button
+                id="mobile-hero-share-btn"
+                class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
+                aria-label="Share wallpaper"
+              >
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <circle cx="5" cy="12" r="2" />
+                  <circle cx="12" cy="12" r="2" />
+                  <circle cx="19" cy="12" r="2" />
+                </svg>
+              </button>
 
-            <!-- More / Share Button -->
-            <button
-              id="mobile-hero-share-btn"
-              class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
-              aria-label="Share wallpaper"
-            >
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <circle cx="5" cy="12" r="2" />
-                <circle cx="12" cy="12" r="2" />
-                <circle cx="19" cy="12" r="2" />
-              </svg>
-            </button>
+              <!-- 2. Favorite Button (Heart / Love icon - under three-dot) -->
+              <button
+                id="mobile-hero-fav-btn"
+                class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer"
+                aria-label="Add to favorites"
+              >
+                <svg class="w-5 h-5 text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </button>
+
+              <!-- 3. Full-Size Screen Preview Button (Expand icon - under heart) -->
+              <button
+                id="mobile-hero-fullscreen-btn"
+                class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer hover:border-[#C2FF06] hover:text-[#C2FF06]"
+                aria-label="Preview full size on mobile"
+                title="Full size mobile preview"
+              >
+                <svg class="w-5 h-5 text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1757,8 +1772,8 @@ const schema = {
         </button>
       </div>
 
-      <!-- Phone Frame Canvas -->
-      <div class="relative w-full max-w-[340px] flex-1 my-2 rounded-[38px] overflow-hidden border-[4px] border-[#252830] shadow-[0_0_60px_rgba(0,0,0,0.95)] bg-black flex items-center justify-center">
+      <!-- Phone Frame Canvas (Edge-to-edge on mobile for true full size view, frame on desktop) -->
+      <div class="relative w-full sm:max-w-[340px] flex-1 my-0 sm:my-2 rounded-2xl sm:rounded-[38px] overflow-hidden border-0 sm:border-[4px] border-[#252830] shadow-[0_0_60px_rgba(0,0,0,0.95)] bg-black flex items-center justify-center">
         <!-- Live Wallpaper Preview Image -->
         <img
           id="modal-phone-img"

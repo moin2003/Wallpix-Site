@@ -38,8 +38,8 @@ function getTopicCover(rawUrl: string): string {
           href={`/topic/${topic.slug}`}
           class={`group relative shrink-0 ${
             isLarge
-              ? 'h-[64px] sm:h-[72px] min-w-[190px] sm:min-w-[220px] rounded-2xl px-4 py-2.5 shadow-lg'
-              : 'h-[46px] sm:h-[50px] min-w-[145px] sm:min-w-[165px] rounded-xl px-3 py-2 shadow-md'
+              ? 'h-[56px] sm:h-[72px] min-w-[165px] sm:min-w-[220px] rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg'
+              : 'h-[40px] sm:h-[50px] min-w-[125px] sm:min-w-[165px] rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-md'
           } overflow-hidden border transition-all duration-300 select-none flex items-center justify-center ${
             isActive
               ? 'border-walpix-lime ring-2 ring-walpix-lime/30 shadow-[0_0_18px_rgba(194,255,6,0.3)]'
@@ -239,3 +239,10 @@ function getTopicCover(rawUrl: string): string {
     });
   });
 </script>
+
+<style>
+  .topic-scroll-track {
+    mask-image: linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 16px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 16px), transparent 100%);
+  }
+</style>
