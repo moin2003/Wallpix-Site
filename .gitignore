@@ -49,3 +49,7 @@ scripts/expand_catalog.cjs
 scripts/generate_rich_catalog.cjs
 scripts/create_pinterest_boards.py
 scripts/pinterest_console_script.js
+scripts/fix_all_taxonomy_covers.mjs
+scripts/generate-og-banner.mjs
+scripts/updateAnimeTaxonomy.mjs
+scripts/updateGamingTaxonomy.mjs

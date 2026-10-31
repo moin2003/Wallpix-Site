@@ -2170,11 +2170,13 @@ const schema = {
 
       if (!url) return;
 
+      const proxyUrl = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+
       downloadBtn.classList.add('opacity-75');
       try {
         const img = new Image();
         img.crossOrigin = 'anonymous';
-        img.src = url;
+        img.src = proxyUrl;
 
         await new Promise((resolve) => {
           img.onload = resolve;
@@ -2212,14 +2214,31 @@ const schema = {
               a.click();
               document.body.removeChild(a);
               URL.revokeObjectURL(blobUrl);
+            } else {
+              const a = document.createElement('a');
+              a.href = proxyUrl;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
             }
           }, 'image/jpeg', 0.95);
         } else {
-          // Direct fallback if canvas render unavailable
-          window.open(url, '_blank');
+          // Direct native proxy download fallback (never navigates away from walpix.site)
+          const a = document.createElement('a');
+          a.href = proxyUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
         }
       } catch (err) {
-        window.open(url, '_blank');
+        const a = document.createElement('a');
+        a.href = proxyUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } finally {
         downloadBtn.classList.remove('opacity-75');
       }
@@ -2497,12 +2516,13 @@ const schema = {
     const targetH = 2532;
 
     if (!url) return;
+    const proxyUrl = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
     modalDownloadBtn.classList.add('opacity-75');
 
     try {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      img.src = url;
+      img.src = proxyUrl;
 
       await new Promise((resolve) => {
         img.onload = resolve;
@@ -2538,13 +2558,30 @@ const schema = {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(blobUrl);
+          } else {
+            const a = document.createElement('a');
+            a.href = proxyUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
           }
         }, 'image/jpeg', 0.95);
       } else {
-        window.open(url, '_blank');
+        const a = document.createElement('a');
+        a.href = proxyUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     } catch (e) {
-      window.open(url, '_blank');
+      const a = document.createElement('a');
+      a.href = proxyUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } finally {
       modalDownloadBtn.classList.remove('opacity-75');
     }
@@ -2580,16 +2617,17 @@ const schema = {
 
       if (!url) return;
 
+      const proxyUrl = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
       mobileDownloadBtn.classList.add('opacity-75', 'pointer-events-none');
 
       try {
         const img = new Image();
         img.crossOrigin = 'anonymous';
+        img.src = proxyUrl;
 
         await new Promise<void>((resolve, reject) => {
           img.onload = () => resolve();
           img.onerror = () => reject();
-          img.src = url;
         });
 
         const canvas = document.createElement('canvas');
@@ -2621,13 +2659,30 @@ const schema = {
               a.click();
               document.body.removeChild(a);
               URL.revokeObjectURL(blobUrl);
+            } else {
+              const a = document.createElement('a');
+              a.href = proxyUrl;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
             }
           }, 'image/jpeg', 0.95);
         } else {
-          window.open(url, '_blank');
+          const a = document.createElement('a');
+          a.href = proxyUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
         }
       } catch (err) {
-        window.open(url, '_blank');
+        const a = document.createElement('a');
+        a.href = proxyUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } finally {
         mobileDownloadBtn.classList.remove('opacity-75', 'pointer-events-none');
       }
