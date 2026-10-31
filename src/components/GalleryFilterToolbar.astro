@@ -377,6 +377,7 @@ const categories = [
 
   let currentCategory = 'all';
   let currentSort = 'popular';
+  let currentSearch = '';
 
   // Toggle Dropdown
   sortBtn?.addEventListener('click', (e) => {
@@ -451,6 +452,17 @@ const categories = [
   function filterWallpapers(cat: string, searchQuery?: string) {
     currentCategory = cat;
     if (searchQuery !== undefined) currentSearch = searchQuery;
+
+    // Update URL query parameter cleanly without reloading page
+    try {
+      const url = new URL(window.location.href);
+      if (cat === 'all') {
+        url.searchParams.delete('category');
+      } else {
+        url.searchParams.set('category', cat);
+      }
+      window.history.replaceState(null, '', url.toString());
+    } catch (e) {}
 
     // Reset grid visibility and empty state before fetching category stream
     const orientationWrapper = document.getElementById('gallery-orientation-wrapper');
@@ -594,19 +606,23 @@ const categories = [
 
     pillsTrack.addEventListener('mousemove', (e) => {
       if (!isDown) return;
-      e.preventDefault();
-      moved = true;
       const x = e.pageX - pillsTrack.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      pillsTrack.scrollLeft = scrollLeft - walk;
+      if (Math.abs(x - startX) > 6) {
+        moved = true;
+        pillsTrack.style.cursor = 'grabbing';
+        e.preventDefault();
+        const walk = (x - startX) * 1.5;
+        pillsTrack.scrollLeft = scrollLeft - walk;
+      }
     });
 
-      pillsTrack.addEventListener('click', (e) => {
-        if (moved) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }, true);
+    pillsTrack.addEventListener('click', (e) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    }, true);
     }
 
     // Gentle Auto-Step Slide (Discrete step-by-step advance every ~3.5s as requested)

@@ -354,12 +354,15 @@ const formats = [
             g.classList.remove('hidden');
           });
 
-          // Sync category pills back to All Wallpapers if a format is selected
-          const filterPills = document.querySelectorAll<HTMLButtonElement>('.gallery-filter-pill');
-          const allPill = document.querySelector<HTMLButtonElement>('[data-category-filter="all"]');
-          if (allPill && !allPill.classList.contains('active')) {
-            filterPills.forEach(p => p.classList.remove('active'));
-            allPill.classList.add('active');
+          // On non-gallery pages, sync category pills back if format changes
+          const isGalleryDiscovery = window.location.pathname.startsWith('/wallpapers') && !window.location.pathname.includes('/wallpapers/');
+          if (!isGalleryDiscovery) {
+            const filterPills = document.querySelectorAll<HTMLButtonElement>('.gallery-filter-pill');
+            const allPill = document.querySelector<HTMLButtonElement>('[data-category-filter="all"]');
+            if (allPill && !allPill.classList.contains('active')) {
+              filterPills.forEach(p => p.classList.remove('active'));
+              allPill.classList.add('active');
+            }
           }
 
           const loadMoreWrapper = document.getElementById('load-more-wrapper');
@@ -372,7 +375,6 @@ const formats = [
           });
 
           // On /wallpapers gallery discovery, GalleryGrid dynamically streams all catalog wallpapers for the selected format
-          const isGalleryDiscovery = window.location.pathname.startsWith('/wallpapers') && !window.location.pathname.includes('/wallpapers/');
           if (isGalleryDiscovery) {
             return;
           }

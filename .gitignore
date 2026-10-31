@@ -2,6 +2,7 @@
 dist/
 .astro/
 .vercel/
+.wrangler/
 node_modules/
 
 # Agent skills, rules & workspace configs
