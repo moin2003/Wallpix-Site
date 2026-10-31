@@ -68,30 +68,18 @@ const parentCat = MAIN_CATEGORIES.find(c => (c.subTopics || []).some(s => s.slug
   || MAIN_CATEGORIES.find(c => tag.slug.includes(c.id) || (c.slug && tag.slug.includes(c.slug)));
 const parentCategory = parentCat?.name || 'Curated';
 
-// Find related wallpapers to guarantee an abundant, deep gallery stream
-const relatedMatches = wallpapers.filter(w => {
-  const tagMatch = w.tags && w.tags.some(t => t.toLowerCase().includes(tag.slug) || tag.slug.includes(t.toLowerCase()));
-  const catMatch = parentCat && (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase());
-  return tagMatch || catMatch;
-});
+let wallpapersList: Wallpaper[] = [];
+if (directMatches.length > 0) {
+  wallpapersList = directMatches.slice(0, 36);
+} else {
+  const sameCat = parentCat ? getWallpapersByCategory(parentCat.slug || parentCat.id) : [];
+  wallpapersList = sameCat.slice(0, 36);
+}
 
-// Ensure fallback wallpapers come ONLY from the same parent category (never cross-polluting anime with cars/nature)
-const sameCategoryWallpapers = parentCat
-  ? wallpapers.filter(w => (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase()) || (w.category || '').toLowerCase().includes((parentCat.slug || '').toLowerCase()))
-  : wallpapers;
-
-const rawList = directMatches.length > 0
-  ? directMatches
-  : Array.from(new Set([...directMatches, ...relatedMatches, ...sameCategoryWallpapers]));
-const wallpapersList = rawList.slice(0, 36);
-
-// Similar wallpapers for bottom multi-column grid
-const streamIds = new Set(wallpapersList.slice(0, 8).map(w => w.id));
-const potentialSimilar = wallpapers.filter(w => !streamIds.has(w.id) && (
-  (parentCat && (w.category || '').toLowerCase().includes(parentCat.id.toLowerCase())) ||
-  (w.tags && w.tags.some(t => t.toLowerCase().includes(tag.slug) || tag.slug.includes(t.toLowerCase())))
-));
-const similarWallpapers = Array.from(new Set([...potentialSimilar, ...sameCategoryWallpapers.filter(w => !streamIds.has(w.id))])).slice(0, 8);
+// Similar wallpapers for bottom multi-column grid via O(1) parent category
+const streamIds = new Set(wallpapersList.map(w => w.id));
+const catWps = parentCat ? getWallpapersByCategory(parentCat.slug || parentCat.id) : [];
+const similarWallpapers = catWps.filter(w => !streamIds.has(w.id)).slice(0, 8);
 
 // Truly intelligent related tags:
 const GENERIC_FILTER_TAGS = new Set([

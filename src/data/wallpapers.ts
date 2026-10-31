@@ -304,10 +304,7 @@ function initIndices(): void {
     }
   }
 
-  // Pre-seed known categories
-  for (const cat of CATEGORIES) {
-    categoryIndexMap.set(cat.slug, computeCategoryWallpapers(cat.slug));
-  }
+
 }
 
 export function getWallpapersByCategory(slug: string): Wallpaper[] {
