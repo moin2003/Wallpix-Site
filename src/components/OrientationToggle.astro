@@ -269,24 +269,30 @@ const formats = [
 </style>
 
 <script is:inline>
-  // Immediate pre-render check: if mobile viewport (<640px) without explicit format query, set phone active
+  // Immediate pre-render check: auto-detect PC vs Mobile when no explicit ?format query in URL
   (function() {
-    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    if (typeof window !== 'undefined') {
       var params = new URLSearchParams(window.location.search);
       if (!params.has('format')) {
+        if (window.location.pathname.includes('/collections/')) return;
+        var isMobile = window.innerWidth < 640;
+        var targetFormat = isMobile ? 'phone' : 'desktop';
         var switcher = document.querySelector('.walpix-device-switcher');
-        if (switcher && switcher.getAttribute('data-active-format') === 'all') {
-          if (window.location.pathname.includes('/collections/')) return;
-          switcher.setAttribute('data-active-format', 'phone');
-          var allBtn = switcher.querySelector('[data-format="all"]');
-          var phoneBtn = switcher.querySelector('[data-format="phone"]');
-          if (allBtn) allBtn.classList.remove('active');
-          if (phoneBtn) phoneBtn.classList.add('active');
+        if (switcher) {
+          switcher.setAttribute('data-active-format', targetFormat);
+          var btns = switcher.querySelectorAll('.device-switcher-btn');
+          btns.forEach(function(b) {
+            if (b.getAttribute('data-format') === targetFormat) {
+              b.classList.add('active');
+            } else {
+              b.classList.remove('active');
+            }
+          });
         }
         var grid = document.querySelector('#wallpapers-grid-container, #wallpaper-grid-container');
         if (grid) {
-          grid.classList.remove('grid-mode-all', 'grid-mode-desktop', 'grid-mode-dual');
-          grid.classList.add('grid-mode-phone');
+          grid.classList.remove('grid-mode-all', 'grid-mode-desktop', 'grid-mode-phone', 'grid-mode-dual');
+          grid.classList.add('grid-mode-' + targetFormat);
         }
       }
     }

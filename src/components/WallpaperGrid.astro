@@ -75,7 +75,14 @@ const renderWallpapers = wallpapers.slice(0, maxDomCount);
   <!-- Dynamic Responsive Grid Container (4 Columns on Desktop = 8 full rows of 32) -->
   <div id="wallpapers-grid-container" class={`grid-mode-${gridMode}`}>
     {renderWallpapers.map((wp, index) => {
-      const isInitiallyHidden = enableLoadMore && index >= initialCount;
+      const is916 = wp.aspectRatio === '9:16' || wp.aspectRatio === 'vertical';
+      const is169 = wp.aspectRatio === '16:9' || (!is916 && !wp.aspectRatio?.includes('32:9'));
+
+      let shouldHideByFormat = false;
+      if (gridMode === 'desktop' && is916) shouldHideByFormat = true;
+      if (gridMode === 'phone' && is169) shouldHideByFormat = true;
+
+      const isInitiallyHidden = (enableLoadMore && index >= initialCount) || shouldHideByFormat;
       return (
         <div
           class={`wallpaper-grid-item ${isInitiallyHidden ? 'load-more-hidden' : ''}`}

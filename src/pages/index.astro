@@ -13,16 +13,57 @@ import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
 import Footer from '../components/Footer.astro';
 import { wallpapers } from '../data/wallpapers';
 
-// Iconic 16:9 Desktop Showcase (First 36 items - 100% pure original desktop wallpapers)
-const desktopWps = wallpapers.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical'))).slice(0, 48);
+// Category diversification function: picks 2 items per category in continuous round-robin
+// Guarantees balanced variety across Anime, Gaming, Cars, Nature, AMOLED, Cyberpunk, Movies, etc.
+function diversifyByCategories(items: Wallpaper[], maxTotal: number, perBatch = 2): Wallpaper[] {
+  const byCat = new Map<string, Wallpaper[]>();
+  for (const item of items) {
+    const cat = item.category || 'Other';
+    if (!byCat.has(cat)) byCat.set(cat, []);
+    byCat.get(cat)!.push(item);
+  }
 
-// Authentic 9:16 Mobile Phone Showcase (Next 36 items - 100% pure vertical phone wallpapers)
-const allMobileWps = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
-const wcatMobile = allMobileWps.filter(w => (w.sourceCdn || '').includes('wallpapercat.com'));
-const otherMobile = allMobileWps.filter(w => !(w.sourceCdn || '').includes('wallpapercat.com'));
-const mobileWps = [...wcatMobile, ...otherMobile].slice(0, 48);
+  const result: Wallpaper[] = [];
+  const catEntries = Array.from(byCat.entries());
+  let offset = 0;
+
+  while (result.length < maxTotal) {
+    let addedAny = false;
+    for (const [, arr] of catEntries) {
+      for (let k = 0; k < perBatch; k++) {
+        const itemIdx = offset + k;
+        if (itemIdx < arr.length && result.length < maxTotal) {
+          result.push(arr[itemIdx]);
+          addedAny = true;
+        }
+      }
+    }
+    if (!addedAny) break;
+    offset += perBatch;
+  }
+  return result;
+}
+
+// 1. Desktop 16:9 Showcase: Rich 64 diverse wallpapers across all categories
+const desktopPool = wallpapers.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
+const desktopWps = diversifyByCategories(desktopPool, 64, 2);
+
+// 2. Mobile 9:16 Showcase: Rich 64 diverse vertical phone wallpapers across all categories
+const allMobilePool = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+const mobileWps = diversifyByCategories(allMobilePool, 64, 2);
 
 const trendingWallpapers: typeof wallpapers = [...desktopWps, ...mobileWps];
+
+// Device Format Auto-Detection:
+// On PC/Desktop: defaults to 'desktop' (hiding phone cards)
+// On Mobile: defaults to 'phone' (hiding desktop cards)
+// Explicit URL query ?format= always takes highest priority
+const userAgent = Astro.request.headers.get('user-agent') || '';
+const isMobileUA = /mobile|iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(userAgent);
+const queryFormat = (Astro.url.searchParams.get('format') || '').toLowerCase().trim();
+const detectedFormat = (queryFormat === 'all' || queryFormat === 'desktop' || queryFormat === 'phone' || queryFormat === 'dual')
+  ? queryFormat
+  : (isMobileUA ? 'phone' : 'desktop');
 
 const schema = {
   '@context': 'https://schema.org',
@@ -65,14 +106,15 @@ const schema = {
 
     <!-- Ultra-Luxury Glass Device Switcher Bar -->
     <div class="w-full px-4 sm:px-8 lg:px-12 pt-1 pb-2">
-      <OrientationToggle />
+      <OrientationToggle activeFormat={detectedFormat} />
     </div>
 
     <!-- 3. Trending 4K Wallpapers Grid (4 Columns with In-Grid Native Ad) -->
     <WallpaperGrid
       wallpapers={trendingWallpapers}
+      gridMode={detectedFormat}
       enableLoadMore={false}
-      maxDomCount={96}
+      maxDomCount={128}
       totalCount={wallpapers.length}
       title="Trending Wallpapers"
       subtitle="Handpicked ultra HD wallpapers, updated daily."

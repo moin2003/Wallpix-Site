@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import WallpaperCard from '../../components/WallpaperCard.astro';
@@ -40,14 +40,7 @@ function getTagThumbnail(tagSlug: string, parentCatSlug = '', index = 0): string
   return 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg';
 }
 
-export async function getStaticPaths() {
-  const allTags = getAllTags();
-  // Prerender the top 250 most popular and linked tags as static CDN edge assets
-  return allTags.slice(0, 250).map((tag) => ({
-    params: { slug: tag.slug },
-    props: { tagInfo: tag },
-  }));
-}
+
 
 interface Props {
   tagInfo: TagHubItem;
@@ -55,15 +48,18 @@ interface Props {
 
 const { slug } = Astro.params;
 const allTags = getAllTags();
-const tagInfo: TagHubItem = (Astro.props as any).tagInfo || allTags.find(t => t.slug === slug) || { 
-  name: (slug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
-  slug: slug || '', 
-  count: 0, 
-  cover: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg' 
+const tagSlug = (slug || '').toLowerCase();
+const directMatches = getWallpapersByTag(tagSlug);
+const foundTag = allTags.find(t => t.slug === tagSlug);
+const tagInfo: TagHubItem = (Astro.props as any).tagInfo || foundTag || { 
+  name: tagSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
+  slug: tagSlug, 
+  count: directMatches.length, 
+  cover: directMatches[0]?.sourceCdn || 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg' 
 };
 const tag = tagInfo;
 
-const directMatches = getWallpapersByTag(tag.slug);
+// directMatches resolved above
 
 // Find parent category of this tag
 const parentCat = MAIN_CATEGORIES.find(c => (c.subTopics || []).some(s => s.slug === tag.slug))
