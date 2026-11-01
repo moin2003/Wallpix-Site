@@ -22,11 +22,11 @@ const {
   gridMode = 'all',
   initialCount = 36,
   totalCount = wallpapers.length,
-  maxDomCount = 64,
+  maxDomCount = 200,
   enableLoadMore = false,
 } = Astro.props;
 
-// High-performance DOM safeguarding: Render up to maxDomCount (64) cards in DOM, with initialCount (36) visible
+// High-performance DOM safeguarding: Render up to maxDomCount cards in DOM
 const renderWallpapers = wallpapers.slice(0, maxDomCount);
 ---
 

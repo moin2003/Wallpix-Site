@@ -11,48 +11,7 @@ import WallpaperGrid from '../components/WallpaperGrid.astro';
 import OrientationToggle from '../components/OrientationToggle.astro';
 import ColorPaletteFilter from '../components/ColorPaletteFilter.astro';
 import Footer from '../components/Footer.astro';
-import { wallpapers } from '../data/wallpapers';
-
-// Category diversification function: picks 2 items per category in continuous round-robin
-// Guarantees balanced variety across Anime, Gaming, Cars, Nature, AMOLED, Cyberpunk, Movies, etc.
-function diversifyByCategories(items: Wallpaper[], maxTotal: number, perBatch = 2): Wallpaper[] {
-  const byCat = new Map<string, Wallpaper[]>();
-  for (const item of items) {
-    const cat = item.category || 'Other';
-    if (!byCat.has(cat)) byCat.set(cat, []);
-    byCat.get(cat)!.push(item);
-  }
-
-  const result: Wallpaper[] = [];
-  const catEntries = Array.from(byCat.entries());
-  let offset = 0;
-
-  while (result.length < maxTotal) {
-    let addedAny = false;
-    for (const [, arr] of catEntries) {
-      for (let k = 0; k < perBatch; k++) {
-        const itemIdx = offset + k;
-        if (itemIdx < arr.length && result.length < maxTotal) {
-          result.push(arr[itemIdx]);
-          addedAny = true;
-        }
-      }
-    }
-    if (!addedAny) break;
-    offset += perBatch;
-  }
-  return result;
-}
-
-// 1. Desktop 16:9 Showcase: Rich 64 diverse wallpapers across all categories
-const desktopPool = wallpapers.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
-const desktopWps = diversifyByCategories(desktopPool, 64, 2);
-
-// 2. Mobile 9:16 Showcase: Rich 64 diverse vertical phone wallpapers across all categories
-const allMobilePool = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
-const mobileWps = diversifyByCategories(allMobilePool, 64, 2);
-
-const trendingWallpapers: typeof wallpapers = [...desktopWps, ...mobileWps];
+import { wallpapers, type Wallpaper } from '../data/wallpapers';
 
 // Device Format Auto-Detection:
 // On PC/Desktop: defaults to 'desktop' (hiding phone cards)
@@ -64,6 +23,86 @@ const queryFormat = (Astro.url.searchParams.get('format') || '').toLowerCase().t
 const detectedFormat = (queryFormat === 'all' || queryFormat === 'desktop' || queryFormat === 'phone' || queryFormat === 'dual')
   ? queryFormat
   : (isMobileUA ? 'phone' : 'desktop');
+
+// High visual quality scoring: prioritizes 4K/2K resolution and high view/download engagement
+function score(w: Wallpaper): number {
+  let s = (w.views || 0) + (w.downloads || 0) * 2;
+  const res = w.resolution || '';
+  if (res.includes('3840') || res.includes('4K') || res.includes('2160')) s += 50000;
+  if (res.includes('2560') || res.includes('1440')) s += 20000;
+  return s;
+}
+
+function isAspect(w: Wallpaper, type: 'desktop' | 'phone'): boolean {
+  const a = w.aspectRatio || '';
+  const is916 = a === '9:16' || a.includes('9:16') || a.includes('vertical');
+  if (type === 'phone') return is916;
+  return !is916 && !a.includes('32:9');
+}
+
+// 10 Curated Elite Buckets specifically tailored for high-contrast homepage aesthetics:
+// 1. Spider-Man & Superhero Red Suit (Miles Morales, Peter Parker, Iron Man, Batman)
+// 2. Anime & Aesthetics (Iconic characters, stunning aesthetic anime landscapes)
+// 3. AMOLED Black & Dark Matte (Pitch black, dark matte textures, ultra OLED contrast)
+// 4. Minimalist & Abstract (3D fluid forms, modern geometric renders, clean curves)
+// 5. Space & Cosmic (Deep space nebulae, James Webb cosmos, astronauts, planets)
+// 6. Cyberpunk & Neon (Futuristic neon cities, rainy streets, synthwave aesthetics)
+// 7. Gaming & Action (Elden Ring, God of War, GTA, Witcher, Cyberpunk 2077)
+// 8. Luxury & Supercars (Porsche, Lamborghini, Ferrari, McLaren, BMW drift)
+// 9. Nature & Landscapes (Aurora Borealis, mist pines, alpine peaks, ocean bioluminescence)
+// 10. Fantasy & Mythical (Dragons, glowing celestial realms, enchanted worlds)
+const curatedBuckets = [
+  { key: 'spiderman', test: (w: Wallpaper) => /spider|peter parker|miles morales|iron man|batman/i.test(w.title) || Boolean(w.tags && w.tags.some((t: string) => /spider|miles-morales|peter-parker|marvel/i.test(t))) },
+  { key: 'anime', test: (w: Wallpaper) => w.category === 'Anime & Manga' && !/spider|iron man|batman/i.test(w.title) },
+  { key: 'amoled', test: (w: Wallpaper) => w.category === 'AMOLED Black' || /amoled|pitch black|dark matte|matte black/i.test(w.title) },
+  { key: 'abstract', test: (w: Wallpaper) => w.category === 'Minimalist & Abstract' || /abstract|minimal|3d render|fluid/i.test(w.title) },
+  { key: 'space', test: (w: Wallpaper) => w.category === 'Space & Cosmic' || /space|cosmic|galaxy|nebula|astronaut/i.test(w.title) },
+  { key: 'cyberpunk', test: (w: Wallpaper) => (w.category === 'Cyberpunk & Neon' || /cyberpunk|neon|synthwave/i.test(w.title)) && w.category !== 'Anime & Manga' },
+  { key: 'gaming', test: (w: Wallpaper) => w.category === 'Gaming' || /gaming|gta|witcher|elden ring|god of war/i.test(w.title) },
+  { key: 'supercars', test: (w: Wallpaper) => w.category === 'Cars & Bikes' || /supercar|porsche|lamborghini|ferrari|bmw|audi/i.test(w.title) },
+  { key: 'nature', test: (w: Wallpaper) => (w.category === 'Nature & Landscapes' || w.category === 'Nature & Scenery' || /aurora|mountain|landscape|forest/i.test(w.title)) && w.category !== 'Anime & Manga' },
+  { key: 'fantasy', test: (w: Wallpaper) => w.category === 'Fantasy & Mythical' || /fantasy|mythical|dragon/i.test(w.title) }
+];
+
+function buildCuratedShowcase(items: Wallpaper[], type: 'desktop' | 'phone', targetCount = 96): Wallpaper[] {
+  const seenIds = new Set<string>();
+  const bucketPools = curatedBuckets.map(b => {
+    const matched = items
+      .filter(w => isAspect(w, type) && b.test(w))
+      .sort((a, b) => score(b) - score(a));
+    return { ...b, matched, idx: 0 };
+  });
+
+  const result: Wallpaper[] = [];
+  while (result.length < targetCount) {
+    let addedAny = false;
+    for (const b of bucketPools) {
+      if (result.length >= targetCount) break;
+      while (b.idx < b.matched.length) {
+        const item = b.matched[b.idx++];
+        if (!seenIds.has(item.id)) {
+          seenIds.add(item.id);
+          result.push(item);
+          addedAny = true;
+          break;
+        }
+      }
+    }
+    if (!addedAny) break;
+  }
+  return result;
+}
+
+// 96 Curated Masterpieces for Desktop (24 complete rows of 4 columns)
+const desktopCurated = buildCuratedShowcase(wallpapers, 'desktop', 96);
+
+// 96 Curated Masterpieces for Mobile (48 complete rows of 2 columns)
+const mobileCurated = buildCuratedShowcase(wallpapers, 'phone', 96);
+
+// Prioritize active device format first for instant server-rendered presentation
+const trendingWallpapers: typeof wallpapers = detectedFormat === 'phone'
+  ? [...mobileCurated, ...desktopCurated]
+  : [...desktopCurated, ...mobileCurated];
 
 const schema = {
   '@context': 'https://schema.org',
@@ -114,7 +153,7 @@ const schema = {
       wallpapers={trendingWallpapers}
       gridMode={detectedFormat}
       enableLoadMore={false}
-      maxDomCount={128}
+      maxDomCount={200}
       totalCount={wallpapers.length}
       title="Trending Wallpapers"
       subtitle="Handpicked ultra HD wallpapers, updated daily."
