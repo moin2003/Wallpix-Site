@@ -56,16 +56,21 @@ export function getOptimizedThumbUrl(
     }
   }
 
-  // 5. WallpaperCat native retina thumbnails (middle-retina 1600x900 ~110KB for crystal-clear cards; small-retina for micro icons < 250px)
+  // 5. WallpaperCat native retina thumbnails:
+  // Use small-retina (600x400 ~30KB) for standard gallery/grid cards (width <= 600) for instant 5x faster load.
+  // Use middle-retina (1600x900 ~166KB) only when explicitly requesting large high-res preview (width > 600).
+  // For vertical mobile wallpapers, middle-vertical-retina is ultra-light (~19KB).
   if (rawUrl.includes('wallpapercat.com/w/full/')) {
     const isVertical =
       /(mobile|phone|iphone|samsung|vertical)/i.test(rawUrl) ||
       /(5828021|5828027|5827973|5828001|5827784|5827936|5828105|5828096|5828338|5828115)\.jpg/.test(
         rawUrl
       );
-    const sizePrefix = width >= 250 ? 'middle' : 'small';
-    const thumbType = isVertical ? `${sizePrefix}-vertical-retina` : `${sizePrefix}-retina`;
-    return rawUrl.replace('/w/full/', `/w/${thumbType}/`);
+    if (isVertical) {
+      return rawUrl.replace('/w/full/', '/w/middle-vertical-retina/');
+    }
+    const sizePrefix = width > 600 ? 'middle' : 'small';
+    return rawUrl.replace('/w/full/', `/w/${sizePrefix}-retina/`);
   }
 
   // 6. AlphaCoders (WordPress Photon CDN with 2x High-DPI sampling)

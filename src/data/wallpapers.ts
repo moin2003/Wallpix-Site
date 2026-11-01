@@ -199,21 +199,48 @@ const rawWallpapers: Wallpaper[] = (catalogData as Wallpaper[]).filter(
   w => w.sourceCdn && w.sourceCdn.startsWith('http') && !w.sourceCdn.includes('mockup')
 );
 
-// Chronological Newest-First Universal Architecture:
-// 1. Items with explicit dateAdded are prioritized by latest date (descending)
-// 2. For identical dates or items without explicit dateAdded, preserve reverse catalog insertion order
-// (since newly fetched/scraped wallpapers are continuously appended to the end of catalog.json)
-export const wallpapers: Wallpaper[] = rawWallpapers
-  .map((w, idx) => ({ w, idx }))
+// Intelligent Hybrid Smart-Stream Architecture:
+// 1. Fresh newest arrivals (with explicit dateAdded or newest ingestion) are extracted and ordered latest first.
+// 2. Classic beloved wallpapers (with high views, ratings, and rich variety across all categories) are preserved.
+// 3. Balanced Smart-Stream:
+//    - The feed leads with a prominent showcase of the freshest new arrivals at the very top (first 6).
+//    - Then interleaves 3 classic high-engagement wallpapers with 1 newest arrival continuously.
+//    - This ensures new wallpapers always appear at the top and continuously throughout the feed,
+//      while preserving the vibrant iconic wallpapers across Anime, Gaming, Cars, Nature, AMOLED, etc.
+const newestWallpapers = rawWallpapers
+  .filter(w => Boolean(w.dateAdded))
   .sort((a, b) => {
-    const timeA = a.w.dateAdded ? new Date(a.w.dateAdded).getTime() : 0;
-    const timeB = b.w.dateAdded ? new Date(b.w.dateAdded).getTime() : 0;
-    if (timeA !== timeB) {
-      return timeB - timeA;
+    const tA = a.dateAdded ? new Date(a.dateAdded).getTime() : 0;
+    const tB = b.dateAdded ? new Date(b.dateAdded).getTime() : 0;
+    return tB - tA;
+  });
+
+const classicWallpapers = rawWallpapers.filter(w => !w.dateAdded);
+
+function buildSmartStream(newest: Wallpaper[], classic: Wallpaper[]): Wallpaper[] {
+  const result: Wallpaper[] = [];
+  let n = 0;
+  let c = 0;
+
+  // Lead with 6 fresh newest arrivals at the very top
+  while (n < 6 && n < newest.length) {
+    result.push(newest[n++]);
+  }
+
+  // Interleave: 3 classic beloved wallpapers + 1 newest arrival
+  while (n < newest.length || c < classic.length) {
+    for (let k = 0; k < 3 && c < classic.length; k++) {
+      result.push(classic[c++]);
     }
-    return b.idx - a.idx;
-  })
-  .map(item => item.w);
+    if (n < newest.length) {
+      result.push(newest[n++]);
+    }
+  }
+
+  return result;
+}
+
+export const wallpapers: Wallpaper[] = buildSmartStream(newestWallpapers, classicWallpapers);
 
 const CATEGORY_SYNONYMS: Record<string, string[]> = {
   '4k-ultra-hd': ['4k', 'uhd', 'ultra', 'desktop', 'wallpaper', '3840'],
