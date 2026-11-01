@@ -24,12 +24,33 @@ const detectedFormat = (queryFormat === 'all' || queryFormat === 'desktop' || qu
   ? queryFormat
   : (isMobileUA ? 'phone' : 'desktop');
 
+// Filter out low-effort generic single-word titles
+function isQuality(w: Wallpaper): boolean {
+  const t = (w.title || '').trim().toLowerCase();
+  const banned = new Set(['anime', 'iphone', 'cool', 'onyx', 'car', 'nature', 'phone', 'goth', 'sand', 'gradient', 'island', 'logo']);
+  if (banned.has(t)) return false;
+  if (t.length < 3) return false;
+  return true;
+}
+
+function normalizeTitle(t: string): string {
+  return t.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24);
+}
+
 // High visual quality scoring: prioritizes 4K/2K resolution and high view/download engagement
 function score(w: Wallpaper): number {
-  let s = (w.views || 0) + (w.downloads || 0) * 2;
+  let s = (w.views || 0) * 0.1 + (w.downloads || 0) * 0.2;
   const res = w.resolution || '';
   if (res.includes('3840') || res.includes('4K') || res.includes('2160')) s += 50000;
-  if (res.includes('2560') || res.includes('1440')) s += 20000;
+  if (res.includes('2560') || res.includes('1440') || res.includes('2880') || res.includes('3120')) s += 25000;
+
+  // Boost high-demand iconic themes
+  const t = (w.title || '').toLowerCase();
+  if (/spider[-\s]?man|miles morales|peter parker|iron spider|spiderverse|spider-verse/i.test(t)) s += 40000;
+  if (/naruto|sasuke|gojo|luffy|zoro|demon slayer|eren|titan|goku|jujutsu|tanjiro|tokyo ghoul|bleach|one punch/i.test(t)) s += 35000;
+  if (/porsche|lamborghini|ferrari|mclaren|bugatti|supercar/i.test(t)) s += 30000;
+  if (/amoled|pitch black|black diamond/i.test(t)) s += 25000;
+  if (/nebula|galaxy|astronaut|cosmos|guardians of the galaxy/i.test(t)) s += 25000;
   return s;
 }
 
@@ -41,47 +62,53 @@ function isAspect(w: Wallpaper, type: 'desktop' | 'phone'): boolean {
 }
 
 // 10 Curated Elite Buckets specifically tailored for high-contrast homepage aesthetics:
-// 1. Spider-Man & Superhero Red Suit (Miles Morales, Peter Parker, Iron Man, Batman)
-// 2. Anime & Aesthetics (Iconic characters, stunning aesthetic anime landscapes)
+// 1. Spider-Man & Superhero (Actual Spider-Man, Miles Morales, Peter Parker, Iron Spider, Batman, Iron Man)
+// 2. Iconic Anime (Naruto, Sasuke, Gojo, Demon Slayer, Attack on Titan, Tokyo Ghoul, Bleach, Goku)
 // 3. AMOLED Black & Dark Matte (Pitch black, dark matte textures, ultra OLED contrast)
 // 4. Minimalist & Abstract (3D fluid forms, modern geometric renders, clean curves)
 // 5. Space & Cosmic (Deep space nebulae, James Webb cosmos, astronauts, planets)
 // 6. Cyberpunk & Neon (Futuristic neon cities, rainy streets, synthwave aesthetics)
-// 7. Gaming & Action (Elden Ring, God of War, GTA, Witcher, Cyberpunk 2077)
+// 7. Gaming & Action (Elden Ring, God of War, GTA, Witcher, Cyberpunk 2077, Sonic, Zelda)
 // 8. Luxury & Supercars (Porsche, Lamborghini, Ferrari, McLaren, BMW drift)
 // 9. Nature & Landscapes (Aurora Borealis, mist pines, alpine peaks, ocean bioluminescence)
 // 10. Fantasy & Mythical (Dragons, glowing celestial realms, enchanted worlds)
 const curatedBuckets = [
-  { key: 'spiderman', test: (w: Wallpaper) => /spider|peter parker|miles morales|iron man|batman/i.test(w.title) || Boolean(w.tags && w.tags.some((t: string) => /spider|miles-morales|peter-parker|marvel/i.test(t))) },
-  { key: 'anime', test: (w: Wallpaper) => w.category === 'Anime & Manga' && !/spider|iron man|batman/i.test(w.title) },
-  { key: 'amoled', test: (w: Wallpaper) => w.category === 'AMOLED Black' || /amoled|pitch black|dark matte|matte black/i.test(w.title) },
+  { key: 'spiderman', test: (w: Wallpaper) => /(spider[-\s]?man|miles morales|peter parker|iron spider|spiderverse|venom|batman|iron man)/i.test(w.title) },
+  { key: 'anime', test: (w: Wallpaper) => (w.category === 'Anime & Manga' || /naruto|sasuke|gojo|luffy|zoro|demon slayer|eren|titan|goku|jujutsu|tanjiro|tokyo ghoul|bleach|one punch/i.test(w.title)) && !/(spider[-\s]?man|batman|iron man|venom)/i.test(w.title) },
+  { key: 'amoled', test: (w: Wallpaper) => (w.category === 'AMOLED Black' || /amoled|pitch black|dark matte/i.test(w.title)) && !/(spider[-\s]?man|batman|venom)/i.test(w.title) },
   { key: 'abstract', test: (w: Wallpaper) => w.category === 'Minimalist & Abstract' || /abstract|minimal|3d render|fluid/i.test(w.title) },
   { key: 'space', test: (w: Wallpaper) => w.category === 'Space & Cosmic' || /space|cosmic|galaxy|nebula|astronaut/i.test(w.title) },
-  { key: 'cyberpunk', test: (w: Wallpaper) => (w.category === 'Cyberpunk & Neon' || /cyberpunk|neon|synthwave/i.test(w.title)) && w.category !== 'Anime & Manga' },
-  { key: 'gaming', test: (w: Wallpaper) => w.category === 'Gaming' || /gaming|gta|witcher|elden ring|god of war/i.test(w.title) },
-  { key: 'supercars', test: (w: Wallpaper) => w.category === 'Cars & Bikes' || /supercar|porsche|lamborghini|ferrari|bmw|audi/i.test(w.title) },
+  { key: 'cyberpunk', test: (w: Wallpaper) => (w.category === 'Cyberpunk & Neon' || /cyberpunk|neon|synthwave/i.test(w.title)) && !/spider/i.test(w.title) },
+  { key: 'gaming', test: (w: Wallpaper) => w.category === 'Gaming' || /gaming|gta|witcher|elden ring|god of war|sonic|zelda/i.test(w.title) },
+  { key: 'supercars', test: (w: Wallpaper) => w.category === 'Cars & Bikes' || /supercar|porsche|lamborghini|ferrari|bmw|audi|mercedes|mclaren/i.test(w.title) },
   { key: 'nature', test: (w: Wallpaper) => (w.category === 'Nature & Landscapes' || w.category === 'Nature & Scenery' || /aurora|mountain|landscape|forest/i.test(w.title)) && w.category !== 'Anime & Manga' },
   { key: 'fantasy', test: (w: Wallpaper) => w.category === 'Fantasy & Mythical' || /fantasy|mythical|dragon/i.test(w.title) }
 ];
 
 function buildCuratedShowcase(items: Wallpaper[], type: 'desktop' | 'phone', targetCount = 96): Wallpaper[] {
-  const seenIds = new Set<string>();
+  const pool = items.filter(w => isAspect(w, type) && isQuality(w));
+
   const bucketPools = curatedBuckets.map(b => {
-    const matched = items
-      .filter(w => isAspect(w, type) && b.test(w))
+    const matched = pool
+      .filter(w => b.test(w))
       .sort((a, b) => score(b) - score(a));
     return { ...b, matched, idx: 0 };
   });
 
   const result: Wallpaper[] = [];
+  const seenSlugs = new Set<string>();
+  const seenTitles = new Set<string>();
+
   while (result.length < targetCount) {
     let addedAny = false;
     for (const b of bucketPools) {
       if (result.length >= targetCount) break;
       while (b.idx < b.matched.length) {
         const item = b.matched[b.idx++];
-        if (!seenIds.has(item.id)) {
-          seenIds.add(item.id);
+        const norm = normalizeTitle(item.title);
+        if (!seenSlugs.has(item.slug) && !seenTitles.has(norm)) {
+          seenSlugs.add(item.slug);
+          seenTitles.add(norm);
           result.push(item);
           addedAny = true;
           break;

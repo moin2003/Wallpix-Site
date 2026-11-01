@@ -39,14 +39,35 @@ export const GET: APIRoute = async ({ url }) => {
 
   let filtered: Wallpaper[] = wallpapers;
 
-  // 1. Format Filter (Prioritize authentic high-res WallpaperCat mobile wallpapers for phone)
+  // 1. Format Filter (Prioritize authentic high-res, eye-catching wallpapers without generic titles)
+  const isQuality = (w: Wallpaper) => {
+    const t = (w.title || '').trim().toLowerCase();
+    const banned = new Set(['anime', 'iphone', 'cool', 'onyx', 'car', 'nature', 'phone', 'goth', 'sand', 'gradient', 'island', 'logo']);
+    return !banned.has(t) && t.length >= 3;
+  };
+  const scoreQuality = (w: Wallpaper) => {
+    let s = (w.views || 0) * 0.1 + (w.downloads || 0) * 0.2;
+    const res = w.resolution || '';
+    if (res.includes('3840') || res.includes('4K') || res.includes('2160')) s += 50000;
+    if (res.includes('2560') || res.includes('1440') || res.includes('2880') || res.includes('3120')) s += 25000;
+    const t = (w.title || '').toLowerCase();
+    if (/spider[-\s]?man|miles morales|peter parker|iron spider|spiderverse|spider-verse/i.test(t)) s += 40000;
+    if (/naruto|sasuke|gojo|luffy|zoro|demon slayer|eren|titan|goku|jujutsu|tanjiro|tokyo ghoul|bleach|one punch/i.test(t)) s += 35000;
+    if (/porsche|lamborghini|ferrari|mclaren|bugatti|supercar/i.test(t)) s += 30000;
+    if (/amoled|pitch black|black diamond/i.test(t)) s += 25000;
+    if (/nebula|galaxy|astronaut|cosmos|guardians of the galaxy/i.test(t)) s += 25000;
+    return s;
+  };
   if (format === 'phone' || format === 'mobile') {
     const allPhone = filtered.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
-    const wcatPhone = allPhone.filter(w => (w.sourceCdn || '').includes('wallpapercat.com'));
-    const otherPhone = allPhone.filter(w => !(w.sourceCdn || '').includes('wallpapercat.com'));
-    filtered = [...wcatPhone, ...otherPhone];
+    const qualityPhone = allPhone.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
+    const otherPhone = allPhone.filter(w => !isQuality(w));
+    filtered = [...qualityPhone, ...otherPhone];
   } else if (format === 'desktop') {
-    filtered = filtered.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
+    const allDesk = filtered.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
+    const qualityDesk = allDesk.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
+    const otherDesk = allDesk.filter(w => !isQuality(w));
+    filtered = [...qualityDesk, ...otherDesk];
   } else if (format === 'dual') {
     filtered = filtered.filter(w => 
       (w.aspectRatio || '').includes('32:9') || 
