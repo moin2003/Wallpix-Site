@@ -12,7 +12,7 @@ AGENTS.md
 
 # Local UI screenshots, mockups & design captures
 UI examples/
-images/
+/images/
 preview_*.png
 *.png
 !public/**/*.png
