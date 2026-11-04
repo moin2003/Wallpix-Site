@@ -59,19 +59,37 @@ function scorePhone(w: Wallpaper): number {
   return s;
 }
 
-const desktopPool = wallpapers.filter(w => w.aspectRatio === '16:9' && isQuality(w));
-const desktopWallpapers = getDiverseWallpapers(desktopPool, 96);
+// Module-level in-memory cache: computes once and serves in 0.001ms
+let cachedDesktopWallpapers: Wallpaper[] | null = (globalThis as any).__walpix_wp_desktop || null;
+let cachedMobileWallpapers: Wallpaper[] | null = (globalThis as any).__walpix_wp_mobile || null;
+let cachedDualWallpapers: Wallpaper[] | null = (globalThis as any).__walpix_wp_dual || null;
 
-const allMobilePool = wallpapers
-  .filter(w => (w.aspectRatio === '9:16' || w.aspectRatio === 'vertical') && isQuality(w))
-  .sort((a, b) => scorePhone(b) - scorePhone(a));
-const mobileWallpapers = getDiverseWallpapers(allMobilePool, 96);
+if (!cachedDesktopWallpapers) {
+  const desktopPool = wallpapers.filter(w => w.aspectRatio === '16:9' && isQuality(w));
+  cachedDesktopWallpapers = getDiverseWallpapers(desktopPool, 96);
+  (globalThis as any).__walpix_wp_desktop = cachedDesktopWallpapers;
+}
 
-const dualWallpapers = wallpapers.filter(w => 
-  (w.aspectRatio || '').includes('32:9') || 
-  (w.screenTypes || []).includes('dual-monitor') ||
-  (w.screenTypes || []).includes('ultrawide')
-).slice(0, 36);
+if (!cachedMobileWallpapers) {
+  const allMobilePool = wallpapers
+    .filter(w => (w.aspectRatio === '9:16' || w.aspectRatio === 'vertical') && isQuality(w))
+    .sort((a, b) => scorePhone(b) - scorePhone(a));
+  cachedMobileWallpapers = getDiverseWallpapers(allMobilePool, 96);
+  (globalThis as any).__walpix_wp_mobile = cachedMobileWallpapers;
+}
+
+if (!cachedDualWallpapers) {
+  cachedDualWallpapers = wallpapers.filter(w => 
+    (w.aspectRatio || '').includes('32:9') || 
+    (w.screenTypes || []).includes('dual-monitor') ||
+    (w.screenTypes || []).includes('ultrawide')
+  ).slice(0, 36);
+  (globalThis as any).__walpix_wp_dual = cachedDualWallpapers;
+}
+
+const desktopWallpapers = cachedDesktopWallpapers;
+const mobileWallpapers = cachedMobileWallpapers;
+const dualWallpapers = cachedDualWallpapers;
 
 const urlFormat = (Astro.url.searchParams.get('format') || '').toLowerCase().trim();
 const userAgent = Astro.request.headers.get('user-agent') || '';

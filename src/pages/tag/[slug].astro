@@ -9,7 +9,7 @@ import CollageCollectionCard from '../../components/CollageCollectionCard.astro'
 import Footer from '../../components/Footer.astro';
 import { ADSENSE_CONFIG } from '../../config/adsense';
 import { MAIN_CATEGORIES, type SubTopic } from '../../data/taxonomy';
-import { getAllTags, getWallpapersByTag, getWallpapersByCategory, wallpapers, type TagHubItem, type Wallpaper } from '../../data/wallpapers';
+import { getAllTags, getTagBySlug, getWallpapersByTag, getWallpapersByCategory, wallpapers, type TagHubItem, type Wallpaper } from '../../data/wallpapers';
 import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
 
 // High-reliability thumbnail resolver with 100% verified 4K covers
@@ -47,10 +47,9 @@ interface Props {
 }
 
 const { slug } = Astro.params;
-const allTags = getAllTags();
 const tagSlug = (slug || '').toLowerCase();
 const directMatches = getWallpapersByTag(tagSlug);
-const foundTag = allTags.find(t => t.slug === tagSlug);
+const foundTag = getTagBySlug(tagSlug);
 const tagInfo: TagHubItem = (Astro.props as any).tagInfo || foundTag || { 
   name: tagSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
   slug: tagSlug, 

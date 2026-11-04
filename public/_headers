@@ -40,3 +40,14 @@
 
 /ads.txt
   Cache-Control: public, max-age=86400
+
+
+# 5. Cloudflare Pages HTML & Route Edge Caching
+/wallpapers/*
+  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800
+
+/tag/*
+  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800
+
+/category/*
+  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800

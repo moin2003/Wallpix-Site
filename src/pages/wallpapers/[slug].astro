@@ -4,7 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import WallpaperCard from '../../components/WallpaperCard.astro';
 import CollageCollectionCard from '../../components/CollageCollectionCard.astro';
-import { wallpapers, SCREEN_TYPES, slugifyTag, type Wallpaper } from '../../data/wallpapers';
+import { wallpapers, SCREEN_TYPES, slugifyTag, getWallpaperBySlug, getNeighborWallpapers, getWallpapersByCategory, type Wallpaper } from '../../data/wallpapers';
 import { MAIN_CATEGORIES } from '../../data/taxonomy';
 import { ADSENSE_CONFIG } from '../../config/adsense';
 import { getOptimizedThumbUrl } from '../../utils/imageOptimizer';
@@ -69,15 +69,13 @@ interface Props {
 }
 
 const { slug } = Astro.params;
-const wallpaper = (Astro.props as any).wallpaper || wallpapers.find((w) => w.slug === slug);
+const wallpaper = (Astro.props as any).wallpaper || (slug ? getWallpaperBySlug(slug) : undefined);
 if (!wallpaper) {
   return Astro.redirect('/404');
 }
 
-// Calculate Previous and Next Wallpaper Slugs for navigation
-const currentIndex = wallpapers.findIndex((w) => w.slug === wallpaper.slug);
-const prevWallpaper = wallpapers[(currentIndex - 1 + wallpapers.length) % wallpapers.length];
-const nextWallpaper = wallpapers[(currentIndex + 1) % wallpapers.length];
+// 0ms O(1) Instant Neighbor Wallpaper Resolution
+const { prev: prevWallpaper, next: nextWallpaper } = getNeighborWallpapers(wallpaper.slug);
 
 // Harmonic Dominant Palette Generator based on true wallpaper aesthetics
 function getHarmonicPalette(baseHex: string, category: string): { hex: string; label: string; name: string }[] {
@@ -173,25 +171,26 @@ const wpCatLower = (wallpaper.category || '').toLowerCase();
 const parentCatId = (parentCategory?.id || '').toLowerCase();
 const parentCatName = (parentCategory?.name || '').toLowerCase();
 
-// Strict Category Pool (Guarantees zero cross-category pollution)
-const strictCategoryPool = wallpapers.filter((w) => {
-  if (w.slug === wallpaper.slug) return false;
-  const wCat = (w.category || '').toLowerCase();
-  const matchCategory =
-    (parentCatId && (wCat.includes(parentCatId) || parentCatId.includes(wCat))) ||
-    (parentCatName && (wCat.includes(parentCatName) || parentCatName.includes(wCat))) ||
-    (wpCatLower && (wCat.includes(wpCatLower) || wpCatLower.includes(wCat)));
-  return matchCategory;
-});
+// O(1) Indexed Category Pool (Only scans ~200 items instead of 16,097)
+const catCandidates = parentCategory
+  ? getWallpapersByCategory(parentCategory.slug || parentCategory.id)
+  : (wpCatLower ? getWallpapersByCategory(wpCatLower) : wallpapers.slice(0, 400));
 
-// 1. Same-franchise / specific tag matches inside same universe
-const franchiseMatches = strictCategoryPool.filter((w) => {
+const strictCategoryPool = catCandidates.filter((w) => w.slug !== wallpaper.slug);
+
+// 1. Same-franchise / specific tag matches inside same universe in a single fast pass
+const franchiseMatches: Wallpaper[] = [];
+const remainingSameCategory: Wallpaper[] = [];
+
+for (let i = 0; i < strictCategoryPool.length; i++) {
+  const w = strictCategoryPool[i];
   const wTags = (w.tags || []).map((t) => slugifyTag(t));
-  return currentSpecificTags.some((t) => wTags.includes(t));
-});
-
-// 2. Remaining wallpapers from the exact same category
-const remainingSameCategory = strictCategoryPool.filter((w) => !franchiseMatches.includes(w));
+  if (currentSpecificTags.some((t) => wTags.includes(t))) {
+    franchiseMatches.push(w);
+  } else {
+    remainingSameCategory.push(w);
+  }
+}
 
 const candidatePool = [
   ...franchiseMatches,

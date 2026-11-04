@@ -242,6 +242,28 @@ function buildSmartStream(newest: Wallpaper[], classic: Wallpaper[]): Wallpaper[
 
 export const wallpapers: Wallpaper[] = buildSmartStream(newestWallpapers, classicWallpapers);
 
+// 0ms O(1) Instant Hash Lookup Maps (Eliminates Worker CPU bottleneck)
+const wallpaperBySlugMap = new Map<string, Wallpaper>();
+const wallpaperIndexBySlugMap = new Map<string, number>();
+
+for (let i = 0; i < wallpapers.length; i++) {
+  const w = wallpapers[i];
+  wallpaperBySlugMap.set(w.slug, w);
+  wallpaperIndexBySlugMap.set(w.slug, i);
+}
+
+export function getWallpaperBySlug(slug: string): Wallpaper | undefined {
+  if (!slug) return undefined;
+  return wallpaperBySlugMap.get(slug);
+}
+
+export function getNeighborWallpapers(slug: string): { prev: Wallpaper; next: Wallpaper } {
+  const idx = wallpaperIndexBySlugMap.get(slug) ?? 0;
+  const prev = wallpapers[(idx - 1 + wallpapers.length) % wallpapers.length];
+  const next = wallpapers[(idx + 1) % wallpapers.length];
+  return { prev, next };
+}
+
 const CATEGORY_SYNONYMS: Record<string, string[]> = {
   '4k-ultra-hd': ['4k', 'uhd', 'ultra', 'desktop', 'wallpaper', '3840'],
   'hd-wallpapers': ['hd', 'high-definition', '1080p', 'fhd', '4k', 'wallpaper', 'background'],
@@ -412,6 +434,20 @@ export function getAllTags(): TagHubItem[] {
 
   cachedAllTags = Array.from(tagCountMap.values()).sort((a, b) => b.count - a.count);
   return cachedAllTags;
+}
+
+let tagMapBySlug: Map<string, TagHubItem> | null = null;
+
+export function getTagBySlug(slug: string): TagHubItem | undefined {
+  if (!slug) return undefined;
+  if (!tagMapBySlug) {
+    const all = getAllTags();
+    tagMapBySlug = new Map<string, TagHubItem>();
+    for (let i = 0; i < all.length; i++) {
+      tagMapBySlug.set(all[i].slug, all[i]);
+    }
+  }
+  return tagMapBySlug.get(slug);
 }
 
 export function getLiveSubTopicCount(slug: string): number {

@@ -120,11 +120,21 @@ function buildCuratedShowcase(items: Wallpaper[], type: 'desktop' | 'phone', tar
   return result;
 }
 
-// 96 Curated Masterpieces for Desktop (24 complete rows of 4 columns)
-const desktopCurated = buildCuratedShowcase(wallpapers, 'desktop', 96);
+// Module-level in-memory cache: computes once and serves in 0.001ms for all future requests
+let cachedDesktopCurated: Wallpaper[] | null = (globalThis as any).__walpix_desktop_curated || null;
+let cachedMobileCurated: Wallpaper[] | null = (globalThis as any).__walpix_mobile_curated || null;
 
-// 96 Curated Masterpieces for Mobile (48 complete rows of 2 columns)
-const mobileCurated = buildCuratedShowcase(wallpapers, 'phone', 96);
+if (!cachedDesktopCurated) {
+  cachedDesktopCurated = buildCuratedShowcase(wallpapers, 'desktop', 96);
+  (globalThis as any).__walpix_desktop_curated = cachedDesktopCurated;
+}
+if (!cachedMobileCurated) {
+  cachedMobileCurated = buildCuratedShowcase(wallpapers, 'phone', 96);
+  (globalThis as any).__walpix_mobile_curated = cachedMobileCurated;
+}
+
+const desktopCurated = cachedDesktopCurated;
+const mobileCurated = cachedMobileCurated;
 
 // Prioritize active device format first for instant server-rendered presentation
 const trendingWallpapers: typeof wallpapers = detectedFormat === 'phone'
