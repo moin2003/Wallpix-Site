@@ -6,7 +6,7 @@ import Footer from '../../components/Footer.astro';
 import WallpaperCard from '../../components/WallpaperCard.astro';
 import AdSenseLeaderboard from '../../components/AdSenseLeaderboard.astro';
 import AdSenseSlot from '../../components/AdSenseSlot.astro';
-import { blogPosts } from '../../data/blogPosts';
+import { blogPosts, type BlogPost } from '../../data/blogPosts';
 import { wallpapers } from '../../data/wallpapers';
 
 export function getStaticPaths() {
@@ -20,42 +20,86 @@ const { slug } = Astro.params;
 const post = (Astro.props as any).post || blogPosts.find(b => b.slug === slug);
 if (!post) return Astro.redirect('/blog');
 
+// Calculate Previous and Next Blog Posts
+const currentIndex = blogPosts.findIndex(b => b.slug === post.slug);
+const prevPost: BlogPost | null = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
+const nextPost: BlogPost | null = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
+
+// More related articles
+const otherPosts = blogPosts.filter(b => b.slug !== post.slug).slice(0, 2);
+
 // Related wallpapers
 const relatedWallpapers = wallpapers.filter((w) =>
   (post.relatedWallpaperSlugs || []).includes(w.slug) ||
   (w.category || '').toLowerCase().includes((post.category || '').toLowerCase())
 ).slice(0, 3);
 
-// JSON-LD Schema
+const currentUrl = `https://www.walpix.site/blog/${post.slug}`;
+const shareText = encodeURIComponent(`${post.title} via @thewallpix`);
+const shareUrl = encodeURIComponent(currentUrl);
+
+// JSON-LD Schema (Article + BreadcrumbList)
 const articleSchema = {
   '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: post.title,
-  description: post.excerpt,
-  image: post.coverImage,
-  datePublished: post.publishDate,
-  author: {
-    '@type': 'Person',
-    name: post.author.name,
-    jobTitle: post.author.role,
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: 'WALPIX 4K',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://www.walpix.site/logo.png',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${currentUrl}#article`,
+      headline: post.title,
+      description: post.excerpt,
+      image: post.coverImage,
+      datePublished: post.publishDate,
+      dateModified: post.publishDate,
+      author: {
+        '@type': 'Person',
+        name: post.author.name,
+        jobTitle: post.author.role,
+        image: post.author.avatar,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'WALPIX 4K',
+        url: 'https://www.walpix.site',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.walpix.site/images/walpix-web-icon-round.png',
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': currentUrl,
+      },
     },
-  },
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': `https://www.walpix.site/blog/${post.slug}`,
-  },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${currentUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://www.walpix.site',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Blog & Editorial',
+          item: 'https://www.walpix.site/blog',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: post.title,
+          item: currentUrl,
+        },
+      ]
+    }
+  ]
 };
 ---
 
 <Layout
-  title={post.title}
+  title={`${post.title} | WALPIX Blog`}
   description={post.excerpt}
   image={post.coverImage}
   type="article"
@@ -63,9 +107,18 @@ const articleSchema = {
 >
   <Header currentCategory="blog" />
 
-  <main class="min-h-screen pb-16">
+  <!-- Reading Progress Bar -->
+  <div id="reading-progress-bar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-walpix-lime via-[#a8ff00] to-walpix-lime z-50 transition-all duration-150 w-0"></div>
+
+  <main class="min-h-screen pb-20 relative bg-[#020406] text-[#F8FAFC]">
+    
+    <!-- Ambient Background Glow -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-walpix-lime/[0.04] rounded-full blur-[160px]"></div>
+    </div>
+
     <!-- Breadcrumbs -->
-    <div class="w-full px-4 sm:px-8 lg:px-12 pt-6 max-w-4xl mx-auto">
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-6 max-w-4xl mx-auto">
       <nav class="flex items-center gap-2 text-xs text-[#8E949E] font-mono">
         <a href="/" class="hover:text-white transition-colors">Home</a>
         <span>/</span>
@@ -76,64 +129,143 @@ const articleSchema = {
     </div>
 
     <!-- Article Header -->
-    <header class="article-header relative w-full px-4 sm:px-8 lg:px-12 pt-6 sm:pt-8 pb-6 max-w-4xl mx-auto space-y-4 sm:space-y-5">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/25 text-xs font-mono font-bold text-walpix-lime uppercase">
-        <span>{post.category}</span>
-        <span>•</span>
-        <span>{post.readTime}</span>
+    <header class="relative z-10 article-header w-full px-4 sm:px-8 lg:px-12 pt-6 sm:pt-8 pb-6 max-w-4xl mx-auto space-y-4 sm:space-y-6">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="px-3 py-1 rounded-full bg-walpix-lime/10 border border-walpix-lime/25 text-xs font-mono font-bold text-walpix-lime uppercase tracking-wide">
+          {post.category}
+        </span>
+        <span class="text-xs text-[#8E949E] font-mono">•</span>
+        <span class="text-xs text-[#8E949E] font-mono flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-walpix-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          {post.readTime}
+        </span>
+        <span class="text-xs text-[#8E949E] font-mono">•</span>
+        <span class="text-xs text-[#8E949E] font-mono">Updated Nov 2026</span>
       </div>
 
-      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.18]">
         {post.title}
       </h1>
 
-      <div class="flex items-center gap-3 sm:gap-4 pt-2 border-y border-white/[0.08] py-3.5 sm:py-4 text-xs text-[#8E949E]">
-        <img
-          src={post.author.avatar}
-          alt={post.author.name}
-          class="w-10 h-10 rounded-full object-cover border border-walpix-lime/40 shrink-0"
-        />
-        <div class="min-w-0">
-          <span class="text-white font-bold block truncate">{post.author.name}</span>
-          <span class="truncate block sm:inline">{post.author.role} • Published on {post.publishDate}</span>
+      <p class="text-base sm:text-lg text-gray-300 leading-relaxed font-normal">
+        {post.excerpt}
+      </p>
+
+      <!-- Author Bar & Quick Social Share Strip -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-y border-white/[0.08] py-4 text-xs text-[#8E949E]">
+        <div class="flex items-center gap-3">
+          <img
+            src={post.author.avatar}
+            alt={post.author.name}
+            class="w-11 h-11 rounded-full object-cover border-2 border-walpix-lime/40 shadow-sm shrink-0"
+          />
+          <div class="min-w-0">
+            <span class="text-white font-bold block text-sm">{post.author.name}</span>
+            <span class="text-xs text-gray-400 block truncate">{post.author.role} • {post.publishDate}</span>
+          </div>
+        </div>
+
+        <!-- Social Share Icons (Desktop & Mobile) -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-gray-400 mr-1 hidden sm:inline">Share:</span>
+          
+          <!-- X / Twitter -->
+          <a
+            href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all hover:scale-105"
+            title="Share on X (Twitter)"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+
+          <!-- Facebook -->
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all hover:scale-105"
+            title="Share on Facebook"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+
+          <!-- LinkedIn -->
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all hover:scale-105"
+            title="Share on LinkedIn"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z"/></svg>
+          </a>
+
+          <!-- Reddit -->
+          <a
+            href={`https://reddit.com/submit?url=${shareUrl}&title=${shareText}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all hover:scale-105"
+            title="Share on Reddit"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+          </a>
+
+          <!-- Native Copy Link Button -->
+          <button
+            id="copy-article-link"
+            class="px-2.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 text-gray-300 hover:text-walpix-lime transition-all text-xs font-mono flex items-center gap-1 cursor-pointer"
+            title="Copy Article Link"
+            data-url={currentUrl}
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <span id="copy-btn-text">Copy</span>
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Cover Image -->
-    <div class="w-full px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto mb-8">
-      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto mb-8">
+      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#03060a]">
         <img
           src={post.coverImage}
           alt={post.title}
           class="w-full h-full object-cover"
+          loading="eager"
         />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#020406]/60 via-transparent to-transparent pointer-events-none"></div>
       </div>
     </div>
 
     <!-- Top In-Article AdSense Banner -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 mb-8">
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-8 lg:px-12 mb-8">
       <AdSenseLeaderboard variant="top" />
     </div>
 
     <!-- Article Body -->
-    <div class="w-full px-4 sm:px-8 lg:px-12 max-w-3xl mx-auto">
-      <div class="prose prose-invert prose-lime max-w-none text-gray-300 text-base leading-relaxed space-y-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-8 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-walpix-lime [&>h3]:mt-6 [&>ul]:list-disc [&>ul]:pl-5 [&>ul>li]:mt-2">
+    <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 max-w-3xl mx-auto">
+      <div class="prose prose-invert prose-lime max-w-none text-gray-300 text-base sm:text-[17px] leading-relaxed space-y-6 [&>h2]:text-2xl sm:[&>h2]:text-3xl [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-10 [&>h2]:pt-4 [&>h2]:border-t [&>h2]:border-white/[0.06] [&>h3]:text-lg sm:[&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-walpix-lime [&>h3]:mt-6 [&>ul]:list-disc [&>ul]:pl-5 [&>ul>li]:mt-2 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol>li]:mt-2 [&>p>a]:text-walpix-lime [&>p>a]:underline [&>p>a]:font-semibold hover:[&>p>a]:text-white">
         <Fragment set:html={post.content} />
       </div>
 
-      <!-- Tags -->
-      <div class="pt-8 mt-8 border-t border-white/[0.08] flex flex-wrap items-center gap-2">
-        <span class="text-xs font-mono text-gray-400">Tags:</span>
+      <!-- Tags Strip -->
+      <div class="pt-8 mt-10 border-t border-white/[0.08] flex flex-wrap items-center gap-2">
+        <span class="text-xs font-mono text-gray-400">Article Tags:</span>
         {post.tags.map((tag) => (
-          <span class="px-3 py-1 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-walpix-lime font-mono">
+          <a
+            href={`/tag/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+            class="px-3 py-1 rounded-lg bg-white/[0.04] hover:bg-walpix-lime/10 border border-white/10 hover:border-walpix-lime/30 text-xs text-walpix-lime font-mono transition-colors"
+          >
             #{tag}
-          </span>
+          </a>
         ))}
       </div>
 
-      <!-- Author Card -->
-      <div class="mt-10 p-6 rounded-2xl bg-[#05070a] border border-white/[0.08] flex items-center gap-4">
+      <!-- Author Bio Card -->
+      <div class="mt-10 p-6 rounded-2xl bg-[#05070a] border border-white/[0.08] flex items-center gap-4 shadow-lg">
         <img
           src={post.author.avatar}
           alt={post.author.name}
@@ -142,21 +274,48 @@ const articleSchema = {
         <div>
           <h3 class="text-sm font-bold text-white">{post.author.name}</h3>
           <p class="text-xs text-walpix-lime font-mono">{post.author.role}</p>
-          <p class="text-xs text-gray-400 mt-1">Curating and evaluating uncompressed digital assets for high-DPI displays.</p>
+          <p class="text-xs text-gray-400 mt-1">Specializes in display hardware calibration, ergonomics, and visual assets for high-DPI panels.</p>
         </div>
+      </div>
+
+      <!-- Next & Previous Article Navigation Cards -->
+      <div class="mt-12 pt-8 border-t border-white/[0.08] grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {prevPost ? (
+          <a href={`/blog/${prevPost.slug}`} class="group p-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.08] hover:border-walpix-lime/30 transition-all flex flex-col justify-between">
+            <span class="text-[11px] font-mono text-walpix-lime flex items-center gap-1 group-hover:-translate-x-1 transition-transform">
+              ← Previous Guide
+            </span>
+            <span class="text-sm font-bold text-white group-hover:text-walpix-lime line-clamp-2 mt-2">
+              {prevPost.title}
+            </span>
+          </a>
+        ) : (
+          <div class="hidden sm:block"></div>
+        )}
+
+        {nextPost ? (
+          <a href={`/blog/${nextPost.slug}`} class="group p-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.08] hover:border-walpix-lime/30 transition-all flex flex-col justify-between text-right">
+            <span class="text-[11px] font-mono text-walpix-lime flex items-center justify-end gap-1 group-hover:translate-x-1 transition-transform">
+              Next Guide →
+            </span>
+            <span class="text-sm font-bold text-white group-hover:text-walpix-lime line-clamp-2 mt-2">
+              {nextPost.title}
+            </span>
+          </a>
+        ) : null}
       </div>
     </div>
 
     <!-- Related Wallpapers Section -->
     {relatedWallpapers.length > 0 && (
-      <section class="w-full px-4 sm:px-8 lg:px-12 pt-16 max-w-7xl mx-auto">
+      <section class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-16 max-w-7xl mx-auto">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="text-2xl font-bold text-white">Related 4K Wallpapers</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Featured in this article</p>
+            <h2 class="text-2xl font-bold text-white">Recommended 4K Wallpapers</h2>
+            <p class="text-xs text-gray-400 mt-0.5">High-contrast native backgrounds referenced in this calibration guide</p>
           </div>
-          <a href="/wallpapers" class="text-xs text-walpix-lime font-bold hover:underline">
-            View All →
+          <a href="/category/amoled-black" class="text-xs text-walpix-lime font-bold hover:underline flex items-center gap-1">
+            Browse AMOLED Gallery →
           </a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -166,7 +325,61 @@ const articleSchema = {
         </div>
       </section>
     )}
+
+    <!-- More From Blog Grid -->
+    {otherPosts.length > 0 && (
+      <section class="relative z-10 w-full px-4 sm:px-8 lg:px-12 pt-16 max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-white">More Expert Guides</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Explore our latest display hardware & digital battlestation articles</p>
+          </div>
+          <a href="/blog" class="text-xs text-walpix-lime font-bold hover:underline">
+            View All Guides →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {otherPosts.map((other) => (
+            <a href={`/blog/${other.slug}`} class="group p-5 rounded-2xl bg-[#05070a] border border-white/[0.08] hover:border-walpix-lime/30 transition-all flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-mono text-walpix-lime font-bold uppercase">{other.category}</span>
+                <h3 class="text-base font-bold text-white group-hover:text-walpix-lime transition-colors mt-2">{other.title}</h3>
+                <p class="text-xs text-gray-400 line-clamp-2 mt-2">{other.excerpt}</p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-gray-400 font-mono">
+                <span>{other.readTime}</span>
+                <span class="text-walpix-lime font-bold group-hover:translate-x-1 transition-transform">Read →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </main>
 
   <Footer />
 </Layout>
+
+<script is:inline>
+  // Dynamic Reading Progress Bar
+  window.addEventListener('scroll', () => {
+    const bar = document.getElementById('reading-progress-bar');
+    if (!bar) return;
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / totalHeight) * 100;
+    bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+  });
+
+  // Copy Link Clipboard Action
+  document.getElementById('copy-article-link')?.addEventListener('click', function() {
+    const url = this.getAttribute('data-url') || window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const textSpan = document.getElementById('copy-btn-text');
+      if (textSpan) {
+        const orig = textSpan.textContent;
+        textSpan.textContent = 'Copied!';
+        setTimeout(() => { textSpan.textContent = orig; }, 2000);
+      }
+    });
+  });
+</script>
