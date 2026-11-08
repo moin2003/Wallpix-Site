@@ -621,4 +621,254 @@ export const blogPosts: BlogPost[] = [
       <p>Eye fatigue on an OLED monitor is almost never caused by defective glass or unavoidable blue light damage. It is a predictable physiological response to brightness mismatch, oversaturated wide-gamut unclamping, and aggressive specular reflections. Spend twenty minutes aligning your panel with these calibration reference targets, and you will enjoy the transcendent contrast of OLED with all-day comfort.</p>
     `,
   },
+  {
+    slug: 'windows-11-4k-hdr-display-settings-calibration-guide',
+    title: "Windows 12 Doesn't Exist Yet. Here's How to Set Up 4K and HDR on the Windows You Actually Have",
+    excerpt: "Stop waiting for mythical Windows 12 display upgrades. Learn how to dial in native 4K scaling, 10-bit RGB color signals, HDR calibration, and SDR brightness sliders in Windows 11 (24H2/25H2) for razor-sharp text and zero eye fatigue.",
+    publishDate: '2026-11-08',
+    readTime: '10 min read',
+    author: {
+      name: 'Alex Vance',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80',
+      role: 'Display Hardware & Calibration Specialist',
+    },
+    coverImage: 'https://wallpapercat.com/w/full/7/0/2/5827922.jpg',
+    category: 'Hardware & Calibration',
+    tags: ['Windows 11', '4K Scaling', 'HDR Calibration', 'Display Settings', 'OLED Monitor', 'ClearType'],
+    relatedWallpaperSlugs: ['developer-workspace-desk-setup-flat-illustration-e5c3be54', 'solar-flare-minimal-7b15ff32', 'aura-minimalist-pure-9226761d'],
+    content: `
+      <p>Search "Windows 12 display settings" and you'll get a pile of recycled rumors, mockups, and a "release date" that has moved four times. Meanwhile your 4K monitor is sitting on your desk with blurry text, washed-out HDR, and a brightness slider that does something you can't quite explain.</p>
+
+      <p>Let's fix the real problem. Microsoft hasn't announced Windows 12. What you're running is Windows 11, and 25H2 shares the same platform and servicing stack as 24H2. Everything below applies to both. If Windows 12 ever ships, I'd bet the Display settings page looks about the same.</p>
+
+      <figure class="my-8 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#05070a]">
+        <img
+          src="https://wallpapercat.com/w/full/7/0/2/5827922.jpg"
+          alt="Modern developer dual monitor workstation configured with native 4K resolution and color-accurate HDR"
+          class="w-full h-auto object-cover max-h-[480px]"
+          loading="lazy"
+        />
+        <figcaption class="p-3 text-center text-xs text-[#8E949E] font-mono bg-black/60 border-t border-white/5">
+          Figure 1: Proper 4K DPI scaling and calibrated HDR signal chain turn Windows 11 into a razor-sharp battlestation.
+        </figcaption>
+      </figure>
+
+      <h2>Know What You're Actually Running</h2>
+      <p>Hit <kbd class="px-2 py-0.5 rounded bg-white/10 border border-white/20 text-xs font-mono text-walpix-lime">Win + R</kbd>, type <code>winver</code>, and check the build. Anything in the 26100 family is 24H2 or 25H2, and that's the baseline for this guide.</p>
+
+      <p>Why it matters: 24H2 changed several display behaviors, and some of them bit people hard:</p>
+
+      <ul>
+        <li><strong>Automatic Color Management (ACM) arrived:</strong> This lets Windows color-manage SDR content on wide-gamut panels, preventing garish neon greens and oversaturated reds in everyday apps.</li>
+        <li><strong>HDR wording and controls shifted:</strong> Starting around build 26100.4202, the "Use HDR" label was reworded, a new "Allow HDR video streaming even when HDR is off" option appeared, and Dolby Vision-capable PCs got a dedicated toggle.</li>
+        <li><strong>Auto HDR shipped with a color bug:</strong> Microsoft confirmed that some games looked oversaturated with Auto HDR on, holding the update for affected machines for a while. While the hold was lifted, driver and build differences still occasionally cause odd results.</li>
+      </ul>
+
+      <p>Keep Windows Update and your GPU driver current before you touch a single slider. Half the "my HDR looks washed out" forum threads end right there.</p>
+
+      <h2>Step One: Get the Signal Chain Right</h2>
+      <p>Scaling and HDR settings can't rescue a bad physical link. Check this first:</p>
+
+      <div class="overflow-x-auto my-6">
+        <table class="w-full text-left text-xs md:text-sm border-collapse bg-white/[0.02] border border-white/10 rounded-xl overflow-hidden">
+          <thead>
+            <tr class="bg-white/5 border-b border-white/10 text-walpix-lime font-mono">
+              <th class="p-3">Item</th>
+              <th class="p-3">What to Set</th>
+              <th class="p-3">Why It Matters</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-gray-300">
+            <tr>
+              <td class="p-3 font-semibold text-white">Resolution</td>
+              <td class="p-3 font-mono text-walpix-lime">3840&times;2160 (Native)</td>
+              <td class="p-3">Anything else gets scaled and softened by GPU or monitor scalers.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Refresh Rate</td>
+              <td class="p-3">Native max (e.g. 120, 144, 240 Hz)</td>
+              <td class="p-3">Settings &gt; System &gt; Display &gt; Advanced display.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Cable / Port</td>
+              <td class="p-3">DP 1.4 w/ DSC or HDMI 2.1 (48 Gbps)</td>
+              <td class="p-3">4K at 120Hz+ with uncompressed 10-bit RGB won't fit through older cables.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Color Format</td>
+              <td class="p-3 font-mono text-walpix-lime">RGB (4:4:4)</td>
+              <td class="p-3">Chroma subsampling (4:2:2 or 4:2:0) wrecks fine text clarity.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Bit Depth</td>
+              <td class="p-3 font-mono text-walpix-lime">10-bit</td>
+              <td class="p-3">Eliminates banding in subtle wallpaper gradients and dark scenes.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">Dynamic Range</td>
+              <td class="p-3 font-mono text-walpix-lime">Full (0–255)</td>
+              <td class="p-3">Limited range (16–235) crushes PC contrast and turns blacks muddy gray.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Open <strong>Settings &gt; System &gt; Display &gt; Advanced display</strong> and look at the bit depth and color format Windows reports. If it says 8-bit with 4:2:2, your cable or port is the bottleneck, not your monitor. Use the certified cable that came in the box, or grab a certified DP 1.4 or HDMI 2.1 cord.</p>
+
+      <p>In the GPU control panel (NVIDIA Control Panel or AMD Adrenalin), confirm <strong>RGB, Full dynamic range, and 10 bpc</strong>. This is also where users discover that their graphics driver silently defaulted to Limited range after an HDMI TV or AV receiver was plugged in.</p>
+
+      <h2>4K Scaling: Stop Living With Blurry Text</h2>
+      <p>Native 4K at 100% scaling on a 27-inch panel makes text microscopically unreadable. That's why Windows offers DPI scaling, and it works remarkably well when you pick a sane whole multiplier and don't fight the operating system.</p>
+
+      <div class="overflow-x-auto my-6">
+        <table class="w-full text-left text-xs md:text-sm border-collapse bg-white/[0.02] border border-white/10 rounded-xl overflow-hidden">
+          <thead>
+            <tr class="bg-white/5 border-b border-white/10 text-walpix-lime font-mono">
+              <th class="p-3">Panel Size &amp; Resolution</th>
+              <th class="p-3">Pixel Density</th>
+              <th class="p-3">Recommended Scale</th>
+              <th class="p-3">Effective Workspace</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-gray-300">
+            <tr>
+              <td class="p-3 font-semibold text-white">27" 3840&times;2160 (4K)</td>
+              <td class="p-3">~163 PPI</td>
+              <td class="p-3 font-mono text-walpix-lime">150%</td>
+              <td class="p-3">Equivalent to 2560&times;1440</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">32" 3840&times;2160 (4K)</td>
+              <td class="p-3">~138 PPI</td>
+              <td class="p-3 font-mono text-walpix-lime">125% – 150%</td>
+              <td class="p-3">3072&times;1728 / 2560&times;1440</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">42"–43" 3840&times;2160</td>
+              <td class="p-3">~105 PPI</td>
+              <td class="p-3 font-mono text-walpix-lime">100% – 125%</td>
+              <td class="p-3">Native 4K workspace</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-white">34" 3440&times;1440 (Ultrawide)</td>
+              <td class="p-3">~110 PPI</td>
+              <td class="p-3 font-mono text-walpix-lime">100%</td>
+              <td class="p-3">Native ultrawide canvas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Go to <strong>Settings &gt; System &gt; Display &gt; Scale</strong> and pick from the dropdown. <em>Skip the "Custom scaling" box.</em> Arbitrary values like 137% force legacy Win32 apps to guess, leaving fuzzy fonts in some programs and crisp ones in others.</p>
+
+      <h3>Fixing Blurry Individual Apps</h3>
+      <p>Some older desktop applications do not declare modern per-monitor DPI awareness, leading Windows to stretch them as blurry bitmaps. Two proven fixes:</p>
+
+      <ol class="space-y-2 list-decimal list-inside text-gray-300">
+        <li><strong>Turn on "Fix scaling for apps":</strong> Under <em>Settings &gt; System &gt; Display &gt; Advanced scaling settings</em>. Windows will attempt to re-render blurry dialogs dynamically.</li>
+        <li><strong>Override per app executable:</strong> Right-click the app's <code>.exe</code>, select <em>Properties &gt; Compatibility &gt; Change high DPI settings</em>, check <em>Override high DPI scaling behavior</em>, and select <strong>System (Enhanced)</strong>. This forces GDI vector scaling and produces the sharpest result for stubborn legacy utilities.</li>
+      </ol>
+
+      <h3>Run ClearType Tuner for Subpixel Precision</h3>
+      <p>Search "ClearType" in the Start menu and walk through the five quick screens. OLED subpixel layouts (especially QD-OLED triangular arrangements) can show faint color fringing around black-on-white letter glyphs. The ClearType Tuner selects the subpixel rendering filter best suited to your panel geometry. It takes two minutes and immediately eliminates reading fatigue.</p>
+
+      <h3>Mixed-DPI Multi-Monitor Setups</h3>
+      <p>If you pair a 4K primary monitor with a 1080p vertical or side display, set each monitor's scaling factor independently in Display settings. Windows 11 handles per-monitor DPI transitions far better than Windows 10 did, though dragging legacy applications between displays can still cause temporary rescaling jitter. Keep your primary text work anchored to your primary 4K screen.</p>
+
+      <h2>HDR Settings That Actually Matter</h2>
+      <p>HDR on Windows is a multi-layered pipeline. Most frustration occurs when people adjust the wrong layer without understanding the signal path.</p>
+
+      <h3>The Foundation Basics</h3>
+      <ul>
+        <li>Toggle HDR in <strong>Settings &gt; System &gt; Display &gt; HDR</strong>, or press <kbd class="px-2 py-0.5 rounded bg-white/10 border border-white/20 text-xs font-mono text-walpix-lime">Win + Alt + B</kbd> to switch HDR on and off instantly without opening menus.</li>
+        <li>On gaming laptops, keep the AC adapter connected; Windows automatically disables HDR on battery power by default to conserve cell life.</li>
+        <li>If you use HDR strictly for AAA gaming and 4K movie playback, consider leaving it <strong>off</strong> during desktop productivity hours and flipping it on via shortcut when gaming starts.</li>
+      </ul>
+
+      <h3>The SDR Content Brightness Slider (The Most Misunderstood Setting)</h3>
+      <p>On an external HDR monitor, this slider does <strong>not</strong> increase HDR peak luminance. Instead, it dictates how bright standard SDR content (your web browser, Discord, Word, and desktop background) appears <em>relative to</em> HDR highlights while HDR mode is active.</p>
+
+      <p><strong>The Golden Target:</strong> Adjust this slider so that a white browser page looks identical in brightness to how it looked with HDR turned off. On bright QD-OLED and mini-LED panels, this typically sits between <strong>20 and 40</strong>. If your desktop looks washed out and foggy, this slider is cranked too high. If it looks like a dim dungeon, this slider is set too low.</p>
+
+      <h3>Run the Official Windows HDR Calibration App</h3>
+      <p>Microsoft offers the official <strong>Windows HDR Calibration</strong> app for free in the Microsoft Store (or install it via command line: <code>winget install --id 9N7F2SM5D1LR</code>). It walks you through four critical luminance calibration screens:</p>
+
+      <ol class="space-y-2 list-decimal list-inside text-gray-300">
+        <li><strong>Minimum Luminance:</strong> Slide until the black test pattern just disappears into true zero nits.</li>
+        <li><strong>Maximum Luminance:</strong> Slide until the white test cross just clips into pure peak white (matches your panel's 1000-nit or 1400-nit peak).</li>
+        <li><strong>Max Full-Frame Luminance:</strong> Sets the ceiling for 100% full-screen white fields. Crucial for OLED displays where ABL (Auto Brightness Limiter) dims large bright windows.</li>
+        <li><strong>Color Saturation:</strong> Fine-tunes overall gamut expansion for both SDR and HDR mapping.</li>
+      </ol>
+
+      <div class="p-4 my-6 rounded-xl bg-white/[0.03] border border-white/10">
+        <h4 class="text-sm font-semibold text-walpix-lime font-mono mb-2">Three Golden Rules for HDR Calibration:</h4>
+        <ul class="text-xs text-gray-300 space-y-1 list-disc list-inside">
+          <li>Always turn Windows HDR on <em>before</em> launching the calibration app.</li>
+          <li>Calibrate in your actual room lighting conditions. Calibrating in a dark room and working in direct sunlight will ruin shadow detail.</li>
+          <li>Save the resulting color profile and allow Windows to automatically apply it whenever HDR engages.</li>
+        </ul>
+      </div>
+
+      <h3>Match Your Monitor's Internal Tone Mapping</h3>
+      <p>Your display's OSD (On-Screen Display) menu holds the other half of the equation. Modern HDR monitors feature internal tone-mapping algorithms. If your monitor features an <strong>HGIG (HDR Gaming Interest Group)</strong> mode or an accurate "Custom / Tone Mapping: Off" preset, enable it. Letting both Windows and your monitor perform tone mapping simultaneously results in blown-out specular highlights and crushed dark tones.</p>
+
+      <p>Disable artificial monitor post-processing such as "Dynamic Contrast," "Super Resolution," and "Black Equalizer" when running in HDR mode. They directly corrupt calibrated signal accuracy.</p>
+
+      <h2>The 24H2 Gotchas (and Their Fixes)</h2>
+      <p>Here is the practical troubleshooting field guide for Windows 11 24H2/25H2 display quirks:</p>
+
+      <div class="space-y-4 my-6">
+        <div class="p-4 rounded-xl bg-[#03060a] border border-white/10">
+          <h4 class="font-bold text-white text-sm">Colors look oversaturated on SDR content</h4>
+          <p class="text-xs text-gray-300 mt-1">Navigate to <em>Settings &gt; System &gt; Display &gt; Color profile</em> and test toggling <strong>"Automatically manage color for apps" (ACM)</strong> off and on. On wide-gamut DCI-P3 panels, ACM clamps standard sRGB apps so skin tones and desktop folders don't look radioactive.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#03060a] border border-white/10">
+          <h4 class="font-bold text-white text-sm">Win + Alt + B doesn't toggle HDR reliably</h4>
+          <p class="text-xs text-gray-300 mt-1">Some multi-monitor setups running 24H2 fail to handshake HDR via shortcut when ACM is active. Disabling ACM or updating to GPU driver versions released after October 2026 resolves this hotkey desynchronization.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#03060a] border border-white/10">
+          <h4 class="font-bold text-white text-sm">SDR and HDR color profiles swap incorrectly</h4>
+          <p class="text-xs text-gray-300 mt-1">A known Windows bug sometimes fails to restore your SDR ICC profile after exiting an HDR game. If this occurs, toggle HDR off and on once (<kbd class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-mono">Win + Alt + B</kbd>) to force the Desktop Window Manager (DWM) to re-bind the correct color profile.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#03060a] border border-white/10">
+          <h4 class="font-bold text-white text-sm">HDR desktop looks foggy or dim</h4>
+          <p class="text-xs text-gray-300 mt-1">Check three items in order: (1) Ensure your monitor is set to HGIG mode; (2) Re-run the Windows HDR Calibration app and verify the peak nit slider; (3) Raise the SDR Content Brightness slider to approximately 30–40.</p>
+        </div>
+      </div>
+
+      <h2>Wallpapers: The Part Everyone Forgets</h2>
+      <p>Your wallpaper is the foundation canvas that Windows renders continuously, and on a 4K OLED or mini-LED display, poor asset quality immediately degrades the entire battlestation experience.</p>
+
+      <p><strong>Always Match Native Resolution:</strong> Rendering a 1080p wallpaper across a 3840&times;2160 panel causes bicubic scaling blur. Your eyes continually attempt to bring the fuzzy pixel edges into focus, contributing to digital eye fatigue. Always equip your setup with authentic <a href="/screen/desktop-wallpapers" class="text-walpix-lime underline font-semibold hover:text-white">native 4K desktop wallpapers (3840&times;2160)</a> or browse our dedicated <a href="/topic/4k-wallpapers" class="text-walpix-lime underline font-semibold hover:text-white">4K Wallpapers Topic Hub</a>.</p>
+
+      <p><strong>Crop Losslessly Instead of Stretching:</strong> If your wallpaper's aspect ratio doesn't match your monitor (such as a 16:9 wallpaper on a 21:9 ultrawide), never let Windows squash or stretch it. Use our free, browser-based <a href="/tool/cropper" class="text-walpix-lime underline font-semibold hover:text-white">WALPIX Canvas Cropper Tool</a> to crop any wallpaper to your exact pixel dimensions client-side with zero compression and zero server uploads.</p>
+
+      <p><strong>Embrace True AMOLED Black for Contrast:</strong> On OLED screens, pure black pixels turn off completely, achieving infinite contrast and zero backlighting glow. Explore our curated <a href="/category/amoled-black" class="text-walpix-lime underline font-semibold hover:text-white">AMOLED Pitch Black Wallpapers</a> to dramatically reduce eye fatigue during late-night coding or gaming sessions.</p>
+
+      <p><strong>Prefer PNG over JPEG for Gradients:</strong> Subtle dark gradients in cosmic or abstract wallpapers often suffer 8-bit JPEG macroblocking compression. High-bitdepth PNG files preserve flawless, band-free transitions across high-end displays.</p>
+
+      <p>Want to complete your setup aesthetic across your socials? Use our <a href="/tool/avatar" class="text-walpix-lime underline font-semibold hover:text-white">WALPIX 3D Neon Avatar Generator</a> to craft a matching circular glowing profile icon.</p>
+
+      <h2>The 10-Minute Setup Checklist</h2>
+      <ul class="space-y-2 text-gray-300">
+        <li>&check; <strong>Check Build:</strong> Run <code>winver</code> and ensure you're on build 26100+ with current GPU drivers.</li>
+        <li>&check; <strong>Signal Check:</strong> Verify 3840&times;2160, max refresh rate, RGB 4:4:4, 10-bit, and Full Dynamic Range in GPU settings.</li>
+        <li>&check; <strong>DPI Scaling:</strong> Set scaling to 150% (27"/32") or 100%–125% (42"+). Avoid custom scaling percentages.</li>
+        <li>&check; <strong>Font Smoothing:</strong> Run the ClearType Tuner to tune subpixel glyph rendering.</li>
+        <li>&check; <strong>HDR Toggle:</strong> Turn on HDR (<kbd class="px-1.5 py-0.5 rounded bg-white/10 text-xs font-mono">Win + Alt + B</kbd>) and adjust the SDR content brightness slider to match standard desktop luminance.</li>
+        <li>&check; <strong>Calibrate Luminance:</strong> Install and run the Windows HDR Calibration app in your normal working ambient light.</li>
+        <li>&check; <strong>Monitor Settings:</strong> Switch monitor HDR to HGIG / Tone Mapping Off and disable all dynamic contrast enhancements.</li>
+        <li>&check; <strong>Color Management:</strong> Test "Automatically manage color for apps" (ACM) and keep it enabled if your wide-gamut panel displays neon color bloom.</li>
+        <li>&check; <strong>Desktop Wallpaper:</strong> Apply a native-resolution, <a href="/category/amoled-black" class="text-walpix-lime underline">AMOLED dark 4K wallpaper</a> losslessly cropped via <a href="/tool/cropper" class="text-walpix-lime underline">WALPIX Cropper</a>.</li>
+      </ul>
+
+      <h2>Where This Leaves You</h2>
+      <p>Nobody needs to wait for hypothetical "Windows 12" promises to get an immaculate, color-accurate display experience. The advanced color pipeline, hardware HDR calibration, and Automatic Color Management tools are already baked directly into Windows 11 24H2 and 25H2.</p>
+
+      <p>The secret is simply understanding which dial controls which layer: the physical cable, the DPI scaling multiplier, the HDR calibration profile, the monitor's tone mapping engine, and native-resolution visual assets. Dial in these settings once, let the calibration profile work in the background, and enjoy stunning 4K visuals with effortless clarity.</p>
+    `,
+  },
 ];
