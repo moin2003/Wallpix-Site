@@ -226,28 +226,76 @@ if (displaySimilar.length < 8) {
 }
 
 
+// Dynamic Rich Dimensions & SEO Schema Generator
+const widthMatch = (wallpaper.resolution || '').match(/(\d+)\s*[x×]\s*(\d+)/i);
+const schemaWidth = widthMatch ? widthMatch[1] : (wallpaper.aspectRatio === '9:16' ? '2160' : '3840');
+const schemaHeight = widthMatch ? widthMatch[2] : (wallpaper.aspectRatio === '9:16' ? '3840' : '2160');
+
+// High-CTR Targeted Meta Description
+const metaDescription = `Download high-resolution 4K ${wallpaper.title} wallpaper (${schemaWidth}x${schemaHeight}). Free Ultra HD ${wallpaper.category || 'desktop and phone'} background with no watermark for Windows, Mac, iPhone & Android.`;
+
+// Multi-Entity Rich JSON-LD Schemas (ImageObject + WebPage Breadcrumbs)
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'ImageObject',
-  name: wallpaper.title,
-  caption: `${wallpaper.title} in 4K Ultra HD resolution`,
-  contentUrl: wallpaper.sourceCdn,
-  thumbnailUrl: wallpaper.sourceCdn,
-  encodingFormat: 'image/jpeg',
-  width: '3840',
-  height: '2160',
-  license: 'https://www.walpix.site/terms',
-  acquireLicensePage: 'https://www.walpix.site/terms',
-  author: {
-    '@type': 'Organization',
-    name: 'Walpix Studio',
-  },
+  '@graph': [
+    {
+      '@type': 'ImageObject',
+      '@id': `https://www.walpix.site/wallpapers/${wallpaper.slug}#primaryimage`,
+      name: `${wallpaper.title} 4K Wallpaper`,
+      caption: `${wallpaper.title} Ultra HD 4K Wallpaper (${schemaWidth}x${schemaHeight})`,
+      contentUrl: wallpaper.sourceCdn,
+      thumbnailUrl: wallpaper.sourceCdn,
+      encodingFormat: 'image/jpeg',
+      width: schemaWidth,
+      height: schemaHeight,
+      license: 'https://www.walpix.site/terms',
+      acquireLicensePage: 'https://www.walpix.site/terms',
+      author: {
+        '@type': 'Organization',
+        name: 'WALPIX 4K Studio',
+        url: 'https://www.walpix.site'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'WALPIX 4K',
+        url: 'https://www.walpix.site',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.walpix.site/images/walpix-web-icon-round.png'
+        }
+      }
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `https://www.walpix.site/wallpapers/${wallpaper.slug}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://www.walpix.site'
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: parentCategory?.name || wallpaper.category || 'Wallpapers',
+          item: `https://www.walpix.site/category/${parentCategory?.slug || 'all'}`
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: wallpaper.title,
+          item: `https://www.walpix.site/wallpapers/${wallpaper.slug}`
+        }
+      ]
+    }
+  ]
 };
 ---
 
 <Layout
   title={`${wallpaper.title} (4K UHD Wallpaper)`}
-  description={`Download ${wallpaper.title} 4K Ultra HD wallpaper. High-resolution background for desktop, iPhone, Android, and ultrawide monitors.`}
+  description={metaDescription}
   image={wallpaper.sourceCdn}
   preloadImage={wallpaper.sourceCdn}
   schema={schema}
