@@ -57,13 +57,6 @@ const bottomRunwayCollections = [
   }
 ];
 
-export async function getStaticPaths() {
-  return wallpapers.map((wp) => ({
-    params: { slug: wp.slug },
-    props: { wallpaper: wp },
-  }));
-}
-
 interface Props {
   wallpaper: Wallpaper;
 }
@@ -73,6 +66,11 @@ const wallpaper = (Astro.props as any).wallpaper || (slug ? getWallpaperBySlug(s
 if (!wallpaper) {
   return Astro.redirect('/404');
 }
+
+// Edge CDN Caching for Detail Pages (7-day Cloudflare Edge Cache)
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
 
 // 0ms O(1) Instant Neighbor Wallpaper Resolution
 const { prev: prevWallpaper, next: nextWallpaper } = getNeighborWallpapers(wallpaper.slug);
@@ -210,17 +208,15 @@ for (const wp of candidatePool) {
   }
 }
 
-// Fallback only if candidate pool < 8
+// Fallback only if candidate pool < 8 (Fast slice of max 50 items instead of full catalog)
 if (displaySimilar.length < 8) {
-  for (const wp of wallpapers) {
+  const fallbackCandidates = getWallpapersByCategory(wallpaper.category || 'all').slice(0, 50);
+  for (const wp of fallbackCandidates) {
     if (displaySimilar.length >= 8) break;
     if (wp.slug !== wallpaper.slug && !seenSlugs.has(wp.slug) && !seenImages.has(wp.sourceCdn)) {
-      const wCat = (wp.category || '').toLowerCase();
-      if (wCat.includes(wpCatLower) || wpCatLower.includes(wCat)) {
-        seenSlugs.add(wp.slug);
-        seenImages.add(wp.sourceCdn);
-        displaySimilar.push(wp);
-      }
+      seenSlugs.add(wp.slug);
+      seenImages.add(wp.sourceCdn);
+      displaySimilar.push(wp);
     }
   }
 }
@@ -297,6 +293,9 @@ const schema = {
   title={`${wallpaper.title} (4K UHD Wallpaper)`}
   description={metaDescription}
   image={wallpaper.sourceCdn}
+  imageWidth={schemaWidth}
+  imageHeight={schemaHeight}
+  imageAlt={`${wallpaper.title} 4K UHD Wallpaper`}
   preloadImage={wallpaper.sourceCdn}
   schema={schema}
 >

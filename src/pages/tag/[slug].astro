@@ -58,6 +58,11 @@ const tagInfo: TagHubItem = (Astro.props as any).tagInfo || foundTag || {
 };
 const tag = tagInfo;
 
+// Edge CDN Caching for Tag Hub Pages (7-day Cloudflare Edge Cache)
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+
 // directMatches resolved above
 
 // Find parent category of this tag

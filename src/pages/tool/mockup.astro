@@ -1,6 +1,649 @@
 ---
 export const prerender = true;
-import SplitterPage from './splitter.astro';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// Curated 4K Sample Wallpapers for 1-Click Instant Device Mockup Preview
+const sampleWallpapers = [
+  {
+    title: 'Cyberpunk Neon City',
+    category: 'Cyberpunk',
+    url: 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg'
+  },
+  {
+    title: 'Anime Neo Tokyo',
+    category: 'Anime',
+    url: 'https://wallpapercat.com/w/full/f/9/6/1302353-3840x2160-desktop-4k-anime-background-image.jpg'
+  },
+  {
+    title: 'Porsche 911 GT3 RS',
+    category: 'Cars',
+    url: 'https://wallpapercat.com/w/full/7/1/4/218040-3840x2160-desktop-4k-porsche-911-992-background.jpg'
+  },
+  {
+    title: 'Obsidian OLED Void',
+    category: 'AMOLED',
+    url: 'https://wallpapercat.com/w/full/7/6/e/5828098.jpg'
+  },
+  {
+    title: 'Deep Space Nebula',
+    category: 'Space',
+    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=85'
+  },
+  {
+    title: 'Alpine Mist Pines',
+    category: 'Nature',
+    url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2400&q=85'
+  }
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Device Screen Mockup Studio | WALPIX 4K',
+  url: 'https://www.walpix.site/tool/mockup',
+  description: 'Free online device screen mockup studio. Preview any wallpaper on iPhone 16 Pro Max, Samsung Galaxy S25 Ultra, MacBook Pro, and 4K Windows Monitor frames with realistic lock screen UI.',
+  applicationCategory: 'DesignApplication',
+  operatingSystem: 'All',
+  offers: {
+    '@type': 'Offer',
+    price: '0.00',
+    priceCurrency: 'USD'
+  }
+};
 ---
 
-<SplitterPage />
+<Layout
+  title="Device Screen Mockup Studio - iPhone 16, Galaxy S25 & Mac Frame Preview"
+  description="Preview wallpapers live on iPhone 16 Pro Max, Samsung Galaxy S25 Ultra, MacBook Pro, and 4K PC monitor frames with realistic lock screens, clocks, and high-res export."
+  schema={schema}
+>
+  <Header currentCategory="tool" />
+
+  <main class="min-h-screen bg-[#030508] text-[#F3F5F7] pb-16 selection:bg-[#C2FF06] selection:text-black">
+    <!-- Top Studio Header -->
+    <section class="relative pt-8 sm:pt-12 pb-6 px-4 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C2FF06]/10 border border-[#C2FF06]/30 text-[#C2FF06] text-xs font-mono font-semibold mb-3">
+            <span class="w-2 h-2 rounded-full bg-[#C2FF06] animate-pulse"></span>
+            LIVE SCREEN MOCKUP STUDIO
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-white">
+            Device Screen <span class="text-[#C2FF06]">Mockup Studio</span>
+          </h1>
+          <p class="text-sm sm:text-base text-gray-400 mt-2 max-w-2xl">
+            Test and visualize how any 4K wallpaper looks on real hardware frames: iPhone 16 Pro Max, Samsung Galaxy S25, MacBook Pro M4, and 4K PC monitors with authentic lock screen UI.
+          </p>
+        </div>
+
+        <!-- Top Quick Actions -->
+        <div class="flex items-center gap-3">
+          <label class="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-medium text-sm transition-all hover:border-[#C2FF06]/50">
+            <svg class="w-4 h-4 text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+            </svg>
+            <span>Upload Image</span>
+            <input type="file" id="mockup-file-input" accept="image/*" class="hidden" />
+          </label>
+
+          <button id="export-mockup-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C2FF06] hover:bg-[#b0f000] text-black font-bold text-sm shadow-[0_0_24px_rgba(194,255,6,0.3)] transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Export Render</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Studio Interactive Workspace -->
+    <section class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Controls Column (Left) -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- 1. Device Type Selector -->
+        <div class="p-5 rounded-2xl bg-[#090D14]/90 border border-white/10 backdrop-blur-xl">
+          <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#C2FF06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Select Device Frame
+          </h2>
+
+          <div class="grid grid-cols-2 gap-2.5" id="device-selector">
+            <button data-device="iphone" class="device-btn active flex flex-col items-center gap-2 p-3 rounded-xl border border-[#C2FF06] bg-[#C2FF06]/10 text-white font-medium text-xs transition-all text-center">
+              <span class="w-7 h-11 rounded-lg border-2 border-[#C2FF06] flex items-start justify-center pt-1">
+                <span class="w-3 h-0.5 rounded-full bg-[#C2FF06]"></span>
+              </span>
+              <span>iPhone 16 Pro Max</span>
+            </button>
+
+            <button data-device="galaxy" class="device-btn flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white font-medium text-xs transition-all text-center">
+              <span class="w-7 h-11 rounded-md border-2 border-gray-500 flex items-start justify-center pt-1">
+                <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+              </span>
+              <span>Galaxy S25 Ultra</span>
+            </button>
+
+            <button data-device="macbook" class="device-btn flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white font-medium text-xs transition-all text-center">
+              <span class="w-12 h-8 rounded-sm border-2 border-gray-500 flex items-start justify-center pt-0.5">
+                <span class="w-2.5 h-0.5 bg-gray-500 rounded-b"></span>
+              </span>
+              <span>MacBook Pro 16"</span>
+            </button>
+
+            <button data-device="monitor" class="device-btn flex flex-col items-center gap-2 p-3 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white font-medium text-xs transition-all text-center">
+              <span class="w-12 h-8 rounded-sm border-2 border-gray-500 flex flex-col items-center justify-between">
+                <span class="w-full h-1 bg-transparent"></span>
+                <span class="w-3 h-1 bg-gray-500"></span>
+              </span>
+              <span>4K PC Monitor</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Clock & UI Customization -->
+        <div class="p-5 rounded-2xl bg-[#090D14]/90 border border-white/10 backdrop-blur-xl space-y-4">
+          <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Lock Screen Customization
+          </h2>
+
+          <!-- Clock Font Color -->
+          <div>
+            <label class="text-xs text-gray-400 block mb-2 font-medium">Clock & Text Accent</label>
+            <div class="flex items-center gap-2.5" id="color-selector">
+              <button data-color="#FFFFFF" class="color-btn active w-7 h-7 rounded-full bg-white ring-2 ring-white/20 transition-all scale-110"></button>
+              <button data-color="#C2FF06" class="color-btn w-7 h-7 rounded-full bg-[#C2FF06] ring-2 ring-transparent hover:scale-105 transition-all"></button>
+              <button data-color="#00F0FF" class="color-btn w-7 h-7 rounded-full bg-[#00F0FF] ring-2 ring-transparent hover:scale-105 transition-all"></button>
+              <button data-color="#FF28B8" class="color-btn w-7 h-7 rounded-full bg-[#FF28B8] ring-2 ring-transparent hover:scale-105 transition-all"></button>
+              <button data-color="#F59E0B" class="color-btn w-7 h-7 rounded-full bg-[#F59E0B] ring-2 ring-transparent hover:scale-105 transition-all"></button>
+              <button data-color="#38BDF8" class="color-btn w-7 h-7 rounded-full bg-[#38BDF8] ring-2 ring-transparent hover:scale-105 transition-all"></button>
+            </div>
+          </div>
+
+          <!-- UI Toggles -->
+          <div class="space-y-2.5 pt-2 border-t border-white/5">
+            <label class="flex items-center justify-between text-xs text-gray-300 cursor-pointer">
+              <span>Show Lock Screen Clock & Date</span>
+              <input type="checkbox" id="toggle-clock" checked class="accent-[#C2FF06] w-4 h-4 rounded cursor-pointer" />
+            </label>
+            <label class="flex items-center justify-between text-xs text-gray-300 cursor-pointer">
+              <span>Show System Status Bar (Battery, Wi-Fi)</span>
+              <input type="checkbox" id="toggle-status" checked class="accent-[#C2FF06] w-4 h-4 rounded cursor-pointer" />
+            </label>
+            <label class="flex items-center justify-between text-xs text-gray-300 cursor-pointer">
+              <span>Show Bottom Widgets (Flashlight, Camera)</span>
+              <input type="checkbox" id="toggle-widgets" checked class="accent-[#C2FF06] w-4 h-4 rounded cursor-pointer" />
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Sample Wallpapers Gallery -->
+        <div class="p-5 rounded-2xl bg-[#090D14]/90 border border-white/10 backdrop-blur-xl">
+          <h2 class="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#FF28B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Choose Sample Wallpaper
+          </h2>
+
+          <div class="grid grid-cols-3 gap-2">
+            {sampleWallpapers.map((sample, idx) => (
+              <button 
+                data-url={sample.url} 
+                class={`sample-wp-btn group relative aspect-[9/16] rounded-xl overflow-hidden border transition-all ${idx === 0 ? 'border-[#C2FF06] ring-2 ring-[#C2FF06]/30' : 'border-white/10 hover:border-white/30'}`}
+              >
+                <img 
+                  src={sample.url} 
+                  alt={sample.title} 
+                  loading="lazy" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                />
+                <span class="absolute inset-x-0 bottom-0 p-1 bg-gradient-to-t from-black/90 to-transparent text-[10px] text-white font-medium truncate block">
+                  {sample.title}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Preview Canvas Viewport (Right) -->
+      <div class="lg:col-span-8 flex flex-col items-center justify-center p-6 sm:p-12 rounded-3xl bg-[#070A0F] border border-white/10 relative overflow-hidden min-h-[640px]">
+        
+        <!-- Ambient Underglow behind device -->
+        <div id="device-underglow" class="absolute w-[360px] h-[360px] rounded-full blur-[120px] pointer-events-none transition-all duration-500 bg-white/10"></div>
+
+        <!-- DEVICE CONTAINER -->
+        <div id="mockup-stage" class="relative z-10 transition-all duration-300">
+          
+          <!-- 1. IPHONE 16 PRO MAX FRAME -->
+          <div id="frame-iphone" class="device-frame relative w-[310px] sm:w-[340px] h-[640px] sm:h-[690px] rounded-[52px] p-3 bg-gradient-to-b from-[#2E3138] via-[#1E2024] to-[#141518] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.12),inset_0_0_0_2px_rgba(0,0,0,0.8)] flex flex-col">
+            
+            <!-- Side Buttons Illusion -->
+            <div class="absolute -left-[5px] top-28 w-[3px] h-10 bg-[#353941] rounded-l-sm"></div>
+            <div class="absolute -left-[5px] top-42 w-[3px] h-12 bg-[#353941] rounded-l-sm"></div>
+            <div class="absolute -right-[5px] top-32 w-[3px] h-16 bg-[#353941] rounded-r-sm"></div>
+
+            <!-- Screen Area -->
+            <div class="relative w-full h-full rounded-[42px] overflow-hidden bg-black flex flex-col justify-between select-none">
+              
+              <!-- Screen Wallpaper Image -->
+              <img id="screen-img-iphone" src={sampleWallpapers[0].url} alt="Wallpaper" class="absolute inset-0 w-full h-full object-cover z-0" />
+              
+              <!-- Soft Vignette Gradient -->
+              <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 z-[1] pointer-events-none"></div>
+
+              <!-- Top: Dynamic Island & Status Bar -->
+              <div class="relative z-10 pt-3 px-6 flex items-center justify-between text-white text-xs font-semibold">
+                <span id="clock-time-top" class="font-mono text-[13px] tracking-tight">09:41</span>
+                
+                <!-- Dynamic Island Capsule -->
+                <div class="w-24 h-6 rounded-full bg-black flex items-center justify-end px-2 gap-1.5 shadow-md">
+                  <div class="w-2.5 h-2.5 rounded-full bg-[#1A1C20] border border-white/10"></div>
+                </div>
+
+                <!-- Status Icons -->
+                <div class="status-element flex items-center gap-1.5 text-xs text-white">
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+                  <span class="w-4 h-2 rounded-[2px] border border-white flex items-center justify-start p-0.5"><span class="w-2 h-1 bg-white rounded-[1px]"></span></span>
+                </div>
+              </div>
+
+              <!-- Center: Lock Screen Big Clock & Date -->
+              <div class="clock-element relative z-10 text-center pt-8">
+                <div id="mockup-date" class="text-xs sm:text-sm font-medium tracking-wide uppercase opacity-90 drop-shadow-md text-white">Monday, November 9</div>
+                <div id="mockup-clock" class="text-6xl sm:text-7xl font-bold font-display tracking-tight leading-none text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">09:41</div>
+              </div>
+
+              <!-- Bottom: Quick Action Widgets & Home Indicator -->
+              <div class="relative z-10 px-8 pb-5 flex flex-col gap-4">
+                <div class="widget-element flex items-center justify-between">
+                  <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                  </div>
+                  <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                  </div>
+                </div>
+
+                <!-- Home Bar -->
+                <div class="w-32 h-1 bg-white/80 rounded-full mx-auto drop-shadow"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 2. SAMSUNG GALAXY S25 ULTRA FRAME (Hidden initially) -->
+          <div id="frame-galaxy" class="device-frame hidden relative w-[310px] sm:w-[340px] h-[640px] sm:h-[690px] rounded-[38px] p-2 bg-[#1B1D22] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.1)] flex flex-col">
+            <div class="relative w-full h-full rounded-[30px] overflow-hidden bg-black flex flex-col justify-between select-none">
+              <img id="screen-img-galaxy" src={sampleWallpapers[0].url} alt="Wallpaper" class="absolute inset-0 w-full h-full object-cover z-0" />
+              <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 z-[1] pointer-events-none"></div>
+
+              <!-- Top Status & Punch Hole -->
+              <div class="relative z-10 pt-2.5 px-6 flex items-center justify-between text-white text-xs">
+                <span>09:41</span>
+                <div class="w-3 h-3 rounded-full bg-black border border-white/20"></div>
+                <div class="flex items-center gap-1.5 text-[11px]">
+                  <span>5G</span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <!-- Android Clock -->
+              <div class="clock-element relative z-10 text-center pt-10">
+                <div class="text-5xl font-black tracking-tight text-white drop-shadow-md">09:41</div>
+                <div class="text-xs uppercase tracking-widest text-white/80 mt-1">Mon, Nov 9 • 24°C</div>
+              </div>
+
+              <!-- Bottom Swipe Bar -->
+              <div class="relative z-10 pb-4 text-center">
+                <div class="w-24 h-1 bg-white/70 rounded-full mx-auto"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. MACBOOK PRO FRAME (Hidden initially) -->
+          <div id="frame-macbook" class="device-frame hidden relative w-[480px] sm:w-[620px] h-[340px] sm:h-[420px] rounded-2xl p-3 bg-[#24262B] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.15)] flex flex-col justify-between">
+            <div class="relative w-full h-[92%] rounded-xl overflow-hidden bg-black flex flex-col justify-between select-none">
+              <img id="screen-img-macbook" src={sampleWallpapers[0].url} alt="Wallpaper" class="absolute inset-0 w-full h-full object-cover z-0" />
+              
+              <!-- macOS Top Menu Bar -->
+              <div class="relative z-10 h-7 bg-black/30 backdrop-blur-md px-4 flex items-center justify-between text-white text-xs font-medium border-b border-white/5">
+                <div class="flex items-center gap-4">
+                  <span class="text-sm"></span>
+                  <span>Finder</span>
+                  <span class="hidden sm:inline">File</span>
+                  <span class="hidden sm:inline">Edit</span>
+                  <span class="hidden sm:inline">View</span>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] font-mono">
+                  <span>Mon Nov 9  9:41 AM</span>
+                </div>
+              </div>
+
+              <!-- macOS Dock -->
+              <div class="relative z-10 pb-2 flex justify-center">
+                <div class="px-3 py-1.5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center gap-3 shadow-2xl">
+                  <div class="w-7 h-7 rounded-lg bg-blue-500 shadow flex items-center justify-center text-[10px] text-white font-bold">F</div>
+                  <div class="w-7 h-7 rounded-lg bg-red-500 shadow flex items-center justify-center text-[10px] text-white font-bold">M</div>
+                  <div class="w-7 h-7 rounded-lg bg-green-500 shadow flex items-center justify-center text-[10px] text-white font-bold">S</div>
+                  <div class="w-7 h-7 rounded-lg bg-purple-500 shadow flex items-center justify-center text-[10px] text-white font-bold">T</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MacBook Base Notch -->
+            <div class="h-3 bg-gradient-to-b from-[#1C1D21] to-[#121316] rounded-b-xl flex items-center justify-center">
+              <div class="w-16 h-1 rounded-full bg-white/20"></div>
+            </div>
+          </div>
+
+          <!-- 4. 4K PC MONITOR FRAME (Hidden initially) -->
+          <div id="frame-monitor" class="device-frame hidden relative w-[480px] sm:w-[640px] h-[340px] sm:h-[420px] rounded-xl p-2 bg-[#121418] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.1)] flex flex-col justify-between">
+            <div class="relative w-full h-[95%] rounded-lg overflow-hidden bg-black flex flex-col justify-between select-none">
+              <img id="screen-img-monitor" src={sampleWallpapers[0].url} alt="Wallpaper" class="absolute inset-0 w-full h-full object-cover z-0" />
+              
+              <div></div>
+
+              <!-- Windows 11 Taskbar -->
+              <div class="relative z-10 h-10 bg-[#14161C]/80 backdrop-blur-xl px-4 flex items-center justify-between border-t border-white/10 text-white text-xs">
+                <div></div>
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded bg-blue-500 flex items-center justify-center text-[9px] font-bold">田</div>
+                  <div class="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-[9px]">🔍</div>
+                  <div class="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-[9px]">📁</div>
+                  <div class="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-[9px]">⚙️</div>
+                </div>
+                <div class="text-[11px] font-mono text-gray-300">
+                  9:41 AM<br/><span class="text-[9px]">11/9/2026</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monitor Chin & Logo -->
+            <div class="h-3 text-center text-[8px] font-mono text-gray-500 tracking-widest uppercase">
+              WALPIX 4K HDR
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Status Hint -->
+        <p class="text-xs text-gray-500 mt-6 font-mono text-center">
+          Active Frame: <span id="active-device-name" class="text-[#C2FF06] font-bold">iPhone 16 Pro Max</span> • 100% Client-Side Render
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    let currentImage = 'https://wallpapercat.com/w/full/5/d/f/2614-3840x2160-desktop-4k-cyberpunk-2077-wallpaper-photo.jpg';
+    let currentColor = '#FFFFFF';
+    let currentDevice = 'iphone';
+
+    const deviceBtns = document.querySelectorAll('.device-btn');
+    const colorBtns = document.querySelectorAll('.color-btn');
+    const sampleBtns = document.querySelectorAll('.sample-wp-btn');
+    const fileInput = document.getElementById('mockup-file-input');
+    const exportBtn = document.getElementById('export-mockup-btn');
+    const activeDeviceName = document.getElementById('active-device-name');
+    const underglow = document.getElementById('device-underglow');
+
+    const frames = {
+      iphone: document.getElementById('frame-iphone'),
+      galaxy: document.getElementById('frame-galaxy'),
+      macbook: document.getElementById('frame-macbook'),
+      monitor: document.getElementById('frame-monitor')
+    };
+
+    const deviceLabels = {
+      iphone: 'iPhone 16 Pro Max',
+      galaxy: 'Samsung Galaxy S25 Ultra',
+      macbook: 'MacBook Pro 16" M4',
+      monitor: '4K PC Gaming Monitor'
+    };
+
+    function updateImages() {
+      ['iphone', 'galaxy', 'macbook', 'monitor'].forEach(id => {
+        const el = document.getElementById(`screen-img-${id}`);
+        if (el) el.src = currentImage;
+      });
+    }
+
+    function updateColors() {
+      const clock = document.getElementById('mockup-clock');
+      const date = document.getElementById('mockup-date');
+      if (clock) clock.style.color = currentColor;
+      if (date) date.style.color = currentColor;
+      if (underglow) underglow.style.backgroundColor = currentColor + '25';
+    }
+
+    // Switch Device
+    deviceBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-device');
+        if (!target || !frames[target]) return;
+
+        currentDevice = target;
+        deviceBtns.forEach(b => {
+          b.classList.remove('active', 'border-[#C2FF06]', 'bg-[#C2FF06]/10', 'text-white');
+          b.classList.add('border-white/10', 'bg-white/5', 'text-gray-400');
+        });
+        btn.classList.add('active', 'border-[#C2FF06]', 'bg-[#C2FF06]/10', 'text-white');
+        btn.classList.remove('border-white/10', 'bg-white/5', 'text-gray-400');
+
+        Object.keys(frames).forEach(k => {
+          if (k === target) {
+            frames[k].classList.remove('hidden');
+          } else {
+            frames[k].classList.add('hidden');
+          }
+        });
+
+        if (activeDeviceName) activeDeviceName.textContent = deviceLabels[target] || target;
+      });
+    });
+
+    // Switch Clock Color
+    colorBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        if (!color) return;
+        currentColor = color;
+        colorBtns.forEach(b => b.classList.remove('scale-110', 'ring-white/40'));
+        btn.classList.add('scale-110', 'ring-white/40');
+        updateColors();
+      });
+    });
+
+    // Switch Sample Wallpaper
+    sampleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.getAttribute('data-url');
+        if (!url) return;
+        currentImage = url;
+        sampleBtns.forEach(b => b.classList.remove('border-[#C2FF06]', 'ring-2', 'ring-[#C2FF06]/30'));
+        btn.classList.add('border-[#C2FF06]', 'ring-2', 'ring-[#C2FF06]/30');
+        updateImages();
+      });
+    });
+
+    // Upload custom image
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          if (evt.target && evt.target.result) {
+            currentImage = evt.target.result;
+            sampleBtns.forEach(b => b.classList.remove('border-[#C2FF06]', 'ring-2', 'ring-[#C2FF06]/30'));
+            updateImages();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Toggles
+    const toggleClock = document.getElementById('toggle-clock');
+    const toggleStatus = document.getElementById('toggle-status');
+    const toggleWidgets = document.getElementById('toggle-widgets');
+
+    if (toggleClock) {
+      toggleClock.addEventListener('change', (e) => {
+        document.querySelectorAll('.clock-element').forEach(el => {
+          el.style.display = e.target.checked ? 'block' : 'none';
+        });
+      });
+    }
+
+    if (toggleStatus) {
+      toggleStatus.addEventListener('change', (e) => {
+        document.querySelectorAll('.status-element').forEach(el => {
+          el.style.display = e.target.checked ? 'flex' : 'none';
+        });
+      });
+    }
+
+    if (toggleWidgets) {
+      toggleWidgets.addEventListener('change', (e) => {
+        document.querySelectorAll('.widget-element').forEach(el => {
+          el.style.display = e.target.checked ? 'flex' : 'none';
+        });
+      });
+    }
+
+    // Export Mockup Canvas
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        const activeFrame = frames[currentDevice];
+        if (!activeFrame) return;
+
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = 'Rendering...';
+
+        // High Quality Canvas Render
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const isMobile = currentDevice === 'iphone' || currentDevice === 'galaxy';
+
+        canvas.width = isMobile ? 1200 : 1920;
+        canvas.height = isMobile ? 1600 : 1080;
+
+        // Background dark gradient
+        const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        bgGrad.addColorStop(0, '#05070B');
+        bgGrad.addColorStop(1, '#0D111A');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Load wallpaper onto frame area
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          if (isMobile) {
+            // Draw phone mockup on canvas
+            const frameW = 600;
+            const frameH = 1200;
+            const frameX = (canvas.width - frameW) / 2;
+            const frameY = (canvas.height - frameH) / 2;
+
+            // Soft shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+            ctx.shadowBlur = 50;
+            ctx.shadowOffsetY = 30;
+
+            // Frame body
+            ctx.fillStyle = '#1A1C22';
+            ctx.beginPath();
+            ctx.roundRect(frameX, frameY, frameW, frameH, 60);
+            ctx.fill();
+
+            // Screen clip
+            ctx.save();
+            ctx.shadowColor = 'transparent';
+            ctx.beginPath();
+            ctx.roundRect(frameX + 16, frameY + 16, frameW - 32, frameH - 32, 48);
+            ctx.clip();
+            ctx.drawImage(img, frameX + 16, frameY + 16, frameW - 32, frameH - 32);
+
+            // Clock text if enabled
+            if (!toggleClock || toggleClock.checked) {
+              ctx.fillStyle = currentColor;
+              ctx.textAlign = 'center';
+              ctx.font = 'bold 84px system-ui, sans-serif';
+              ctx.fillText('09:41', frameX + frameW / 2, frameY + 220);
+              ctx.font = '500 22px system-ui, sans-serif';
+              ctx.fillText('MONDAY, NOVEMBER 9', frameX + frameW / 2, frameY + 130);
+            }
+
+            ctx.restore();
+          } else {
+            // Desktop monitor render
+            const monW = 1400;
+            const monH = 800;
+            const monX = (canvas.width - monW) / 2;
+            const monY = 100;
+
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 60;
+            ctx.shadowOffsetY = 30;
+
+            ctx.fillStyle = '#14161C';
+            ctx.beginPath();
+            ctx.roundRect(monX, monY, monW, monH, 16);
+            ctx.fill();
+
+            ctx.save();
+            ctx.shadowColor = 'transparent';
+            ctx.beginPath();
+            ctx.roundRect(monX + 10, monY + 10, monW - 20, monH - 20, 10);
+            ctx.clip();
+            ctx.drawImage(img, monX + 10, monY + 10, monW - 20, monH - 20);
+            ctx.restore();
+          }
+
+          // Watermark badge
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.font = '600 16px system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('WALPIX 4K SCREEN MOCKUP STUDIO • WALPIX.SITE', canvas.width / 2, canvas.height - 30);
+
+          // Trigger download
+          const link = document.createElement('a');
+          link.download = `walpix-mockup-${currentDevice}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = `
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Export Render</span>
+          `;
+        };
+
+        img.onerror = () => {
+          alert('Could not render image. Please try another sample or upload your own image.');
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = 'Export Render';
+        };
+      });
+    }
+  });
+</script>

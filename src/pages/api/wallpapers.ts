@@ -29,6 +29,60 @@ function diversifyByCategory(items: Wallpaper[]): Wallpaper[] {
   return result;
 }
 
+// 0ms In-Memory Caches for Primary Format Streams (Eliminates Worker CPU bottleneck)
+let cachedPhoneFeed: Wallpaper[] | null = null;
+let cachedDesktopFeed: Wallpaper[] | null = null;
+let cachedDualFeed: Wallpaper[] | null = null;
+let cachedDefaultDiversified: Wallpaper[] | null = null;
+
+function isQuality(w: Wallpaper): boolean {
+  const t = (w.title || '').trim().toLowerCase();
+  const banned = new Set(['anime', 'iphone', 'cool', 'onyx', 'car', 'nature', 'phone', 'goth', 'sand', 'gradient', 'island', 'logo']);
+  return !banned.has(t) && t.length >= 3;
+}
+
+function scoreQuality(w: Wallpaper): number {
+  let s = (w.views || 0) * 0.1 + (w.downloads || 0) * 0.2;
+  const res = w.resolution || '';
+  if (res.includes('3840') || res.includes('4K') || res.includes('2160')) s += 50000;
+  if (res.includes('2560') || res.includes('1440') || res.includes('2880') || res.includes('3120')) s += 25000;
+  const t = (w.title || '').toLowerCase();
+  if (/spider[-\s]?man|miles morales|peter parker|iron spider|spiderverse|spider-verse/i.test(t)) s += 40000;
+  if (/naruto|sasuke|gojo|luffy|zoro|demon slayer|eren|titan|goku|jujutsu|tanjiro|tokyo ghoul|bleach|one punch/i.test(t)) s += 35000;
+  if (/porsche|lamborghini|ferrari|mclaren|bugatti|supercar/i.test(t)) s += 30000;
+  if (/amoled|pitch black|black diamond/i.test(t)) s += 25000;
+  if (/nebula|galaxy|astronaut|cosmos|guardians of the galaxy/i.test(t)) s += 25000;
+  return s;
+}
+
+function getPhoneFeed(): Wallpaper[] {
+  if (cachedPhoneFeed) return cachedPhoneFeed;
+  const allPhone = wallpapers.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
+  const qualityPhone = allPhone.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
+  const otherPhone = allPhone.filter(w => !isQuality(w));
+  cachedPhoneFeed = [...qualityPhone, ...otherPhone];
+  return cachedPhoneFeed;
+}
+
+function getDesktopFeed(): Wallpaper[] {
+  if (cachedDesktopFeed) return cachedDesktopFeed;
+  const allDesk = wallpapers.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
+  const qualityDesk = allDesk.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
+  const otherDesk = allDesk.filter(w => !isQuality(w));
+  cachedDesktopFeed = [...qualityDesk, ...otherDesk];
+  return cachedDesktopFeed;
+}
+
+function getDualFeed(): Wallpaper[] {
+  if (cachedDualFeed) return cachedDualFeed;
+  cachedDualFeed = wallpapers.filter(w => 
+    (w.aspectRatio || '').includes('32:9') || 
+    (w.screenTypes || []).includes('dual-monitor') || 
+    (w.screenTypes || []).includes('ultrawide')
+  );
+  return cachedDualFeed;
+}
+
 export const GET: APIRoute = async ({ url }) => {
   const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit = Math.min(Math.max(12, parseInt(url.searchParams.get('limit') || '36', 10)), 72);
@@ -37,43 +91,17 @@ export const GET: APIRoute = async ({ url }) => {
   const search = (url.searchParams.get('search') || url.searchParams.get('q') || '').toLowerCase().trim();
   const sort = (url.searchParams.get('sort') || 'recent').toLowerCase().trim();
 
-  let filtered: Wallpaper[] = wallpapers;
+  let filtered: Wallpaper[];
 
-  // 1. Format Filter (Prioritize authentic high-res, eye-catching wallpapers without generic titles)
-  const isQuality = (w: Wallpaper) => {
-    const t = (w.title || '').trim().toLowerCase();
-    const banned = new Set(['anime', 'iphone', 'cool', 'onyx', 'car', 'nature', 'phone', 'goth', 'sand', 'gradient', 'island', 'logo']);
-    return !banned.has(t) && t.length >= 3;
-  };
-  const scoreQuality = (w: Wallpaper) => {
-    let s = (w.views || 0) * 0.1 + (w.downloads || 0) * 0.2;
-    const res = w.resolution || '';
-    if (res.includes('3840') || res.includes('4K') || res.includes('2160')) s += 50000;
-    if (res.includes('2560') || res.includes('1440') || res.includes('2880') || res.includes('3120')) s += 25000;
-    const t = (w.title || '').toLowerCase();
-    if (/spider[-\s]?man|miles morales|peter parker|iron spider|spiderverse|spider-verse/i.test(t)) s += 40000;
-    if (/naruto|sasuke|gojo|luffy|zoro|demon slayer|eren|titan|goku|jujutsu|tanjiro|tokyo ghoul|bleach|one punch/i.test(t)) s += 35000;
-    if (/porsche|lamborghini|ferrari|mclaren|bugatti|supercar/i.test(t)) s += 30000;
-    if (/amoled|pitch black|black diamond/i.test(t)) s += 25000;
-    if (/nebula|galaxy|astronaut|cosmos|guardians of the galaxy/i.test(t)) s += 25000;
-    return s;
-  };
+  // 1. High-Speed Pre-Cached Format Selection
   if (format === 'phone' || format === 'mobile') {
-    const allPhone = filtered.filter(w => w.aspectRatio === '9:16' || w.aspectRatio === 'vertical');
-    const qualityPhone = allPhone.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
-    const otherPhone = allPhone.filter(w => !isQuality(w));
-    filtered = [...qualityPhone, ...otherPhone];
+    filtered = getPhoneFeed();
   } else if (format === 'desktop') {
-    const allDesk = filtered.filter(w => w.aspectRatio === '16:9' || (!w.aspectRatio?.includes('9:16') && !w.aspectRatio?.includes('vertical')));
-    const qualityDesk = allDesk.filter(isQuality).sort((a, b) => scoreQuality(b) - scoreQuality(a));
-    const otherDesk = allDesk.filter(w => !isQuality(w));
-    filtered = [...qualityDesk, ...otherDesk];
+    filtered = getDesktopFeed();
   } else if (format === 'dual') {
-    filtered = filtered.filter(w => 
-      (w.aspectRatio || '').includes('32:9') || 
-      (w.screenTypes || []).includes('dual-monitor') || 
-      (w.screenTypes || []).includes('ultrawide')
-    );
+    filtered = getDualFeed();
+  } else {
+    filtered = wallpapers;
   }
 
   // 2. Category Filter
@@ -133,11 +161,12 @@ export const GET: APIRoute = async ({ url }) => {
     filtered = [...filtered].sort((a, b) => (b.views || 0) - (a.views || 0));
   } else if (sort === 'oldest') {
     filtered = [...filtered].reverse();
-  } else if (category === 'all' && !search) {
-    // Newest/recent default with category round-robin so feed is vibrant and diverse
-    filtered = diversifyByCategory(filtered);
+  } else if (category === 'all' && !search && format === 'all') {
+    if (!cachedDefaultDiversified) {
+      cachedDefaultDiversified = diversifyByCategory(filtered);
+    }
+    filtered = cachedDefaultDiversified;
   }
-  // If sort === 'recent' or 'newest' (default), filtered is already in true newest-first chronological order!
 
   const total = filtered.length;
   const startIndex = (page - 1) * limit;
@@ -155,7 +184,10 @@ export const GET: APIRoute = async ({ url }) => {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400',
+      'Cloudflare-CDN-Cache-Control': 'public, max-age=86400, stale-while-revalidate=86400',
+      'CDN-Cache-Control': 'public, max-age=86400, stale-while-revalidate=86400',
+      'Access-Control-Allow-Origin': '*'
     }
   });
 };

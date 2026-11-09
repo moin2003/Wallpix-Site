@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import WallpaperCard from '../../../components/WallpaperCard.astro';
@@ -11,44 +12,9 @@ import { MAIN_CATEGORIES } from '../../../data/taxonomy';
 import { getAllTags, getWallpapersByTag, slugifyTag, wallpapers, getLiveSubTopicCount } from '../../../data/wallpapers';
 import { getOptimizedThumbUrl } from '../../../utils/imageOptimizer';
 
-export async function getStaticPaths() {
-  const tagCounts = new Map<string, number>();
-  wallpapers.forEach((w) => {
-    const seen = new Set<string>();
-    (w.tags || []).forEach((t) => {
-      const s = slugifyTag(t);
-      if (s && !seen.has(s)) {
-        seen.add(s);
-        tagCounts.set(s, (tagCounts.get(s) || 0) + 1);
-      }
-    });
-  });
-
-  const paths: any[] = [];
-  MAIN_CATEGORIES.forEach((cat) => {
-    const catSlug = cat.slug || cat.id;
-    const subs = cat.subTopics || [];
-    subs.forEach((sub) => {
-      const sSlug = slugifyTag(sub.slug);
-      const directCount = tagCounts.get(sSlug) || 0;
-      const parsedCount = parseInt(String(sub.count).replace(/[^0-9]/g, '')) || 24;
-      const count = directCount > 0 ? directCount : parsedCount;
-      paths.push({
-        params: { category: catSlug, slug: sSlug },
-        props: {
-          categoryInfo: { id: cat.id, name: cat.name, slug: catSlug },
-          subTopicInfo: { name: sub.name, slug: sSlug, count },
-        },
-      });
-    });
-  });
-
-  return paths;
-}
-
 interface Props {
-  categoryInfo: { id: string; name: string; slug: string };
-  subTopicInfo: { name: string; slug: string; count: number };
+  categoryInfo?: { id: string; name: string; slug: string };
+  subTopicInfo?: { name: string; slug: string; count: number };
 }
 
 const { category: catParam, slug: subSlug } = Astro.params;
@@ -56,6 +22,12 @@ const parentCat = MAIN_CATEGORIES.find(c => c.slug === catParam || c.id === catP
 const categoryInfo = (Astro.props as any).categoryInfo || { id: parentCat?.id || catParam, name: parentCat?.name || catParam, slug: catParam };
 const subTopicInfo = (Astro.props as any).subTopicInfo || { name: (subSlug || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), slug: subSlug || '', count: 24 };
 const subTopic = subTopicInfo;
+
+// Edge CDN Caching for Category Subtopics (7-day Cloudflare Edge Cache)
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('Cloudflare-CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+Astro.response.headers.set('CDN-Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+
 const allTags = getAllTags();
 
 // Fetch direct matching wallpapers from catalog

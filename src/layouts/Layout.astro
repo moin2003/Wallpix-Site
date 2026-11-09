@@ -8,6 +8,9 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  imageWidth?: string;
+  imageHeight?: string;
+  imageAlt?: string;
   type?: string;
   schema?: any;
   preloadImage?: string;
@@ -17,6 +20,9 @@ const {
   title,
   description = 'Download ultra high-definition 4K, 2K and AMOLED wallpapers for PC, Mac, iPhone, and Android. Free, fast and customizable with instant live canvas cropper.',
   image = '/images/walpix-og-banner.jpg',
+  imageWidth,
+  imageHeight,
+  imageAlt,
   type = 'website',
   schema,
   preloadImage,
@@ -119,9 +125,14 @@ const activeSchema = schema || defaultWebsiteSchema;
     <meta property="og:image" content={socialImageUrl} />
     <meta property="og:image:secure_url" content={socialImageUrl} />
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="WALPIX 4K Ultra HD Wallpapers" />
+    <meta property="og:image:width" content={imageWidth || "1200"} />
+    <meta property="og:image:height" content={imageHeight || "630"} />
+    <meta property="og:image:alt" content={imageAlt || `${title} | WALPIX 4K Wallpapers`} />
+
+    <!-- Pinterest Rich Pin Metadata -->
+    <meta name="pinterest:image" content={socialImageUrl} />
+    <meta name="pinterest:description" content={description} />
+    <link rel="image_src" href={socialImageUrl} />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -131,6 +142,7 @@ const activeSchema = schema || defaultWebsiteSchema;
     <meta name="twitter:title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt || `${title} | WALPIX 4K Wallpapers`} />
 
     <!-- LCP Image Preload for 0ms Discovery Delay -->
     {preloadImage && (
