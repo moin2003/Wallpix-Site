@@ -68,17 +68,6 @@ const activeSchema = schema || defaultWebsiteSchema;
 <!doctype html>
 <html lang="en" class="dark scroll-smooth">
   <head>
-    <!-- Google tag (gtag.js) - Google Analytics 4 (G-0QNLV7CXFE) & Tag Manager (GTM-TRG6J6PM) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0QNLV7CXFE"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-0QNLV7CXFE');
-      gtag('config', 'GTM-TRG6J6PM');
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Critical for hotlinked CDN images bypass -->
@@ -101,7 +90,9 @@ const activeSchema = schema || defaultWebsiteSchema;
     <meta name="title" content={`${title} | WALPIX 4K Wallpapers`} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
-    <meta name="robots" content="index, follow" />
+    <!-- Google Discover & Large Image Search Preview Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#030405" />
 
     <!-- Google Search Console Verification Slot -->
@@ -113,6 +104,19 @@ const activeSchema = schema || defaultWebsiteSchema;
 
     <!-- Pinterest Domain Verification -->
     <meta name="p:domain_verify" content="e2d89faa4ee5f5bd0fc00329959210d8" />
+
+    <!-- Google Analytics 4 (GA4) Slot -->
+    {gaMeasurementId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+        <script is:inline define:vars={{ gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId);
+        </script>
+      </>
+    )}
 
     <!-- Open Graph / Facebook & WhatsApp -->
     <meta property="og:site_name" content="WALPIX 4K" />
