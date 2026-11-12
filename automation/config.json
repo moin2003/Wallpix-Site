@@ -1,0 +1,28 @@
+{
+  "site_url": "https://www.walpix.site",
+  "daily_quota": {
+    "mobile_count": 10,
+    "desktop_count": 10,
+    "total_daily": 20
+  },
+  "storage": {
+    "auto_purge_posted": true,
+    "max_history_days": 2,
+    "max_disk_mb": 150
+  },
+  "preferred_categories": [
+    "AMOLED Black",
+    "Anime",
+    "Cyberpunk",
+    "Cars & Supercars",
+    "Nature & Landscapes",
+    "Gaming",
+    "Space & Galaxy",
+    "Minimalist"
+  ],
+  "social_templates": {
+    "threads_ig": "True #000000 OLED setup for tonight: {title} in pristine 4K. Free uncompressed file in the reply 👇\n\n#OLED #4KWallpaper #DeskSetup #{category_tag} #Walpix",
+    "twitter": "{title} [4K UHD]. Cleaned up for high-refresh HDR displays.\nFree uncompressed download below 👇\n\n#Wallpaper #PCSetup #OLED",
+    "reddit_title": "[{resolution}] {title} - Color graded for OLED panels"
+  }
+}

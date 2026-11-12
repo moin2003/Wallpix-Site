@@ -1,0 +1,23 @@
+name: Daily Search Engine Auto-IndexNow
+
+on:
+  schedule:
+    # Runs automatically every day at 00:00 UTC (06:00 AM Bangladesh Time)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping-indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run IndexNow Ping Engine
+        run: |
+          node scripts/ping-search-engines.mjs
